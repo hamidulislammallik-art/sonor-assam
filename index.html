@@ -1,100 +1,70 @@
 <!DOCTYPE html>
-<html lang="as">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="as"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>সোণৰ অসম</title>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0a0a;color:#fff;font-family:system-ui;min-height:100vh}
-.top{position:sticky;top:0;z-index:30;background:#0f0f0f;border-bottom:3px solid gold;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
-.left{display:flex;align-items:center;gap:10px}.left img{width:52px;height:52px;border-radius:14px;border:2px solid gold}
-.btn{padding:10px 18px;border-radius:24px;border:0;font-weight:800;cursor:pointer}.g{background:linear-gradient(90deg,gold,#FF8C00);color:#000;width:100%;margin-top:8px;font-size:16px}
+*{margin:0;padding:0;box-sizing:border-box}body{background:#0a0a0a;color:#fff;font-family:system-ui}
+.top{position:sticky;top:0;z-index:50;background:#0f0f0f;border-bottom:3px solid gold;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+.left{display:flex;align-items:center;gap:10px}.left img{width:48px;height:48px;border-radius:12px;border:2px solid gold}
+.pill{padding:8px 14px;border-radius:20px;border:1px solid gold;background:#222;color:gold;font-weight:800;cursor:pointer;font-size:13px}
 .card{background:#151515;border:1px solid #333;border-radius:16px;padding:16px;margin:10px}
-.stats{display:flex;gap:8px;padding:10px;background:#f5f2eb}.stats div{flex:1;background:#fff;color:#222;border-top:3px solid #ffcc66;border-radius:10px;padding:10px;text-align:center;font-weight:800}
+.stats{display:flex;gap:8px;padding:10px;background:#f5f2eb}.stats div{flex:1;background:#fff;color:#222;border-top:3px solid #ffcc66;border-radius:10px;padding:10px;text-align:center;font-weight:800;font-size:13px}
 .filters{display:flex;gap:8px;padding:10px;background:#f5f2eb}.filters select,.filters input{flex:1;padding:10px;border-radius:20px;border:1px solid #ddd;background:#fff}
 .main{max-width:640px;margin:auto}
-.post-img{width:100%;border-radius:12px;margin-top:10px;max-height:400px;object-fit:cover;border:1px solid #333}
-.act{display:flex;gap:8px;margin-top:12px;border-top:1px solid #2a2a2a;padding-top:10px}
-.act button{flex:1;padding:8px;border-radius:20px;border:1px solid #333;background:#222;color:#aaa;font-size:12px}
-textarea,select,input[type=file]{width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;margin:6px 0;font-size:15px}
-#status{text-align:center;color:gold;font-weight:700;margin:8px 0}
-</style>
-</head>
-<body>
-<div class="top">
-<div class="left"><img src="logo.jpg"><div><h1 style="color:gold;font-size:18px">সোণৰ অসম</h1><p style="color:#aaa;font-size:10px">অসমৰ নিজৰ App</p></div></div>
-<div style="color:gold;font-weight:800">Live</div>
-</div>
-<div class="main">
-<div class="stats"><div><span id="pcnt">0</span><br>Post</div><div>৩৩ জিলা</div><div>Live</div></div>
-<div class="card">
-<h4 style="color:gold">✍️ নতুন খবৰ দিয়ক</h4>
-<select id="fDist"><option>Barpeta</option><option>Nalbari</option><option>Guwahati</option><option>Bongaigaon</option><option>Dhubri</option><option>Goalpara</option><option>Other</option></select>
-<textarea id="postText" rows="3" placeholder="আজি কি হৈছে? লিখক..."></textarea>
-<input type="file" id="postImage" accept="image/*">
-<button class="btn g" onclick="uploadPost()">📢 Post কৰক</button>
-<p id="status"></p>
-</div>
-<div class="filters">
-<select id="filterDistrict"><option value="">সকলো জিলা</option><option>Barpeta</option><option>Nalbari</option><option>Guwahati</option><option>Bongaigaon</option><option>Dhubri</option></select>
-<input id="searchBox" placeholder="Search...">
-</div>
-<div id="feed"></div>
-</div>
+.post-img{width:100%;border-radius:12px;margin-top:10px;max-height:420px;object-fit:cover;border:1px solid #333}
+.act{display:flex;gap:6px;margin-top:12px;border-top:1px solid #2a2a2a;padding-top:10px}
+.act button{flex:1;padding:9px;border-radius:20px;border:1px solid #333;background:#222;color:#ddd;font-size:12px;cursor:pointer;font-weight:600}
+.act button.liked{background:gold;color:#000}
+textarea,select,input{width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;margin:6px 0;font-size:14px}
+.btn{padding:10px 18px;border-radius:24px;border:0;font-weight:800;cursor:pointer}.g{background:linear-gradient(90deg,gold,#FF8C00);color:#000;width:100%;margin-top:8px;font-size:16px}
+.cmt{background:#1f1f1f;border-radius:10px;padding:8px 10px;margin-top:8px;font-size:13px;border:1px solid #2a2a2a}
+#authModal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;z-index:100;align-items:center;justify-content:center;padding:20px}
+.box{background:#151515;border:2px solid gold;border-radius:18px;padding:20px;max-width:360px;width:100%}
+</style></head><body>
+<div class="top"><div class="left"><img src="logo.jpg"><div><h1 style="color:gold;font-size:17px">সোণৰ অসম</h1><p style="color:#aaa;font-size:10px">অসমৰ নিজৰ App</p></div></div><div class="right"><button class="pill" id="accountBtn" onclick="openAuth()">👤 Account</button><div id="userPic" style="display:none"><img id="uImg" style="width:36px;height:36px;border-radius:50%;border:2px solid gold"></div></div></div>
+<div class="main"><div class="stats"><div><span id="pcnt">0</span><br>Post</div><div>৩৩ জিলা</div><div id="userNameShow">Login কৰা</div></div>
+<div class="card" id="postBox" style="display:none"><h4 style="color:gold">✍️ নতুন খবৰ দিয়ক</h4><select id="fDist"><option>Barpeta</option><option>Nalbari</option><option>Guwahati</option><option>Bongaigaon</option><option>Dhubri</option><option>Goalpara</option><option>Other</option></select><textarea id="postText" rows="3" placeholder="আজি কি হৈছে? লিখক..."></textarea><input type="file" id="postImage" accept="image/*"><button class="btn g" onclick="uploadPost()">📢 Post কৰক</button><p id="status" style="text-align:center;color:gold;font-weight:700;margin:8px 0"></p></div>
+<div class="card" id="loginPrompt"><p style="text-align:center">Post কৰিবলৈ 👤 Account ত Login কৰা Bos!</p><button class="btn g" onclick="openAuth()">🔐 Google Login</button></div>
+<div class="filters"><select id="filterDistrict"><option value="">সকলো জিলা</option><option>Barpeta</option><option>Nalbari</option><option>Guwahati</option><option>Bongaigaon</option><option>Dhubri</option><option>Goalpara</option></select><input id="searchBox" placeholder="Search..."></div>
+<div id="feed"></div></div>
+<div id="authModal"><div class="box"><h3 style="color:gold;text-align:center">👤 Account</h3><div id="notLogged"><p style="text-align:center;color:#aaa;margin:12px 0">Google দি Login কৰা</p><button class="btn g" onclick="loginGoogle()">🔐 Google ৰে Login</button></div><div id="logged" style="display:none;text-align:center"><img id="mImg" style="width:70px;height:70px;border-radius:50%;border:3px solid gold;margin:10px"><h4 id="mName"></h4><p id="mEmail" style="color:#aaa;font-size:12px"></p><button class="btn" style="background:#222;color:#fff;margin-top:12px;width:100%" onclick="logout()">Logout</button></div><button class="btn" style="background:transparent;color:#888;margin-top:10px;width:100%" onclick="closeAuth()">Close</button></div></div>
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyDuJdr6IRg6U7FgQDIcZEG7IOMkinGxitI",
-  authDomain: "sonor-assam.firebaseapp.com",
-  projectId: "sonor-assam",
-  storageBucket: "sonor-assam.firebasestorage.app",
-  messagingSenderId: "353015301976",
-  appId: "1:353015301976:web:b7cc25039edb136a8c872d",
-  measurementId: "G-84Z9492SRD"
-};
+const firebaseConfig = {apiKey: "AIzaSyDuJdr6IRg6U7FgQDIcZEG7IOMkinGxitI",authDomain: "sonor-assam.firebaseapp.com",projectId: "sonor-assam",storageBucket: "sonor-assam.firebasestorage.app",messagingSenderId: "353015301976",appId: "1:353015301976:web:b7cc25039edb136a8c872d"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-async function uploadPost(){
-  const text=document.getElementById('postText').value.trim();
-  if(!text){alert("Text লিখা Bos!");return;}
-  const status=document.getElementById('status');
-  status.innerText="⏳ Posting...";
-  const file=document.getElementById('postImage').files[0];
-  let imageBase64="";
-  if(file){
-    if(file.size>800000){alert("Photo 800KB তকৈ সৰু দিয়া");status.innerText="";return;}
-    imageBase64=await new Promise(res=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.readAsDataURL(file);});
-  }
-  try{
-    await db.collection("posts").add({text:text,image:imageBase64,district:document.getElementById('fDist').value,likes:0,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-    status.innerText="✅ Success Bos! 🔥";document.getElementById('postText').value="";document.getElementById('postImage').value="";setTimeout(()=>status.innerText="",2500);
-  }catch(err){status.innerText="❌ "+err.message;alert(err.message);}
-}
-let allPosts=[];
-db.collection("posts").orderBy("createdAt","desc").limit(100).onSnapshot(snap=>{
-  allPosts=[];snap.forEach(d=>allPosts.push({id:d.id,...d.data()}));
-  document.getElementById('pcnt').innerText=snap.size;renderFeed();
+const db = firebase.firestore(); const auth = firebase.auth();
+let currentUser=null, allPosts=[];
+function openAuth(){document.getElementById('authModal').style.display='flex'}
+function closeAuth(){document.getElementById('authModal').style.display='none'}
+async function loginGoogle(){ try{ await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); closeAuth(); }catch(e){alert(e.message)} }
+function logout(){auth.signOut(); closeAuth();}
+auth.onAuthStateChanged(user=>{
+  currentUser=user;
+  const notLogged=document.getElementById('notLogged'), logged=document.getElementById('logged'), postBox=document.getElementById('postBox'), loginPrompt=document.getElementById('loginPrompt'), accountBtn=document.getElementById('accountBtn'), userPic=document.getElementById('userPic'), userNameShow=document.getElementById('userNameShow');
+  if(user){notLogged.style.display='none'; logged.style.display='block'; postBox.style.display='block'; loginPrompt.style.display='none'; userPic.style.display='block'; accountBtn.style.display='none'; document.getElementById('mName').innerText=user.displayName; document.getElementById('mEmail').innerText=user.email; document.getElementById('mImg').src=user.photoURL; document.getElementById('uImg').src=user.photoURL; document.getElementById('uImg').onclick=openAuth; userNameShow.innerText=user.displayName.split(' ')[0];}else{notLogged.style.display='block'; logged.style.display='none'; postBox.style.display='none'; loginPrompt.style.display='block'; userPic.style.display='none'; accountBtn.style.display='block'; userNameShow.innerText='Login কৰা';}
 });
+async function uploadPost(){
+  if(!currentUser){openAuth();return;}
+  const text=document.getElementById('postText').value.trim(); if(!text){alert("Text লিখা Bos!");return;}
+  const status=document.getElementById('status'); status.innerText="Posting...";
+  const file=document.getElementById('postImage').files[0]; let imageBase64="";
+  if(file){ if(file.size>800000){alert("Photo 800KB তকৈ সৰু দিয়া");status.innerText="";return;} imageBase64=await new Promise(res=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.readAsDataURL(file);}); }
+  try{ await db.collection("posts").add({text:text,image:imageBase64,district:document.getElementById('fDist').value,likes:0,comments:[],uid:currentUser.uid,name:currentUser.displayName,photo:currentUser.photoURL,createdAt:firebase.firestore.FieldValue.serverTimestamp()}); status.innerText="Success Bos!";document.getElementById('postText').value="";document.getElementById('postImage').value="";setTimeout(()=>status.innerText="",2000); }catch(e){status.innerText=e.message}
+}
+function likePost(id,likes){ const key='liked_'+id; if(localStorage.getItem(key)){alert("Like কৰিছাই Bos!");return;} db.collection("posts").doc(id).update({likes:(likes||0)+1}); localStorage.setItem(key,'1'); }
+async function commentPost(id){ if(!currentUser){openAuth();return;} const txt=prompt("Comment লিখা Bos:"); if(!txt) return; const postRef=db.collection("posts").doc(id); const doc=await postRef.get(); const data=doc.data(); const cmts=data.comments||[]; cmts.push({name:currentUser.displayName,text:txt,time:new Date().toLocaleString('en-IN')}); await postRef.update({comments:cmts}); }
+function sharePost(id,text){ const url=location.href; if(navigator.share){navigator.share({title:'সোণৰ অসম',text:text,url:url})} else{navigator.clipboard.writeText(text+"\n"+url);alert("Link Copy হ'ল Bos!")} }
+db.collection("posts").orderBy("createdAt","desc").limit(100).onSnapshot(snap=>{ allPosts=[]; snap.forEach(d=>allPosts.push({id:d.id,...d.data()})); document.getElementById('pcnt').innerText=snap.size; renderFeed(); });
 function renderFeed(){
-  const feed=document.getElementById('feed');
-  const filterD=document.getElementById('filterDistrict').value;
-  const search=document.getElementById('searchBox').value.toLowerCase();
-  feed.innerHTML="";
-  let filtered=allPosts.filter(p=>{
-    if(filterD && p.district!==filterD) return false;
-    if(search &&!p.text.toLowerCase().includes(search)) return false;
-    return true;
-  });
+  const feed=document.getElementById('feed'), filterD=document.getElementById('filterDistrict').value, search=document.getElementById('searchBox').value.toLowerCase(); feed.innerHTML="";
+  let filtered=allPosts.filter(p=>{ if(filterD && p.district!==filterD) return false; if(search &&!p.text.toLowerCase().includes(search)) return false; return true; });
   if(filtered.length===0){feed.innerHTML='<div class="card" style="text-align:center;color:#888">কোনো Post নাই</div>';return;}
   filtered.forEach(data=>{
-    const time=data.createdAt?data.createdAt.toDate().toLocaleString('en-IN'):'Just now';
-    feed.innerHTML+=`<div class="card"><small style="color:gold">📍 ${data.district||'Assam'} • ${time}</small><p style="margin:10px 0;white-space:pre-wrap">${data.text}</p>${data.image?`<img class="post-img" src="${data.image}">`:''}<div class="act"><button>❤️ ${data.likes||0}</button><button>💬 Comment</button><button>↗️ Share</button></div></div>`;
+    const time=data.createdAt?data.createdAt.toDate().toLocaleString('en-IN'):'Just now'; const liked=localStorage.getItem('liked_'+data.id)?'liked':''; const commentsHtml=(data.comments||[]).map(c=>`<div class="cmt"><b>${c.name}:</b> ${c.text} <small style="color:#888"> - ${c.time}</small></div>`).join('');
+    feed.innerHTML+=`<div class="card"><div style="display:flex;align-items:center;gap:8px"><img src="${data.photo||''}" style="width:28px;height:28px;border-radius:50%;background:#333" onerror="this.style.display='none'"><div><small style="color:gold">📍 ${data.district||'Assam'} • ${time}</small><br><small style="color:#fff;font-weight:700">${data.name||'User'}</small></div></div><p style="margin:10px 0;white-space:pre-wrap">${data.text}</p>${data.image?`<img class="post-img" src="${data.image}">`:''}<div class="act"><button class="${liked}" onclick="likePost('${data.id}',${data.likes||0})">❤️ ${data.likes||0} Like</button><button onclick="commentPost('${data.id}')">💬 ${(data.comments||[]).length} Comment</button><button onclick="sharePost('${data.id}',\`${(data.text||'').replace(/`/g,'').substring(0,80)}\`)">↗️ Share</button></div>${commentsHtml}</div>`;
   });
 }
 document.getElementById('filterDistrict').addEventListener('change',renderFeed);
 document.getElementById('searchBox').addEventListener('input',renderFeed);
-</script>
-</body>
-</html>
+</script></body></html>
