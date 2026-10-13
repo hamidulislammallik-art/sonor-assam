@@ -1,13 +1,28 @@
-/* Fix White on White Issue */
-input, select, textarea {
-  color: #000 !important;
-  background: #fff !important;
+/* --- FIX WHITE BOX TEXT NOT VISIBLE --- */
+.search-filter-wrapper, 
+div[style*="background: white"],
+div[style*="background:#fff"],
+div[style*="background-color: white"] {
+  background: #1a1a1a !important;
+  padding: 15px !important;
+  border: 2px solid #FFD700 !important;
+  border-radius: 15px !important;
+}
+
+input[type="text"], input[type="search"], select {
+  background: #222 !important;
+  color: #fff !important;
+  border: 2px solid #FFD700 !important;
+  border-radius: 25px !important;
+  padding: 12px 15px !important;
 }
 
 input::placeholder {
-  color: #555 !important;
+  color: #aaa !important;
 }
 
-.search-section, .filter-section {
-  background: #111 !important;
+input[type="text"]:focus, select:focus {
+  background: #000 !important;
+  color: #FFD700 !important;
+  outline: none !important;
 }
