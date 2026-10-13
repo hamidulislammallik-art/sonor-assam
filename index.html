@@ -1,39 +1,100 @@
-<!DOCTYPE html><html lang="as"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>সোণৰ অসম</title><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#0a0a0a;color:#fff;font-family:system-ui}.top{position:sticky;top:0;z-index:30;background:#0f0f0f;border-bottom:3px solid gold;padding:8px 12px;display:flex;justify-content:space-between;align-items:center}.left{display:flex;align-items:center;gap:10px}.left img{width:50px;height:50px;border-radius:14px;border:2px solid gold;object-fit:cover}.btn{padding:8px 16px;border-radius:20px;border:0;font-weight:800;cursor:pointer}.g{background:linear-gradient(90deg,gold,#FF8C00);color:#000}.profile-btn{background:#222;border:1px solid gold;color:gold;padding:4px 10px 4px 4px;border-radius:24px;display:flex;align-items:center;gap:8px}.profile-btn img{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid gold}.stats{display:flex;gap:6px;padding:8px;background:#f5f2eb}.stats div{flex:1;background:#fff;color:#333;border-top:3px solid #ffcc66;border-radius:10px;padding:8px;text-align:center;font-weight:700;font-size:12px}.filters{display:flex;gap:6px;padding:8px;background:#f5f2eb}.filters select,.filters input{flex:1;padding:8px;border-radius:20px;border:1px solid #ddd;background:#fff;font-size:11px}.card{background:#151515;border:1px solid #333;border-radius:16px;padding:14px;margin:10px}.post-img{width:100%;border-radius:12px;margin-top:10px;max-height:380px;object-fit:cover}.act{display:flex;gap:6px;margin-top:12px;border-top:1px solid #2a2a2a;padding-top:10px}.act button{flex:1;padding:8px;border-radius:20px;border:1px solid #333;background:#222;color:#aaa;font-size:12px}.act button.liked{border-color:gold;color:gold;background:#332a00}.cmt-box{display:none;margin-top:10px;background:#1e1e1e;border-radius:12px;padding:10px}.cmt-box.show{display:block}.cmt{background:#2a2a2a;padding:8px;border-radius:8px;margin:5px 0;font-size:13px}.modal{position:fixed;inset:0;background:rgba(0,0,0,.93);display:none;align-items:center;justify-content:center;z-index:99;padding:14px}.modal.show{display:flex}.box{background:#1a1a1a;border:2px solid gold;border-radius:20px;padding:20px;width:100%;max-width:380px;text-align:center}.avatar{width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid gold;margin:0 auto 10px;display:block}.avatar-div{width:90px;height:90px;background:gold;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-size:32px;font-weight:900;margin:0 auto 10px}.topbtn{position:fixed;bottom:20px;right:20px;width:45px;height:45px;border-radius:50%;background:gold;color:#000;border:0;font-size:20px;z-index:50}#previewImg{width:100%;border-radius:12px;margin-top:8px;display:none;max-height:200px;object-fit:cover}#profilePreview{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid gold;display:none;margin:10px auto}.back{width:34px;height:34px;border-radius:50%;border:1px solid gold;background:#222;color:gold}</style></head><body>
-<div class="top"><div class="left"><button class="back" onclick="goBack()">←</button><img src="logo.jpg" onerror="this.style.background='gold'"><div><h1 style="color:gold;font-size:18px">সোণৰ অসম</h1><p style="color:#aaa;font-size:10px">অসমৰ নিজৰ App</p></div></div><div id="ha"></div></div>
-<div class="stats"><div>📝 <span id="pcnt">0</span> Post</div><div>📍 ৩৫ জিলা</div><div>⏰ Live</div></div>
-<div class="filters"><select id="fDist"><option>📍 সকলো জিলা</option><option>বৰপেটা</option><option>নলবাৰী</option><option>গুৱাহাটী</option></select><select id="fCat"><option>🏷️ সকলো</option><option>সাধাৰণ</option><option>বাতৰি</option></select><input id="fSearch" placeholder="🔍 বিচাৰক" oninput="render()"></div>
-<div style="max-width:700px;margin:auto;padding-bottom:80px">
-<div class="card" style="border-color:gold"><h3>✍️ আজি কি লিখিব?</h3><input id="pn" placeholder="আপোনাৰ নাম" style="width:100%;padding:11px;margin-top:10px;border-radius:10px;background:#222;color:#fff;border:1px solid #333"><div style="display:flex;gap:6px;margin-top:8px"><select id="pd" style="flex:1;padding:11px;border-radius:10px;background:#222;color:#fff;border:1px solid #333"><option>বৰপেটা</option><option>নলবাৰী</option><option>গুৱাহাটী</option></select><select id="pc" style="flex:1;padding:11px;border-radius:10px;background:#222;color:#fff;border:1px solid #333"><option>সাধাৰণ</option><option>বাতৰি</option><option>চাকৰি</option></select></div><textarea id="pt" rows="3" placeholder="মনৰ কথা..." style="width:100%;padding:11px;margin-top:8px;border-radius:10px;background:#222;color:#fff;border:1px solid #333"></textarea><input type="file" id="pImg" accept="image/*" style="margin-top:8px;color:#aaa;font-size:12px"><img id="previewImg"><button class="btn g" style="width:100%;margin-top:10px;padding:12px" onclick="makeP()">🚀 Post কৰক</button></div>
-<div id="pl"></div>
+<!DOCTYPE html>
+<html lang="as">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>সোণৰ অসম</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0a;color:#fff;font-family:system-ui;min-height:100vh}
+.top{position:sticky;top:0;z-index:30;background:#0f0f0f;border-bottom:3px solid gold;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+.left{display:flex;align-items:center;gap:10px}.left img{width:52px;height:52px;border-radius:14px;border:2px solid gold}
+.btn{padding:10px 18px;border-radius:24px;border:0;font-weight:800;cursor:pointer}.g{background:linear-gradient(90deg,gold,#FF8C00);color:#000;width:100%;margin-top:8px;font-size:16px}
+.card{background:#151515;border:1px solid #333;border-radius:16px;padding:16px;margin:10px}
+.stats{display:flex;gap:8px;padding:10px;background:#f5f2eb}.stats div{flex:1;background:#fff;color:#222;border-top:3px solid #ffcc66;border-radius:10px;padding:10px;text-align:center;font-weight:800}
+.filters{display:flex;gap:8px;padding:10px;background:#f5f2eb}.filters select,.filters input{flex:1;padding:10px;border-radius:20px;border:1px solid #ddd;background:#fff}
+.main{max-width:640px;margin:auto}
+.post-img{width:100%;border-radius:12px;margin-top:10px;max-height:400px;object-fit:cover;border:1px solid #333}
+.act{display:flex;gap:8px;margin-top:12px;border-top:1px solid #2a2a2a;padding-top:10px}
+.act button{flex:1;padding:8px;border-radius:20px;border:1px solid #333;background:#222;color:#aaa;font-size:12px}
+textarea,select,input[type=file]{width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;margin:6px 0;font-size:15px}
+#status{text-align:center;color:gold;font-weight:700;margin:8px 0}
+</style>
+</head>
+<body>
+<div class="top">
+<div class="left"><img src="logo.jpg"><div><h1 style="color:gold;font-size:18px">সোণৰ অসম</h1><p style="color:#aaa;font-size:10px">অসমৰ নিজৰ App</p></div></div>
+<div style="color:gold;font-weight:800">Live</div>
 </div>
-<button class="topbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-
-<!-- ACCOUNT WITH PHOTO -->
-<div id="am" class="modal"><div class="box"><h2 style="color:gold">Account খুলক 📸</h2><img id="profilePreview"><input type="file" id="profileFile" accept="image/*" style="margin:10px 0;color:#aaa;font-size:12px"><input id="sn" placeholder="নাম *" style="width:100%;padding:12px;margin:6px 0;border-radius:10px;background:#222;color:#fff;border:1px solid #333"><input id="sd" placeholder="জিলা *" style="width:100%;padding:12px;margin:6px 0;border-radius:10px;background:#222;color:#fff;border:1px solid #333"><input id="sp" type="password" placeholder="Password *" style="width:100%;padding:12px;margin:6px 0;border-radius:10px;background:#222;color:#fff;border:1px solid #333"><button class="btn g" style="width:100%;padding:12px;margin-top:8px" onclick="doS()">📸 Photo সহ বনাওক ✅</button><p style="color:#888;margin-top:10px;cursor:pointer" onclick="closeA()">← Back</p></div></div>
-
-<!-- PROFILE WITH PHOTO -->
-<div id="pm" class="modal"><div class="box"><div id="profileContent"></div><p style="color:#888;margin-top:15px;cursor:pointer" onclick="closeP()">← Back</p></div></div>
-
+<div class="main">
+<div class="stats"><div><span id="pcnt">0</span><br>Post</div><div>৩৩ জিলা</div><div>Live</div></div>
+<div class="card">
+<h4 style="color:gold">✍️ নতুন খবৰ দিয়ক</h4>
+<select id="fDist"><option>Barpeta</option><option>Nalbari</option><option>Guwahati</option><option>Bongaigaon</option><option>Dhubri</option><option>Goalpara</option><option>Other</option></select>
+<textarea id="postText" rows="3" placeholder="আজি কি হৈছে? লিখক..."></textarea>
+<input type="file" id="postImage" accept="image/*">
+<button class="btn g" onclick="uploadPost()">📢 Post কৰক</button>
+<p id="status"></p>
+</div>
+<div class="filters">
+<select id="filterDistrict"><option value="">সকলো জিলা</option><option>Barpeta</option><option>Nalbari</option><option>Guwahati</option><option>Bongaigaon</option><option>Dhubri</option></select>
+<input id="searchBox" placeholder="Search...">
+</div>
+<div id="feed"></div>
+</div>
 <script>
-let cur=JSON.parse(localStorage.getItem('sonor_cur')||'null');
-let posts=JSON.parse(localStorage.getItem('sonor_posts_final')||'[]');
-let tempImg='',tempProfile='';
-document.getElementById('pImg').addEventListener('change',e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=ev=>{tempImg=ev.target.result;let im=document.getElementById('previewImg');im.src=tempImg;im.style.display='block';};r.readAsDataURL(f);});
-document.getElementById('profileFile').addEventListener('change',e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=ev=>{tempProfile=ev.target.result;let im=document.getElementById('profilePreview');im.src=tempProfile;im.style.display='block';};r.readAsDataURL(f);});
-function goBack(){if(document.getElementById('am').classList.contains('show'))closeA();else if(document.getElementById('pm').classList.contains('show'))closeP();else history.length>1?history.back():window.scrollTo({top:0,behavior:'smooth'});}
-function openA(){document.getElementById('am').classList.add('show')}function closeA(){document.getElementById('am').classList.remove('show')}
-function openP(){if(!cur){openA();return}let myPosts=posts.filter(p=>p.own==cur.name).length;let photoHtml=cur.photo?`<img src='${cur.photo}' class='avatar'>`:`<div class='avatar-div'>${cur.name.charAt(0)}</div>`;document.getElementById('profileContent').innerHTML=`${photoHtml}<h2 style='color:gold'>${cur.name}</h2><p style='color:#aaa'>📍 ${cur.dist}</p><div style='display:flex;gap:8px;margin-top:15px'><div style='flex:1;background:#222;padding:10px;border-radius:10px'><b style='color:gold'>${myPosts}</b><br><small>Post</small></div><div style='flex:1;background:#222;padding:10px;border-radius:10px'><b style='color:gold'>${cur.dist}</b><br><small>জিলা</small></div></div><button class='btn g' style='width:100%;margin-top:12px' onclick='editProfile()'>✏️ Edit Profile</button><button class='btn' style='background:#333;color:#fff;width:100%;margin-top:8px' onclick='logout()'>🚪 Logout</button>`;document.getElementById('pm').classList.add('show');}function closeP(){document.getElementById('pm').classList.remove('show');}
-function editProfile(){closeP();openA();document.getElementById('sn').value=cur.name;document.getElementById('sd').value=cur.dist;if(cur.photo){document.getElementById('profilePreview').src=cur.photo;document.getElementById('profilePreview').style.display='block';tempProfile=cur.photo;}}
-function logout(){if(confirm('Logout কৰিব নে?')){localStorage.removeItem('sonor_cur');location.reload();}}
-function upd(){if(cur){let btnImg=cur.photo?`<img src='${cur.photo}'>`:`<span style='width:28px;height:28px;background:gold;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-weight:800;font-size:12px'>${cur.name.charAt(0)}</span>`;document.getElementById('ha').innerHTML=`<button class='profile-btn' onclick='openP()'>${btnImg} ${cur.name}</button>`;document.getElementById('pn').value=cur.name;}else{document.getElementById('ha').innerHTML=`<button class='btn g' onclick='openA()' style='font-size:12px'>Account খুলক</button>`;}}
-function doS(){let n=document.getElementById('sn').value.trim(),d=document.getElementById('sd').value.trim(),p=document.getElementById('sp').value;if(!n||!d||!p){alert('ভৰাওক');return}cur={name:n,dist:d,photo:tempProfile||cur?.photo||''};localStorage.setItem('sonor_cur',JSON.stringify(cur));closeA();upd();tempProfile='';document.getElementById('profilePreview').style.display='none';document.getElementById('profileFile').value='';}
-function save(){localStorage.setItem('sonor_posts_final',JSON.stringify(posts));document.getElementById('pcnt').innerText=posts.length;}
-function makeP(){let n=document.getElementById('pn').value.trim()||cur?.name||'অতিথি',d=document.getElementById('pd').value,cat=document.getElementById('pc').value,t=document.getElementById('pt').value.trim();if(!t&&!tempImg){alert('লিখক বা Photo দিয়ক');return}if(!cur){openA();return}posts.unshift({name:n,dist:d,cat:cat,text:t,img:tempImg,profile:cur.photo||'',time:new Date().toLocaleString('en-IN',{day:'2-digit',month:'short'}),likes:0,liked:false,comments:[],own:cur.name});save();document.getElementById('pt').value='';document.getElementById('pImg').value='';tempImg='';document.getElementById('previewImg').style.display='none';render();}
-function likePost(i){posts[i].liked=!posts[i].liked;posts[i].likes+=posts[i].liked?1:-1;save();render();}
-function toggleCmt(i){document.getElementById('cbox-'+i).classList.toggle('show');}
-function addCmt(i){let inp=document.getElementById('cinput-'+i);let txt=inp.value.trim();if(!txt)return;if(!cur){openA();return}posts[i].comments.push({name:cur.name,text:txt});save();inp.value='';render();document.getElementById('cbox-'+i).classList.add('show');}
-function sharePost(i){let p=posts[i];let txt=p.name+' ('+p.dist+'): '+p.text;if(navigator.share){navigator.share({title:'সোণৰ অসম',text:txt,url:location.href});}else{navigator.clipboard.writeText(txt);alert('Copy হল!');}}
-function delPost(i){if(confirm('Delete কৰিব নে?')){posts.splice(i,1);save();render();}}
-function render(){let fd=document.getElementById('fDist').value,fs=document.getElementById('fSearch').value.toLowerCase();let filt=posts.filter(p=>{let okD=fd.includes('সকলো')||p.dist==fd;let okS=!fs||p.text.toLowerCase().includes(fs)||p.name.toLowerCase().includes(fs);return okD&&okS;});document.getElementById('pl').innerHTML=filt.length==0?`<p style='text-align:center;color:#555;margin-top:20px'>Post নাই</p>`:filt.map((p,i)=>{let realI=posts.indexOf(p);let prof=p.profile?`<img src='${p.profile}' style='width:36px;height:36px;border-radius:50%;object-fit:cover;border:1px solid gold'>`:`<div style='width:36px;height:36px;background:gold;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-weight:800'>${p.name.charAt(0)}</div>`;return `<div class='card' style='border-left:3px solid gold'><div style='display:flex;justify-content:space-between'><div style='display:flex;gap:8px'>${prof}<div><b>${p.name}</b> <small style='color:gold'>📍 ${p.dist}</small><br><small style='color:#888'>${p.time}</small></div></div>${cur&&p.own==cur.name?`<button onclick='delPost(${realI})' style='background:none;border:0;color:#666'>🗑️</button>`:''}</div><p style='margin-top:10px'>${p.text}</p>${p.img?`<img src='${p.img}' class='post-img'>`:''}<div class='act'><button onclick='likePost(${realI})' class='${p.liked?'liked':''}'>${p.liked?'💛':'🤍'} Like (${p.likes})</button><button onclick='toggleCmt(${realI})'>💬 Comment (${p.comments.length})</button><button onclick='sharePost(${realI})'>↗️ Share</button></div><div id='cbox-${realI}' class='cmt-box'>${p.comments.map(c=>`<div class='cmt'><b style='color:gold'>${c.name}:</b> ${c.text}</div>`).join('')}<div style='display:flex;gap:6px;margin-top:6px'><input id='cinput-${realI}' placeholder='Comment...' style='flex:1;padding:8px;border-radius:8px;background:#333;color:#fff;border:1px solid #444'><button class='btn g' onclick='addCmt(${realI})' style='padding:8px 12px'>Post</button></div></div></div>`}).join('');}
-upd();save();render();
-</script></body></html>
+const firebaseConfig = {
+  apiKey: "AIzaSyDuJdr6IRg6U7FgQDIcZEG7IOMkinGxitI",
+  authDomain: "sonor-assam.firebaseapp.com",
+  projectId: "sonor-assam",
+  storageBucket: "sonor-assam.firebasestorage.app",
+  messagingSenderId: "353015301976",
+  appId: "1:353015301976:web:b7cc25039edb136a8c872d",
+  measurementId: "G-84Z9492SRD"
+};
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+async function uploadPost(){
+  const text=document.getElementById('postText').value.trim();
+  if(!text){alert("Text লিখা Bos!");return;}
+  const status=document.getElementById('status');
+  status.innerText="⏳ Posting...";
+  const file=document.getElementById('postImage').files[0];
+  let imageBase64="";
+  if(file){
+    if(file.size>800000){alert("Photo 800KB তকৈ সৰু দিয়া");status.innerText="";return;}
+    imageBase64=await new Promise(res=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.readAsDataURL(file);});
+  }
+  try{
+    await db.collection("posts").add({text:text,image:imageBase64,district:document.getElementById('fDist').value,likes:0,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    status.innerText="✅ Success Bos! 🔥";document.getElementById('postText').value="";document.getElementById('postImage').value="";setTimeout(()=>status.innerText="",2500);
+  }catch(err){status.innerText="❌ "+err.message;alert(err.message);}
+}
+let allPosts=[];
+db.collection("posts").orderBy("createdAt","desc").limit(100).onSnapshot(snap=>{
+  allPosts=[];snap.forEach(d=>allPosts.push({id:d.id,...d.data()}));
+  document.getElementById('pcnt').innerText=snap.size;renderFeed();
+});
+function renderFeed(){
+  const feed=document.getElementById('feed');
+  const filterD=document.getElementById('filterDistrict').value;
+  const search=document.getElementById('searchBox').value.toLowerCase();
+  feed.innerHTML="";
+  let filtered=allPosts.filter(p=>{
+    if(filterD && p.district!==filterD) return false;
+    if(search &&!p.text.toLowerCase().includes(search)) return false;
+    return true;
+  });
+  if(filtered.length===0){feed.innerHTML='<div class="card" style="text-align:center;color:#888">কোনো Post নাই</div>';return;}
+  filtered.forEach(data=>{
+    const time=data.createdAt?data.createdAt.toDate().toLocaleString('en-IN'):'Just now';
+    feed.innerHTML+=`<div class="card"><small style="color:gold">📍 ${data.district||'Assam'} • ${time}</small><p style="margin:10px 0;white-space:pre-wrap">${data.text}</p>${data.image?`<img class="post-img" src="${data.image}">`:''}<div class="act"><button>❤️ ${data.likes||0}</button><button>💬 Comment</button><button>↗️ Share</button></div></div>`;
+  });
+}
+document.getElementById('filterDistrict').addEventListener('change',renderFeed);
+document.getElementById('searchBox').addEventListener('input',renderFeed);
+</script>
+</body>
+</html>
