@@ -1,206 +1,39 @@
 <!DOCTYPE html>
-<html lang="as"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>সোণৰ অসম - Message</title>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<html lang="as"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>সোণৰ অসম</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}body{background:#0a0a0a;color:#fff;font-family:system-ui}
-.top{position:sticky;top:0;z-index:50;background:#0f0f0f;border-bottom:3px solid gold;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
-.left{display:flex;align-items:center;gap:10px}.left img{width:48px;height:48px;border-radius:12px;border:2px solid gold}
-.pill{padding:8px 12px;border-radius:20px;border:1px solid gold;background:#222;color:gold;font-weight:800;cursor:pointer;font-size:12px}
-.card{background:#151515;border:1px solid gold;border-radius:16px;padding:16px;margin:10px}
-.stats{display:flex;gap:8px;padding:10px;background:#0a0a0a}.stats div{flex:1;background:#151515;color:gold;border:1px solid gold;border-top:3px solid gold;border-radius:10px;padding:10px;text-align:center;font-weight:800;font-size:12px}
-.filters{display:flex;gap:8px;padding:10px;background:#0a0a0a}.filters select,.filters input{flex:1;padding:10px;border-radius:20px;border:1px solid gold;background:#222;color:#fff}
-.main{max-width:640px;margin:auto}
-.post-img{width:100%;border-radius:12px;margin-top:10px;max-height:420px;object-fit:cover;border:1px solid gold}
-.act{display:flex;gap:5px;margin-top:12px;border-top:1px solid #2a2a2a;padding-top:10px;flex-wrap:wrap}
-.act button{flex:1;padding:8px;border-radius:20px;border:1px solid #333;background:#222;color:#ddd;font-size:11px;cursor:pointer;font-weight:600;min-width:70px}
-.act button.liked{background:gold;color:#000}
-textarea,select,input{width:100%;padding:12px;border-radius:12px;border:1px solid gold;background:#222;color:#fff;margin:6px 0;font-size:14px}
-.btn{padding:10px 18px;border-radius:24px;border:0;font-weight:800;cursor:pointer}.g{background:linear-gradient(90deg,gold,#FF8C00);color:#000;width:100%;margin-top:8px;font-size:15px}
-.cmt{background:#1f1f1f;border-radius:10px;padding:8px 10px;margin-top:8px;font-size:13px;border:1px solid #2a2a2a}
-#authModal,#msgModal,#chatModal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;z-index:100;align-items:center;justify-content:center;padding:12px}
-.box{background:#151515;border:2px solid gold;border-radius:18px;padding:18px;max-width:380px;width:100%;max-height:90vh;overflow-y:auto}
-.chatList{max-height:300px;overflow-y:auto}
-.chatItem{padding:10px;border-bottom:1px solid #2a2a2a;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
-.chatItem:hover{background:#222}
-.msgBubble{max-width:80%;padding:8px 12px;border-radius:14px;margin:6px 0;font-size:13px}
-.me{background:gold;color:#000;margin-left:auto;border-bottom-right-radius:2px}
-.other{background:#333;color:#fff;margin-right:auto;border-bottom-left-radius:2px}
-#chatMessages{height:300px;overflow-y:auto;padding:10px;background:#0f0f0f;border-radius:10px;margin:10px 0}
-::placeholder{color:#ffcc66!important}
-</style></head>
-<body>
-<div class="top"><div class="left"><img src="logo.jpg"><div><h1 style="color:gold;font-size:16px">সোণৰ অসম</h1><p style="color:#aaa;font-size:9px">"অসমৰ এপ"</p></div></div><div style="display:flex;gap:6px;align-items:center"><button class="pill" id="msgBtn" onclick="openMsgInbox()">💬 <span id="msgCount">0</span></button><button class="pill" id="accountBtn" onclick="openAuth()">👤</button><div id="userPic" style="display:none"><img id="uImg" style="width:32px;height:32px;border-radius:50%;border:2px solid gold" onclick="openAuth()"></div></div></div>
-
-<div class="main">
-<div class="stats"><div><span id="pcnt">0</span><br>Post</div><div>৩৫ জিলা</div><div id="userNameShow">Login</div></div>
-<div class="card" id="postBox" style="display:none"><h4 style="color:gold">✍️ খবৰ দিয়ক</h4><select id="fDist"><option>Barpeta</option><option>Nalbari</option><option>Guwahati</option><option>Bongaigaon</option><option>Dhubri</option><option>Other</option></select><textarea id="postText" rows="3" placeholder="কি হৈছে? লিখক..."></textarea><input type="file" id="postImage" accept="image/*"><button class="btn g" onclick="uploadPost()">📢 Post</button><p id="status" style="text-align:center;color:gold;font-weight:700;margin:6px 0"></p></div>
-<div class="card" id="loginPrompt"><p style="text-align:center">Post + Message কৰিবলৈ Login কৰা</p><button class="btn g" onclick="openAuth()">🔐 Login</button></div>
-<div class="filters"><select id="filterDistrict"><option value="">সকলো জিলা</option><option>Barpeta</option><option>Nalbari</option><option>Guwahati</option><option>Bongaigaon</option><option>Dhubri</option></select><input id="searchBox" placeholder="Search..."></div>
-<div id="feed"></div></div>
-
-<div id="authModal"><div class="box"><h3 style="color:gold;text-align:center">👤 Account</h3><div id="notLogged" style="text-align:center">
-  <button onclick="loginGoogle()" style="background:white;color:black;border:1px solid #ccc;padding:12px;width:90%;border-radius:25px;font-weight:bold;">🔵 Google ৰে Login</button>
-  <p>— বা —</p>
-  <input id="phoneNum" type="text" placeholder="+91 Mobile Number" style="padding:12px;width:85%;border-radius:20px;border:1px solid #ccc">
- <button onclick="sendOTP()" style="background:#2e7d32;color:white;padding:12px;width:90%;border-radius:25px;margin-top:10px">📱 OTP পঠিয়াওক</button>
-<div id="otpBox" style="display:none">
-<div id="otpDisplay" style="background:yellow;color:black;padding:12px;text-align:center;font-size:22px;font-weight:bold;letter-spacing:5px;border-radius:10px;margin:10px 0;border:2px dashed red"></div>
-<input id="otpCode" placeholder="OTP Code" style="text-align:center;letter-spacing:5px;font-size:18px">
-<button onclick="verifyOTP()" style="background:gold;color:black;padding:12px;width:90%;border-radius:25px;font-weight:bold;margin-top:8px">✅ Verify</button>
-<p id="otpMsg" style="margin-top:8px;font-size:13px"></p>
-</div>
-</div></div><div id="logged" style="display:none;text-align:center"><img id="mImg" style="width:60px;height:60px;border-radius:50%;border:3px solid gold;margin:8px"><h4 id="mName"></h4><p id="mEmail" style="color:#aaa;font-size:11px"></p><button class="btn" style="background:#222;color:#fff;margin-top:10px;width:100%" onclick="logout()">Logout</button></div><button class="btn" style="background:transparent;color:#888;margin-top:8px;width:100%" onclick="closeAuth()">Close</button></div></div>
-<div id="msgModal"><div class="box"><h3 style="color:gold;text-align:center">💬 Message Inbox</h3><div id="chatList" class="chatList"><p style="color:#888;text-align:center;padding:20px">কোনো Message নাই</p></div><button class="btn" style="background:#222;color:#fff;width:100%;margin-top:10px" onclick="closeMsgInbox()">Close</button></div></div>
-<div id="chatModal"><div class="box"><h4 style="color:gold">💬 <span id="chatWith">Chat</span></h4><div id="chatMessages"></div><div style="display:flex;gap:6px"><input id="chatInput" placeholder="Message লিখা..." style="flex:1"><button class="btn g" style="width:70px;margin:0" onclick="sendMessage()">Send</button></div><button class="btn" style="background:transparent;color:#888;width:100%;margin-top:8px" onclick="closeChat()">Back</button></div></div>
+body{background:#0a0f1e;color:#fff;font-family:system-ui;margin:0}
+.header{background:#111b2f;padding:12px 20px;border-bottom:2px solid #f59e0b;display:flex;justify-content:space-between}
+.btn-main{background:linear-gradient(90deg,#f59e0b,#fb923c);color:#000;padding:12px;border:none;border-radius:12px;font-weight:800;cursor:pointer;width:100%}
+.btn-tab{background:transparent;border:2px solid #f59e0b55;color:#f59e0b;padding:12px;border-radius:12px;font-weight:700;cursor:pointer;flex:1}
+.card{background:#151d30;border:2px solid #f59e0b55;border-radius:16px;padding:16px;margin:12px auto;max-width:600px}
+input,select,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid #f59e0b55;background:#0a0f1e;color:#fff;margin:6px 0}
+#otpBox{display:none;background:#000;border:2px dashed #f59e0b;padding:12px;border-radius:12px}
+#otpDisplay{font-size:34px;color:#f59e0b;font-weight:900;letter-spacing:6px;text-align:center}
+.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000c;z-index:99;align-items:center;justify-content:center}
+.modal.show{display:flex}
+.modal-box{background:#151d30;border:2px solid #f59e0b;padding:20px;border-radius:16px;width:90%;max-width:400px}
+.tabs{display:flex;gap:8px;justify-content:center;margin:12px auto;max-width:600px}
+</style></head><body>
+<div class="header"><div style="color:#f59e0b;font-weight:900">👥 সোণৰ অসম</div><button onclick="openAuth()" style="background:#000;border:1px solid #f59e0b;color:#fff;padding:6px 12px;border-radius:20px">👤</button></div>
+<div class="tabs"><button class="btn-tab" onclick="location.reload()">0 Post</button><button class="btn-tab" onclick="alert('Dist: '+distSelect.value)">ওচৰৰ জিলা</button><button class="btn-tab" onclick="openAuth()">Login</button></div>
+<div class="card" style="text-align:center"><div id="beforeLogin"><p>Post + Message কৰিবলৈ Login কৰা</p><button class="btn-main" onclick="openAuth()">🔐 Login</button></div><div id="afterLogin" style="display:none"><textarea id="postText" placeholder="আজি কি ভাবিছা?" rows="3"></textarea><button class="btn-main" onclick="doPost()">📤 Post কৰা</button><button onclick="logout()" style="margin-top:10px;background:none;border:1px solid #555;color:#fff;padding:8px;border-radius:8px;width:100%">Logout</button></div></div>
+<div style="display:flex;gap:8px;max-width:600px;margin:0 auto;padding:0 12px"><select id="distSelect"><option>Barpeta</option><option>Guwahati</option><option>All Assam</option></select><input placeholder="Search..."></div>
+<div id="posts" class="card"><p style="text-align:center;color:#888">প'ষ্ট ইয়াত দেখা যাব ❤️<br>আপোনাৰ ভাষা, আপোনাৰ মাটি</p></div>
+<div id="loginModal" class="modal" onclick="if(event.target==this)closeAuth()"><div class="modal-box"><div style="display:flex;justify-content:space-between"><h3>Login</h3><button onclick="closeAuth()" style="background:none;border:none;color:#fff;font-size:20px">✕</button></div>
+<div id="notLogged"><input id="phoneNum" placeholder="Mobile - 9854XXXXXX"><button class="btn-main" onclick="sendOTP()">OTP পঠিয়াওক (FREE)</button>
+<div id="otpBox"><p style="color:#f59e0b;text-align:center">তোমাৰ OTP:</p><div id="otpDisplay">------</div><input id="otpCode" placeholder="6 টা OTP"><button class="btn-main" onclick="verifyOTP()">Verify</button><div id="otpMsg" style="text-align:center;margin-top:8px"></div></div></div>
+<div id="logged" style="display:none;text-align:center"><img id="mImg" width="70" style="border-radius:50%"><h3 id="mName"></h3><button class="btn-main" onclick="closeAuth()">Continue</button></div>
+</div></div>
 <script>
-let freeGeneratedOTP="", freePhoneNumber="";
-function sendOTP(){
-  let phone=document.getElementById('phoneNum').value.trim();
-  if(!phone || phone.length<10){ alert('Number দিয়া'); return; }
-  if(!phone.startsWith('+')){ if(phone.length==10) phone='+91'+phone; }
-  freeGeneratedOTP=Math.floor(100000+Math.random()*900000).toString();
-  freePhoneNumber=phone;
-  document.getElementById('otpBox').style.display='block';
-  document.getElementById('otpDisplay').innerText=freeGeneratedOTP;
-  document.getElementById('otpMsg').innerHTML='✅ OTP: '+freeGeneratedOTP;
-}
-function verifyOTP(){
-  let code=document.getElementById('otpCode').value.trim();
-  if(code===freeGeneratedOTP){
-    let phoneUser={uid:'phone_'+freePhoneNumber,displayName:freePhoneNumber,email:freePhoneNumber+'@sonor.local',photoURL:'https://via.placeholder.com/100/FFD700/000000?text=PH',phone:freePhoneNumber};
-    localStorage.setItem('sonor_user_phone',JSON.stringify(phoneUser));
-    localStorage.setItem('sonor_user',freePhoneNumber);
-    location.reload();
-  }else{
-    document.getElementById('otpMsg').innerHTML='❌ ভুল! সঠিক: '+freeGeneratedOTP;
-  }
-}
-const firebaseConfig = {apiKey: "AIzaSyDuJdr6IRg6U7FgQDIcZEG7IOMkinGxitI",authDomain: "sonor-assam.firebaseapp.com",projectId: "sonor-assam",storageBucket: "sonor-assam.firebasestorage.app",messagingSenderId: "353015301976",appId: "1:353015301976:web:b7cc25039edb136a8c872d"};
-if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore(); const auth = firebase.auth();
-let currentUser=null, allPosts=[], currentChatId=null, currentChatUser=null;
-function openAuth(){document.getElementById('authModal').style.display='flex'}
-function closeAuth(){document.getElementById('authModal').style.display='none'}
-function openMsgInbox(){if(!currentUser){openAuth();return;}document.getElementById('msgModal').style.display='flex';loadChats();}
-function closeMsgInbox(){document.getElementById('msgModal').style.display='none'}
-function openChat(){document.getElementById('chatModal').style.display='flex'}
-function closeChat(){document.getElementById('chatModal').style.display='none'; currentChatId=null;}
-async function loginGoogle(){ try{ await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); closeAuth(); }catch(e){alert(e.message)} }
-function logout(){
-  try{auth.signOut();}catch(e){}
-  localStorage.removeItem('sonor_user');
-  localStorage.removeItem('sonor_user_phone');
-  currentUser=null;
-  location.reload();
-}
-auth.onAuthStateChanged(user=>{
-  const phoneStr=localStorage.getItem('sonor_user_phone');
-  if(phoneStr && !user){
-    try{
-      const phoneUser=JSON.parse(phoneStr);
-      currentUser=phoneUser;
-      document.getElementById('notLogged').style.display='none';
-      document.getElementById('logged').style.display='block';
-      document.getElementById('postBox').style.display='block';
-      document.getElementById('loginPrompt').style.display='none';
-      document.getElementById('userPic').style.display='block';
-      document.getElementById('accountBtn').style.display='none';
-      document.getElementById('mName').innerText=phoneUser.phone;
-      document.getElementById('mEmail').innerText=phoneUser.phone;
-      document.getElementById('mImg').src=phoneUser.photoURL;
-      document.getElementById('uImg').src=phoneUser.photoURL;
-      document.getElementById('userNameShow').innerText=phoneUser.phone.slice(-4);
-      return;
-    }catch(e){}
-  currentUser=user;
-  if(user){
-   
-    document.getElementById('notLogged').style.display='none'; document.getElementById('logged').style.display='block'; document.getElementById('postBox').style.display='block'; document.getElementById('loginPrompt').style.display='none'; document.getElementById('userPic').style.display='block'; document.getElementById('accountBtn').style.display='none';
-    document.getElementById('mName').innerText=user.displayName; document.getElementById('mEmail').innerText=user.email; document.getElementById('mImg').src=user.photoURL; document.getElementById('uImg').src=user.photoURL; document.getElementById('userNameShow').innerText=user.displayName.split(' ')[0];
-    listenMsgCount();
-  }else{
-    document.getElementById('notLogged').style.display='block'; document.getElementById('logged').style.display='none'; document.getElementById('postBox').style.display='none'; document.getElementById('loginPrompt').style.display='block'; document.getElementById('userPic').style.display='none'; document.getElementById('accountBtn').style.display='block'; document.getElementById('userNameShow').innerText='Login';
-  }
-});
-async function uploadPost(){
-  if(!currentUser){openAuth();return;}
-  const text=document.getElementById('postText').value.trim(); if(!text){alert("Text লিখা");return;}
-  const status=document.getElementById('status'); status.innerText="Posting...";
-  const file=document.getElementById('postImage').files[0]; let imageBase64="";
-  if(file){ if(file.size>800000){alert("Photo 800KB তকৈ সৰু");status.innerText="";return;} imageBase64=await new Promise(res=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.readAsDataURL(file);}); }
-  await db.collection("posts").add({text, image:imageBase64, district:document.getElementById('fDist').value, likes:0, comments:[], uid:currentUser.uid, name:currentUser.displayName, photo:currentUser.photoURL, createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-  status.innerText="Done!"; document.getElementById('postText').value=""; document.getElementById('postImage').value=""; setTimeout(()=>status.innerText="",2000);
-}
-function likePost(id,likes){ const key='liked_'+id; if(localStorage.getItem(key)){alert("Like কৰিছাই");return;} db.collection("posts").doc(id).update({likes:(likes||0)+1}); localStorage.setItem(key,'1'); }
-async function commentPost(id){ if(!currentUser){openAuth();return;} const txt=prompt("Comment:"); if(!txt) return; const ref=db.collection("posts").doc(id); const doc=await ref.get(); const cmts=doc.data().comments||[]; cmts.push({name:currentUser.displayName,text:txt,time:new Date().toLocaleString('en-IN')}); await ref.update({comments:cmts}); }
-function sharePost(text){ const url=location.href; if(navigator.share){navigator.share({title:'সোণৰ অসম',text,url})} else{navigator.clipboard.writeText(text+"\n"+url);alert("Copy হ'ল!")} }
-function messageUser(uid,name){
-  if(!currentUser){openAuth();return;}
-  if(uid===currentUser.uid){alert("নিজকে Message নহব Boss!");return;}
-  currentChatUser={uid,name};
-  currentChatId=[currentUser.uid,uid].sort().join('_');
-  document.getElementById('chatWith').innerText=name;
-  openChat();
-  loadMessages();
-}
-async function sendMessage(){
-  const input=document.getElementById('chatInput'); const text=input.value.trim(); if(!text ||!currentChatId) return;
-  await db.collection("chats").doc(currentChatId).set({users:[currentUser.uid,currentChatUser.uid], names:[currentUser.displayName,currentChatUser.name], lastMsg:text, lastTime:firebase.firestore.FieldValue.serverTimestamp()}, {merge:true});
-  await db.collection("chats").doc(currentChatId).collection("messages").add({text, sender:currentUser.uid, senderName:currentUser.displayName, time:firebase.firestore.FieldValue.serverTimestamp()});
-  input.value="";
-}
-function loadMessages(){
-  db.collection("chats").doc(currentChatId).collection("messages").orderBy("time","asc").onSnapshot(snap=>{
-    const box=document.getElementById('chatMessages'); box.innerHTML="";
-    snap.forEach(d=>{ const m=d.data(); const isMe=m.sender===currentUser.uid; box.innerHTML+=`<div style="display:flex"><div class="msgBubble ${isMe?'me':'other'}">${m.text}</div></div>`; });
-    box.scrollTop=box.scrollHeight;
-  });
-}
-function loadChats(){
-  db.collection("chats").where("users","array-contains",currentUser.uid).orderBy("lastTime","desc").onSnapshot(snap=>{
-    const list=document.getElementById('chatList'); if(snap.empty){list.innerHTML='<p style="color:#888;text-align:center;padding:20px">কোনো Message নাই - Post ত Message Button ত Click কৰা</p>';return;}
-    list.innerHTML="";
-    snap.forEach(d=>{ const c=d.data(); const otherName=c.names[0]===currentUser.displayName?c.names[1]:c.names[0]; const otherUid=c.users[0]===currentUser.uid?c.users[1]:c.users[0];
-      list.innerHTML+=`<div class="chatItem" onclick="messageUser('${otherUid}','${otherName}');closeMsgInbox()"><div><b>${otherName}</b><br><small style="color:#aaa">${c.lastMsg||''}</small></div><span>➡️</span></div>`;
-    });
-  });
-}
-function listenMsgCount(){
-  db.collection("chats").where("users","array-contains",currentUser.uid).onSnapshot(snap=>{ document.getElementById('msgCount').innerText=snap.size; });
-}
-db.collection("posts").orderBy("createdAt","desc").limit(100).onSnapshot(snap=>{ allPosts=[]; snap.forEach(d=>allPosts.push({id:d.id,...d.data()})); document.getElementById('pcnt').innerText=snap.size; renderFeed(); });
-function renderFeed(){
-  const feed=document.getElementById('feed'), filterD=document.getElementById('filterDistrict').value, search=document.getElementById('searchBox').value.toLowerCase(); feed.innerHTML="";
-  let filtered=allPosts.filter(p=>{ if(filterD && p.district!==filterD) return false; if(search &&!p.text.toLowerCase().includes(search)) return false; return true; });
-  if(filtered.length===0){feed.innerHTML='<div class="card" style="text-align:center;color:#888">কোনো Post নাই</div>';return;}
-  filtered.forEach(data=>{
-    const time=data.createdAt?data.createdAt.toDate().toLocaleString('en-IN'):'Just now'; const liked=localStorage.getItem('liked_'+data.id)?'liked':'';
-    const commentsHtml=(data.comments||[]).map(c=>`<div class="cmt"><b>${c.name}:</b> ${c.text}</div>`).join('');
-    feed.innerHTML+=`<div class="card"><div style="display:flex;align-items:center;gap:8px"><img src="${data.photo||''}" style="width:28px;height:28px;border-radius:50%;background:#333" onerror="this.style.display='none'"><div><small style="color:gold">📍 ${data.district||'Assam'} • ${time}</small><br><small style="color:#fff;font-weight:700">${data.name||'User'}</small></div></div><p style="margin:10px 0;white-space:pre-wrap">${data.text}</p>${data.image?`<img class="post-img" src="${data.image}">`:''}<div class="act"><button class="${liked}" onclick="likePost('${data.id}',${data.likes||0})">❤️ ${data.likes||0}</button><button onclick="commentPost('${data.id}')">💬 ${(data.comments||[]).length}</button><button onclick="messageUser('${data.uid}','${(data.name||'User').replace(/'/g,'')}')">💬 Message</button><button onclick="sharePost(\`${(data.text||'').replace(/`/g,'').substring(0,60)}\`)">↗️ Share</button></div>${commentsHtml}</div>`;
-  });
-}
-document.getElementById('filterDistrict').addEventListener('change',renderFeed);
-document.getElementById('searchBox').addEventListener('input',renderFeed);
-</script>
-
-<p style="color:gold;font-size:10px;text-align:center;margin-top:20px">অসমৰ হৃদয়ৰ পৰা, অসমৰ বাবে ❤️</p>
-
-<button id="topBtn" onclick="window.scrollTo({top:0, behavior:'smooth'})" style="position:fixed;bottom:20px;right:20px;background:gold;color:black;border:none;width:45px;height:45px;border-radius:50%;font-size:22px;font-weight:bold;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.3);z-index:9999;display:none;">↑</button>
-
-<script>
-window.onscroll = function(){
-  let btn = document.getElementById('topBtn');
-  if(document.body.scrollTop > 300 || document.documentElement.scrollTop > 300){
-    btn.style.display = 'block';
-  } else {
-    btn.style.display = 'none';
-  }
-}
-</script>
-
-</body></html>
-
-</body></html>
+let freeOTP="",freePhone="";
+function openAuth(){document.getElementById('loginModal').classList.add('show')}
+function closeAuth(){document.getElementById('loginModal').classList.remove('show')}
+function sendOTP(){let p=document.getElementById('phoneNum').value.trim();if(p.length<10){alert('Number দিয়া');return}if(!p.startsWith('+')){if(p.length==10)p='+91'+p}freeOTP=Math.floor(100000+Math.random()*900000).toString();freePhone=p;localStorage.setItem('sonor_otp_'+p,freeOTP);document.getElementById('otpBox').style.display='block';document.getElementById('otpDisplay').innerText=freeOTP;document.getElementById('otpMsg').innerHTML='<span style="color:#22c55e">✅ OTP: '+freeOTP+'</span>'}
+function verifyOTP(){let c=document.getElementById('otpCode').value.trim();if(c!==freeOTP){document.getElementById('otpMsg').innerHTML='<span style="color:red">❌ ভুল! সঠিক: '+freeOTP+'</span>';return}let u={phone:freePhone,displayName:freePhone,photoURL:'https://ui-avatars.com/api/?name='+freePhone+'&background=f59e0b&color=000'};localStorage.setItem('sonor_user_phone',JSON.stringify(u));localStorage.setItem('sonor_user',freePhone);document.getElementById('otpMsg').innerHTML='✅ Success!';setTimeout(()=>location.reload(),800)}
+function logout(){localStorage.clear();location.reload()}
+function checkLogin(){let s=localStorage.getItem('sonor_user_phone');if(s){let u=JSON.parse(s);document.getElementById('beforeLogin').style.display='none';document.getElementById('afterLogin').style.display='block';document.getElementById('notLogged').style.display='none';document.getElementById('logged').style.display='block';document.getElementById('mName').innerText=u.phone;document.getElementById('mImg').src=u.photoURL;}}
+function doPost(){let t=document.getElementById('postText').value;if(!t){alert('লিখা');return}let p=document.getElementById('posts');let d=document.createElement('div');d.className='card';d.innerHTML='<b>👤 '+(localStorage.getItem('sonor_user')||'User')+'</b><p>'+t+'</p><small>'+new Date().toLocaleString()+'</small>';p.prepend(d);document.getElementById('postText').value='';alert('Post হৈছে!')}
+checkLogin();
+</script></body></html>
