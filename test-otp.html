@@ -4,7 +4,7 @@
 <div id="recaptcha-container"></div>
 <input id="phone" placeholder="+919101XXXXXX" value="+91">
 <button onclick="send()">OTP পঠিয়াওক</button><br><br>
-<input id="code" placeholder="OTP">
+<input id="code" placeholder="OTP Code">
 <button onclick="verify()">Verify</button>
 <p id="msg"></p>
 
@@ -12,9 +12,13 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "তোমাৰ apiKey ইয়াত দিয়া",
-  authDomain: "তোমাৰ authDomain",
-  projectId: "তোমাৰ projectId",
+  apiKey: "AIzaSyDuJdr6IRg6U7FgQDIcZEG7IOMkInGxitI",
+  authDomain: "sonor-assam.firebaseapp.com",
+  projectId: "sonor-assam",
+  storageBucket: "sonor-assam.firebasestorage.app",
+  messagingSenderId: "353015301976",
+  appId: "1:353015301976:web:b7cc25039edb136a8c872d",
+  measurementId: "G-8470402SDD"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -25,12 +29,12 @@ function send(){
   let p = document.getElementById('phone').value;
   auth.signInWithPhoneNumber(p, window.recaptchaVerifier).then(r=>{
     window.confirmResult = r;
-    document.getElementById('msg').innerText="OTP গ'ল! ✅";
+    document.getElementById('msg').innerText="OTP গ'ল! ✅ Phone চোৱা";
   }).catch(e=>{ document.getElementById('msg').innerText="Error: "+e.message; console.log(e); });
 }
 function verify(){
   let c = document.getElementById('code').value;
-  window.confirmResult.confirm(c).then(()=>{ document.getElementById('msg').innerText="Login OK! 🎉"; }).catch(e=>{ document.getElementById('msg').innerText=e.message; });
+  window.confirmResult.confirm(c).then(()=>{ document.getElementById('msg').innerText="Login OK! 🎉 Hoise!"; }).catch(e=>{ document.getElementById('msg').innerText=e.message; });
 }
 </script>
 </body></html>
