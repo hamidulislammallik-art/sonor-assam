@@ -1,41 +1,52 @@
 <!DOCTYPE html>
-<html><body>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OTP Test - Free</title>
+<style>
+body{font-family:Arial;max-width:400px;margin:30px auto;padding:20px;background:#fff}
+input,button{padding:12px;margin:8px 0;width:100%;font-size:16px;box-sizing:border-box}
+button{background:#ff6600;color:#fff;border:none;border-radius:6px}
+.otp-display{background:yellow;padding:15px;font-size:28px;text-align:center;margin:15px 0;border:2px dashed red;letter-spacing:6px;font-weight:bold}
+.error{color:red;font-weight:bold}.success{color:green;font-weight:bold}
+</style>
+</head>
+<body>
 <h2>OTP Test - Sonor Assam</h2>
-<div id="recaptcha-container"></div>
-<input id="phone" placeholder="+919854401319" value="+919854401319" style="width:200px;padding:5px;">
-<button onclick="send()">OTP পঠিয়াওক</button><br><br>
-<input id="code" placeholder="OTP Code" style="padding:5px;">
-<button onclick="verify()">Verify</button>
-<p id="msg" style="color:red;font-weight:bold;"></p>
-
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<p style="color:green">FREE System - No Billing / No Card</p>
+<input type="text" id="phone" value="+919854401319">
+<button onclick="sendOTP()">OTP পঠিয়াওক</button>
+<div id="otpBox" style="display:none">
+<div class="otp-display" id="otpShow"></div>
+<p style="font-size:13px">Test ৰ বাবে OTP ওপৰত দেখাইছে। Live ত Free SMS লগাম।</p>
+<input type="text" id="otpInput" placeholder="OTP Code">
+<button onclick="verifyOTP()">Verify</button>
+</div>
+<div id="msg"></div>
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyDuJdr6IRg6U7FgQDIcZEG7IOMkinGxitI",
-  authDomain: "sonor-assam.firebaseapp.com",
-  projectId: "sonor-assam",
-  storageBucket: "sonor-assam.firebasestorage.app",
-  messagingSenderId: "353015301976",
-  appId: "1:353015301976:web:b7cc25039edb136a8c872d",
-  measurementId: "G-84Z9492SRD"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {size: 'invisible'});
-recaptchaVerifier.render();
-
-function send(){
-  let p = document.getElementById('phone').value;
-  document.getElementById('msg').innerText="OTP পঠোৱা হৈছে...";
-  auth.signInWithPhoneNumber(p, window.recaptchaVerifier).then(r=>{
-    window.confirmResult = r;
-    document.getElementById('msg').innerText="OTP গ'ল! ✅ Phone চোৱা: "+p;
-  }).catch(e=>{ document.getElementById('msg').innerText="Error: "+e.message; console.log(e); });
+let generatedOTP="", phoneNumber="";
+function sendOTP(){
+  const phone=document.getElementById('phone').value.trim();
+  if(!phone){document.getElementById('msg').innerHTML='<p class=error>Number দিয়া</p>';return;}
+  generatedOTP=Math.floor(100000+Math.random()*900000).toString();
+  phoneNumber=phone;
+  document.getElementById('otpBox').style.display='block';
+  document.getElementById('otpShow').innerText=generatedOTP;
+  document.getElementById('msg').innerHTML='<p class=success>OTP Generated! OTP টো হলুদীয়া Box ত আছে</p>';
+  localStorage.setItem('sonor_otp_'+phone,generatedOTP);
+  localStorage.setItem('sonor_user_phone',phone);
 }
-function verify(){
-  let c = document.getElementById('code').value;
-  window.confirmResult.confirm(c).then(()=>{ document.getElementById('msg').innerText="Login OK! 🎉 Hoise!"; }).catch(e=>{ document.getElementById('msg').innerText=e.message; });
+function verifyOTP(){
+  const input=document.getElementById('otpInput').value.trim();
+  if(input===generatedOTP){
+    document.getElementById('msg').innerHTML='<p class=success>✅ Verified! '+phoneNumber+' Login Success!</p>';
+    localStorage.setItem('sonor_user',phoneNumber);
+    setTimeout(()=>{window.location.href='index.html';},1000);
+  }else{
+    document.getElementById('msg').innerHTML='<p class=error>❌ ভুল OTP! সঠিক: '+generatedOTP+'</p>';
+  }
 }
 </script>
-</body></html>
+</body>
+</html>
