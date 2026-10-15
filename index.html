@@ -45,16 +45,39 @@ textarea,select,input{width:100%;padding:12px;border-radius:12px;border:1px soli
   <button onclick="loginGoogle()" style="background:white;color:black;border:1px solid #ccc;padding:12px;width:90%;border-radius:25px;font-weight:bold;">🔵 Google ৰে Login</button>
   <p>— বা —</p>
   <input id="phoneNum" type="text" placeholder="+91 Mobile Number" style="padding:12px;width:85%;border-radius:20px;border:1px solid #ccc">
-  <div id="recaptcha-container" style="margin:10px"></div>
-  <button onclick="sendOTP()" style="background:#2e7d32;color:white;padding:12px;width:90%;border-radius:25px;">📱 OTP পঠিয়াওক</button>
-  <div id="otpBox" style="display:none">
-    <input id="otpCode" placeholder="OTP">
-    <button onclick="verifyOTP()">Verify</button>
-  </div>
+ <button onclick="sendOTP()" style="background:#2e7d32;color:white;padding:12px;width:90%;border-radius:25px;margin-top:10px">📱 OTP পঠিয়াওক</button>
+<div id="otpBox" style="display:none">
+<div id="otpDisplay" style="background:yellow;color:black;padding:12px;text-align:center;font-size:22px;font-weight:bold;letter-spacing:5px;border-radius:10px;margin:10px 0;border:2px dashed red"></div>
+<input id="otpCode" placeholder="OTP Code" style="text-align:center;letter-spacing:5px;font-size:18px">
+<button onclick="verifyOTP()" style="background:gold;color:black;padding:12px;width:90%;border-radius:25px;font-weight:bold;margin-top:8px">✅ Verify</button>
+<p id="otpMsg" style="margin-top:8px;font-size:13px"></p>
+</div>
 </div></div><div id="logged" style="display:none;text-align:center"><img id="mImg" style="width:60px;height:60px;border-radius:50%;border:3px solid gold;margin:8px"><h4 id="mName"></h4><p id="mEmail" style="color:#aaa;font-size:11px"></p><button class="btn" style="background:#222;color:#fff;margin-top:10px;width:100%" onclick="logout()">Logout</button></div><button class="btn" style="background:transparent;color:#888;margin-top:8px;width:100%" onclick="closeAuth()">Close</button></div></div>
 <div id="msgModal"><div class="box"><h3 style="color:gold;text-align:center">💬 Message Inbox</h3><div id="chatList" class="chatList"><p style="color:#888;text-align:center;padding:20px">কোনো Message নাই</p></div><button class="btn" style="background:#222;color:#fff;width:100%;margin-top:10px" onclick="closeMsgInbox()">Close</button></div></div>
 <div id="chatModal"><div class="box"><h4 style="color:gold">💬 <span id="chatWith">Chat</span></h4><div id="chatMessages"></div><div style="display:flex;gap:6px"><input id="chatInput" placeholder="Message লিখা..." style="flex:1"><button class="btn g" style="width:70px;margin:0" onclick="sendMessage()">Send</button></div><button class="btn" style="background:transparent;color:#888;width:100%;margin-top:8px" onclick="closeChat()">Back</button></div></div>
 <script>
+let freeGeneratedOTP="", freePhoneNumber="";
+function sendOTP(){
+  let phone=document.getElementById('phoneNum').value.trim();
+  if(!phone || phone.length<10){ alert('Number দিয়া'); return; }
+  if(!phone.startsWith('+')){ if(phone.length==10) phone='+91'+phone; }
+  freeGeneratedOTP=Math.floor(100000+Math.random()*900000).toString();
+  freePhoneNumber=phone;
+  document.getElementById('otpBox').style.display='block';
+  document.getElementById('otpDisplay').innerText=freeGeneratedOTP;
+  document.getElementById('otpMsg').innerHTML='✅ OTP: '+freeGeneratedOTP;
+}
+function verifyOTP(){
+  let code=document.getElementById('otpCode').value.trim();
+  if(code===freeGeneratedOTP){
+    let phoneUser={uid:'phone_'+freePhoneNumber,displayName:freePhoneNumber,email:freePhoneNumber+'@sonor.local',photoURL:'https://via.placeholder.com/100/FFD700/000000?text=PH',phone:freePhoneNumber};
+    localStorage.setItem('sonor_user_phone',JSON.stringify(phoneUser));
+    localStorage.setItem('sonor_user',freePhoneNumber);
+    location.reload();
+  }else{
+    document.getElementById('otpMsg').innerHTML='❌ ভুল! সঠিক: '+freeGeneratedOTP;
+  }
+}
 const firebaseConfig = {apiKey: "AIzaSyDuJdr6IRg6U7FgQDIcZEG7IOMkinGxitI",authDomain: "sonor-assam.firebaseapp.com",projectId: "sonor-assam",storageBucket: "sonor-assam.firebasestorage.app",messagingSenderId: "353015301976",appId: "1:353015301976:web:b7cc25039edb136a8c872d"};
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore(); const auth = firebase.auth();
@@ -66,10 +89,35 @@ function closeMsgInbox(){document.getElementById('msgModal').style.display='none
 function openChat(){document.getElementById('chatModal').style.display='flex'}
 function closeChat(){document.getElementById('chatModal').style.display='none'; currentChatId=null;}
 async function loginGoogle(){ try{ await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); closeAuth(); }catch(e){alert(e.message)} }
-function logout(){auth.signOut(); closeAuth();}
+function logout(){
+  try{auth.signOut();}catch(e){}
+  localStorage.removeItem('sonor_user');
+  localStorage.removeItem('sonor_user_phone');
+  currentUser=null;
+  location.reload();
+}
 auth.onAuthStateChanged(user=>{
+  const phoneStr=localStorage.getItem('sonor_user_phone');
+  if(phoneStr && !user){
+    try{
+      const phoneUser=JSON.parse(phoneStr);
+      currentUser=phoneUser;
+      document.getElementById('notLogged').style.display='none';
+      document.getElementById('logged').style.display='block';
+      document.getElementById('postBox').style.display='block';
+      document.getElementById('loginPrompt').style.display='none';
+      document.getElementById('userPic').style.display='block';
+      document.getElementById('accountBtn').style.display='none';
+      document.getElementById('mName').innerText=phoneUser.phone;
+      document.getElementById('mEmail').innerText=phoneUser.phone;
+      document.getElementById('mImg').src=phoneUser.photoURL;
+      document.getElementById('uImg').src=phoneUser.photoURL;
+      document.getElementById('userNameShow').innerText=phoneUser.phone.slice(-4);
+      return;
+    }catch(e){}
   currentUser=user;
   if(user){
+   
     document.getElementById('notLogged').style.display='none'; document.getElementById('logged').style.display='block'; document.getElementById('postBox').style.display='block'; document.getElementById('loginPrompt').style.display='none'; document.getElementById('userPic').style.display='block'; document.getElementById('accountBtn').style.display='none';
     document.getElementById('mName').innerText=user.displayName; document.getElementById('mEmail').innerText=user.email; document.getElementById('mImg').src=user.photoURL; document.getElementById('uImg').src=user.photoURL; document.getElementById('userNameShow').innerText=user.displayName.split(' ')[0];
     listenMsgCount();
