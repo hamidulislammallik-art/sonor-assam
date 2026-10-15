@@ -2,23 +2,23 @@
 <html><body>
 <h2>OTP Test - Sonor Assam</h2>
 <div id="recaptcha-container"></div>
-<input id="phone" placeholder="+919101XXXXXX" value="+91">
+<input id="phone" placeholder="+919854401319" value="+919854401319" style="width:200px;padding:5px;">
 <button onclick="send()">OTP পঠিয়াওক</button><br><br>
-<input id="code" placeholder="OTP Code">
+<input id="code" placeholder="OTP Code" style="padding:5px;">
 <button onclick="verify()">Verify</button>
-<p id="msg"></p>
+<p id="msg" style="color:red;font-weight:bold;"></p>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyDuJdr6IRg6U7FgQDIcZEG7IOMkInGxitI",
+  apiKey: "AIzaSyDuJdr6IRg6U7FgQDIcZEG7IOMkinGxitI",
   authDomain: "sonor-assam.firebaseapp.com",
   projectId: "sonor-assam",
   storageBucket: "sonor-assam.firebasestorage.app",
   messagingSenderId: "353015301976",
   appId: "1:353015301976:web:b7cc25039edb136a8c872d",
-  measurementId: "G-8470402SDD"
+  measurementId: "G-84Z9492SRD"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -27,9 +27,10 @@ recaptchaVerifier.render();
 
 function send(){
   let p = document.getElementById('phone').value;
+  document.getElementById('msg').innerText="OTP পঠোৱা হৈছে...";
   auth.signInWithPhoneNumber(p, window.recaptchaVerifier).then(r=>{
     window.confirmResult = r;
-    document.getElementById('msg').innerText="OTP গ'ল! ✅ Phone চোৱা";
+    document.getElementById('msg').innerText="OTP গ'ল! ✅ Phone চোৱা: "+p;
   }).catch(e=>{ document.getElementById('msg').innerText="Error: "+e.message; console.log(e); });
 }
 function verify(){
