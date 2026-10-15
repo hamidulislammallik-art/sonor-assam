@@ -1,39 +1,35 @@
-<!DOCTYPE html>
-<html lang="as"><head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>সোণৰ অসম</title>
-<style>
-body{background:#0a0f1e;color:#fff;font-family:system-ui;margin:0}
-.header{background:#111b2f;padding:12px 20px;border-bottom:2px solid #f59e0b;display:flex;justify-content:space-between}
-.btn-main{background:linear-gradient(90deg,#f59e0b,#fb923c);color:#000;padding:12px;border:none;border-radius:12px;font-weight:800;cursor:pointer;width:100%}
-.btn-tab{background:transparent;border:2px solid #f59e0b55;color:#f59e0b;padding:12px;border-radius:12px;font-weight:700;cursor:pointer;flex:1}
-.card{background:#151d30;border:2px solid #f59e0b55;border-radius:16px;padding:16px;margin:12px auto;max-width:600px}
-input,select,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid #f59e0b55;background:#0a0f1e;color:#fff;margin:6px 0}
-#otpBox{display:none;background:#000;border:2px dashed #f59e0b;padding:12px;border-radius:12px}
-#otpDisplay{font-size:34px;color:#f59e0b;font-weight:900;letter-spacing:6px;text-align:center}
-.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000c;z-index:99;align-items:center;justify-content:center}
-.modal.show{display:flex}
-.modal-box{background:#151d30;border:2px solid #f59e0b;padding:20px;border-radius:16px;width:90%;max-width:400px}
-.tabs{display:flex;gap:8px;justify-content:center;margin:12px auto;max-width:600px}
-</style></head><body>
-<div class="header"><div style="color:#f59e0b;font-weight:900">👥 সোণৰ অসম</div><button onclick="openAuth()" style="background:#000;border:1px solid #f59e0b;color:#fff;padding:6px 12px;border-radius:20px">👤</button></div>
-<div class="tabs"><button class="btn-tab" onclick="location.reload()">0 Post</button><button class="btn-tab" onclick="alert('Dist: '+distSelect.value)">ওচৰৰ জিলা</button><button class="btn-tab" onclick="openAuth()">Login</button></div>
-<div class="card" style="text-align:center"><div id="beforeLogin"><p>Post + Message কৰিবলৈ Login কৰা</p><button class="btn-main" onclick="openAuth()">🔐 Login</button></div><div id="afterLogin" style="display:none"><textarea id="postText" placeholder="আজি কি ভাবিছা?" rows="3"></textarea><button class="btn-main" onclick="doPost()">📤 Post কৰা</button><button onclick="logout()" style="margin-top:10px;background:none;border:1px solid #555;color:#fff;padding:8px;border-radius:8px;width:100%">Logout</button></div></div>
-<div style="display:flex;gap:8px;max-width:600px;margin:0 auto;padding:0 12px"><select id="distSelect"><option>Barpeta</option><option>Guwahati</option><option>All Assam</option></select><input placeholder="Search..."></div>
-<div id="posts" class="card"><p style="text-align:center;color:#888">প'ষ্ট ইয়াত দেখা যাব ❤️<br>আপোনাৰ ভাষা, আপোনাৰ মাটি</p></div>
-<div id="loginModal" class="modal" onclick="if(event.target==this)closeAuth()"><div class="modal-box"><div style="display:flex;justify-content:space-between"><h3>Login</h3><button onclick="closeAuth()" style="background:none;border:none;color:#fff;font-size:20px">✕</button></div>
-<div id="notLogged"><input id="phoneNum" placeholder="Mobile - 9854XXXXXX"><button class="btn-main" onclick="sendOTP()">OTP পঠিয়াওক (FREE)</button>
-<div id="otpBox"><p style="color:#f59e0b;text-align:center">তোমাৰ OTP:</p><div id="otpDisplay">------</div><input id="otpCode" placeholder="6 টা OTP"><button class="btn-main" onclick="verifyOTP()">Verify</button><div id="otpMsg" style="text-align:center;margin-top:8px"></div></div></div>
-<div id="logged" style="display:none;text-align:center"><img id="mImg" width="70" style="border-radius:50%"><h3 id="mName"></h3><button class="btn-main" onclick="closeAuth()">Continue</button></div>
-</div></div>
+<!DOCTYPE html><html lang="as"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>সোণৰ অসম</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui;background:#070d1f;color:#fff;min-height:100vh}
+.header{background:#0f1a33;border-bottom:2px solid #f59e0b;padding:14px 22px;display:flex;justify-content:space-between;align-items:center}
+.logo{display:flex;gap:12px;align-items:center}.logo-icon{width:48px;height:48px;background:#000;border:2px solid #f59e0b;border-radius:12px;display:flex;align-items:center;justify-content:center}
+.logo-title{color:#f59e0b;font-weight:900}.logo-sub{color:#8b9bb4;font-size:11px}
+.container{max-width:680px;margin:0 auto;padding:14px}.tabs{display:flex;gap:10px;margin:14px 0}.tab{flex:1;background:#111c36;border:2px solid #f59e0b33;color:#f59e0b;padding:14px;border-radius:14px;font-weight:800;cursor:pointer;text-align:center}.tab.active{background:#f59e0b;color:#000}
+.card{background:#141f3d;border:2px solid #f59e0b33;border-radius:18px;padding:18px;margin-bottom:14px}.card-login{border-color:#f59e0b88;text-align:center}
+.btn-main{width:100%;background:linear-gradient(90deg,#f59e0b,#fb923c);color:#000;border:none;padding:14px;border-radius:14px;font-weight:900;cursor:pointer}
+input,select,textarea{width:100%;padding:13px;border-radius:12px;border:1.5px solid #f59e0b33;background:#070d1f;color:#fff;margin:7px 0}
+#otpBox{display:none;background:#000;border:2px dashed #f59e0b;border-radius:14px;padding:14px;margin-top:10px}#otpDisplay{font-size:36px;font-weight:900;color:#f59e0b;letter-spacing:8px;text-align:center;margin:10px 0}
+.modal{display:none;position:fixed;inset:0;background:#000b;z-index:100;align-items:center;justify-content:center;padding:16px}.modal.show{display:flex}.modal-box{background:#141f3d;border:2px solid #f59e0b;width:100%;max-width:420px;border-radius:20px;padding:22px}
+.post-card{background:#0f1a33;border:2px solid #f59e0b22;border-radius:16px;padding:14px;margin-top:12px}.avatar{width:42px;height:42px;border-radius:50%;background:#f59e0b;color:#000;display:flex;align-items:center;justify-content:center;font-weight:900}
+.small{font-size:12px;color:#8b9bb4}</style></head><body>
+<div class="header"><div class="logo"><div class="logo-icon">👥</div><div><div class="logo-title">সোণৰ অসম</div><div class="logo-sub">অসমৰ এপ ❤️</div></div></div><button onclick="openAuth()" style="width:38px;height:38px;background:#000;border:1px solid #f59e0b55;color:#fff;border-radius:50%">👤</button></div>
+<div class="container"><div class="tabs"><button class="tab active">0 Post</button><button class="tab" onclick="filterPosts()">ওচৰৰ জিলা</button><button class="tab" onclick="openAuth()">Login</button></div>
+<div class="card card-login"><div id="beforeLogin"><p>Post + Message কৰিবলৈ Login কৰা</p><button class="btn-main" onclick="openAuth()" style="margin-top:10px">🔐 Login</button></div>
+<div id="afterLogin" style="display:none;text-align:left"><textarea id="postText" rows="3" placeholder="মনৰ কথা লিখা..."></textarea><select id="postDist"><option>Barpeta</option><option>Nalbari</option><option>Guwahati</option><option>Dibrugarh</option><option>Jorhat</option><option>All Assam</option></select><button class="btn-main" style="margin-top:10px" onclick="doPost()">📤 Post কৰা</button><button onclick="logout()" style="width:100%;margin-top:8px;background:none;border:1px solid #555;color:#fff;padding:10px;border-radius:10px">Logout</button></div></div>
+<div style="display:flex;gap:8px"><select id="distSelect" onchange="filterPosts()"><option value="all">All Assam</option><option>Barpeta</option><option>Guwahati</option></select><input id="searchInput" placeholder="Search..." oninput="filterPosts()"></div>
+<div id="postsList"><div class="card" style="text-align:center;color:#8b9bb4">আপোনাৰ প'ষ্ট ইয়াত দেখা যাব ❤️</div></div></div>
+<div id="loginModal" class="modal" onclick="if(event.target==this)closeAuth()"><div class="modal-box"><div style="display:flex;justify-content:space-between"><h3>Login কৰক</h3><button onclick="closeAuth()" style="background:none;border:none;color:#fff;font-size:22px">✕</button></div>
+<div id="notLogged"><label class="small">তোমাৰ নাম *</label><input id="userName" placeholder="যেনে: Hamidul Islam"><label class="small">মোবাইল *</label><input id="phoneNum" placeholder="9854XXXXXX"><button class="btn-main" onclick="sendOTP()">OTP পঠিয়াওক (FREE)</button>
+<div id="otpBox"><p style="text-align:center;color:#f59e0b;font-weight:700">তোমাৰ OTP 👇</p><div id="otpDisplay">------</div><input id="otpCode" placeholder="6 টা OTP"><button class="btn-main" onclick="verifyOTP()">✅ Verify</button><div id="otpMsg" style="text-align:center;margin-top:8px"></div></div></div>
+<div id="logged" style="display:none;text-align:center"><img id="mImg" width="80" style="border-radius:50%;border:3px solid #f59e0b"><h3 id="mName" style="margin-top:10px"></h3><p id="mPhone" class="small"></p><button class="btn-main" style="margin-top:12px" onclick="closeAuth()">Continue →</button></div></div></div>
 <script>
-let freeOTP="",freePhone="";
-function openAuth(){document.getElementById('loginModal').classList.add('show')}
-function closeAuth(){document.getElementById('loginModal').classList.remove('show')}
-function sendOTP(){let p=document.getElementById('phoneNum').value.trim();if(p.length<10){alert('Number দিয়া');return}if(!p.startsWith('+')){if(p.length==10)p='+91'+p}freeOTP=Math.floor(100000+Math.random()*900000).toString();freePhone=p;localStorage.setItem('sonor_otp_'+p,freeOTP);document.getElementById('otpBox').style.display='block';document.getElementById('otpDisplay').innerText=freeOTP;document.getElementById('otpMsg').innerHTML='<span style="color:#22c55e">✅ OTP: '+freeOTP+'</span>'}
-function verifyOTP(){let c=document.getElementById('otpCode').value.trim();if(c!==freeOTP){document.getElementById('otpMsg').innerHTML='<span style="color:red">❌ ভুল! সঠিক: '+freeOTP+'</span>';return}let u={phone:freePhone,displayName:freePhone,photoURL:'https://ui-avatars.com/api/?name='+freePhone+'&background=f59e0b&color=000'};localStorage.setItem('sonor_user_phone',JSON.stringify(u));localStorage.setItem('sonor_user',freePhone);document.getElementById('otpMsg').innerHTML='✅ Success!';setTimeout(()=>location.reload(),800)}
-function logout(){localStorage.clear();location.reload()}
-function checkLogin(){let s=localStorage.getItem('sonor_user_phone');if(s){let u=JSON.parse(s);document.getElementById('beforeLogin').style.display='none';document.getElementById('afterLogin').style.display='block';document.getElementById('notLogged').style.display='none';document.getElementById('logged').style.display='block';document.getElementById('mName').innerText=u.phone;document.getElementById('mImg').src=u.photoURL;}}
-function doPost(){let t=document.getElementById('postText').value;if(!t){alert('লিখা');return}let p=document.getElementById('posts');let d=document.createElement('div');d.className='card';d.innerHTML='<b>👤 '+(localStorage.getItem('sonor_user')||'User')+'</b><p>'+t+'</p><small>'+new Date().toLocaleString()+'</small>';p.prepend(d);document.getElementById('postText').value='';alert('Post হৈছে!')}
-checkLogin();
+let freeOTP="",freePhone="",allPosts=JSON.parse(localStorage.getItem('sonor_posts')||'[]');
+function openAuth(){document.getElementById('loginModal').classList.add('show')}function closeAuth(){document.getElementById('loginModal').classList.remove('show')}
+function sendOTP(){let name=document.getElementById('userName').value.trim();let p=document.getElementById('phoneNum').value.trim();if(name.length<2){alert('নাম লিখা বস!');return}if(p.length<10){alert('Number দিয়া');return}if(!p.startsWith('+')){if(p.length==10)p='+91'+p}freeOTP=Math.floor(100000+Math.random()*900000).toString();freePhone=p;localStorage.setItem('sonor_tmp_name',name);document.getElementById('otpBox').style.display='block';document.getElementById('otpDisplay').innerText=freeOTP;document.getElementById('otpMsg').innerHTML='<span style="color:#22c55e">✅ OTP: '+freeOTP+'</span>'}
+function verifyOTP(){let c=document.getElementById('otpCode').value.trim();if(c!==freeOTP){document.getElementById('otpMsg').innerHTML='<span style="color:red">❌ ভুল! সঠিক: '+freeOTP+'</span>';return}let name=localStorage.getItem('sonor_tmp_name')||'User';let u={phone:freePhone,name:name,photoURL:'https://ui-avatars.com/api/?name='+encodeURIComponent(name)+'&background=f59e0b&color=000'};localStorage.setItem('sonor_user',JSON.stringify(u));document.getElementById('otpMsg').innerHTML='✅ Success!';setTimeout(()=>{checkLogin();closeAuth()},700)}
+function checkLogin(){let s=localStorage.getItem('sonor_user');if(s){let u=JSON.parse(s);document.getElementById('beforeLogin').style.display='none';document.getElementById('afterLogin').style.display='block';document.getElementById('notLogged').style.display='none';document.getElementById('logged').style.display='block';document.getElementById('mName').innerText=u.name;document.getElementById('mPhone').innerText=u.phone;document.getElementById('mImg').src=u.photoURL;return true}return false}
+function logout(){localStorage.removeItem('sonor_user');location.reload()}
+function doPost(){let t=document.getElementById('postText').value.trim();if(!t){alert('লিখা');return}let u=JSON.parse(localStorage.getItem('sonor_user')||'{}');let post={id:Date.now(),text:t,name:u.name||'User',phone:u.phone,dist:document.getElementById('postDist').value,time:new Date().toLocaleString('en-IN')};allPosts.unshift(post);localStorage.setItem('sonor_posts',JSON.stringify(allPosts));document.getElementById('postText').value='';renderPosts()}
+function renderPosts(f='all',s=''){let list=document.getElementById('postsList');let filtered=allPosts;if(f!=='all')filtered=filtered.filter(p=>p.dist===f);if(s)filtered=filtered.filter(p=>p.text.toLowerCase().includes(s.toLowerCase())||p.name.toLowerCase().includes(s.toLowerCase()));if(filtered.length===0){list.innerHTML='<div class="card" style="text-align:center;color:#8b9bb4">কোনো Post নাই</div>';return}list.innerHTML=filtered.map(p=>`<div class="post-card"><div style="display:flex;gap:10px"><div class="avatar">${p.name.charAt(0).toUpperCase()}</div><div><div style="font-weight:800">${p.name}</div><div class="small">${p.dist} • ${p.time}</div></div></div><div style="margin-top:10px">${p.text}</div></div>`).join('')}
+function filterPosts(){let d=document.getElementById('distSelect').value;let s=document.getElementById('searchInput').value;renderPosts(d,s)}
+checkLogin();renderPosts();
 </script></body></html>
