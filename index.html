@@ -1,127 +1,238 @@
 <!DOCTYPE html>
-<html lang="as"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>সোণৰ অসম</title>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<html lang="as">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>সোণৰ অসম - Final Fix</title>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}body{background:#0a0a0a;color:#fff;font-family:system-ui}
-.top{position:sticky;top:0;z-index:50;background:#0f0f0f;border-bottom:3px solid gold;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
-.left{display:flex;align-items:center;gap:10px}.left img{width:48px;height:48px;border-radius:12px;border:2px solid gold}
-.pill{padding:8px 14px;border-radius:20px;border:1px solid gold;background:#222;color:gold;font-weight:800;cursor:pointer;font-size:13px}
-.card{background:#151515;border:1px solid #333;border-radius:16px;padding:16px;margin:10px}
-.stats{display:flex;gap:8px;padding:10px;background:#f5f2eb}.stats div{flex:1;background:#fff;color:#222;border-top:3px solid #ffcc66;border-radius:10px;padding:10px;text-align:center;font-weight:800;font-size:13px}
-.filters{display:flex;gap:8px;padding:10px;background:#f5f2eb}.filters select,.filters input{flex:1;padding:10px;border-radius:20px;border:1px solid #ddd;background:#fff}
-.main{max-width:640px;margin:auto}
-.post-img{width:100%;border-radius:12px;margin-top:10px;max-height:420px;object-fit:cover;border:1px solid #333}
-.act{display:flex;gap:6px;margin-top:12px;border-top:1px solid #2a2a2a;padding-top:10px}
-.act button{flex:1;padding:9px;border-radius:20px;border:1px solid #333;background:#222;color:#ddd;font-size:12px;cursor:pointer;font-weight:600}
-.act button.liked{background:gold;color:#000}
-textarea,select,input{width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;margin:6px 0;font-size:14px}
-.btn{padding:10px 18px;border-radius:24px;border:0;font-weight:800;cursor:pointer}.g{background:linear-gradient(90deg,gold,#FF8C00);color:#000;width:100%;margin-top:8px;font-size:16px}
-.cmt{background:#1f1f1f;border-radius:10px;padding:8px 10px;margin-top:8px;font-size:13px;border:1px solid #2a2a2a}
-#authModal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;z-index:100;align-items:center;justify-content:center;padding:20px}
-.box{background:#151515;border:2px solid gold;border-radius:18px;padding:20px;max-width:380px;width:100%;max-height:90vh;overflow-y:auto}
-#otpBox{display:none;background:#000;border:2px dashed gold;border-radius:12px;padding:12px;margin-top:10px}
-#otpDisplay{font-size:32px;font-weight:900;color:gold;letter-spacing:6px;text-align:center;margin:8px 0;background:#111;border-radius:8px;padding:6px}
-.divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:#666;font-size:12px}.divider:before,.divider:after{content:'';flex:1;height:1px;background:#333}
-</style></head><body>
-<div class="top"><div class="left"><img src="logo.jpg"><div><h1 style="color:gold;font-size:17px">সোণৰ অসম</h1><p style="color:#aaa;font-size:10px">অসমৰ নিজৰ App</p></div></div><div class="right"><button class="pill" id="accountBtn" onclick="openAuth()">👤 Account</button><div id="userPic" style="display:none"><img id="uImg" style="width:36px;height:36px;border-radius:50%;border:2px solid gold"></div></div></div>
-<div class="main"><div class="stats"><div><span id="pcnt">0</span><br>Post</div><div>৩৫ জিলা</div><div id="userNameShow">Login কৰা</div></div>
-<div class="card" id="postBox" style="display:none"><h4 style="color:gold">✍️ নতুন খবৰ দিয়ক</h4><select id="fDist"><option>Barpeta</option><option>Nalbari</option><option>Guwahati</option><option>Bongaigaon</option><option>Dhubri</option><option>Goalpara</option><option>Other</option></select><textarea id="postText" rows="3" placeholder="আজি কি হৈছে? লিখক..."></textarea><input type="file" id="postImage" accept="image/*"><button class="btn g" onclick="uploadPost()">📢 Post কৰক</button><p id="status" style="text-align:center;color:gold;font-weight:700;margin:8px 0"></p></div>
-<div class="card" id="loginPrompt"><p style="text-align:center">Post কৰিবলৈ 👤 Account ত Login কৰা Bos!</p><button class="btn g" onclick="openAuth()">🔐 Login কৰক</button></div>
-<div class="tag">• অসমৰ নিজৰ App</div>
-<div class="mission">📍 ৩৫ খন জিলা • একেলগে • আমাৰ ভাষা, আমাৰ গৌৰৱ</div>
-<div id="authModal"><div class="box"><h3 style="color:gold;text-align:center">👤 Account Login</h3>
-<div id="notLogged">
-<button class="btn g" onclick="loginGoogle()">🔐 Google ৰে Login</button>
-<div class="divider">বা</div>
-<p style="color:gold;font-weight:700;font-size:14px;margin-bottom:6px">📱 নাম + মোবাইলেৰে Login </p>
-<input id="freeName" placeholder="তোমাৰ নাম  Boss ">
-<input id="freePhone" placeholder="মোবাইল * 9854XXXXXX">
-<button class="btn" style="background:#222;color:gold;border:1px solid gold;width:100%;margin-top:6px" onclick="sendFreeOTP()">📲 OTP পঠিয়াওক (FREE)</button>
-<div id="otpBox">
-<p style="text-align:center;color:gold;font-weight:700;font-size:13px">তোমাৰ OTP 👇</p>
-<div id="otpDisplay">------</div>
-<input id="freeOTPInput" placeholder="6 টা OTP লিখা">
-<button class="btn g" onclick="verifyFreeOTP()">✅ Verify কৰা</button>
-<div id="otpMsg" style="text-align:center;margin-top:8px;font-weight:700;font-size:13px"></div>
-<p style="text-align:center;color:#888;font-size:10px;margin-top:6px">* FREE System - কোনো টকা নালাগে</p>
+body{margin:0;background:#0f0f0f;color:#fff;font-family:system-ui;padding-bottom:140px}
+.header{padding:10px 14px;background:#0a0a0a;border-bottom:3px solid gold;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.logo-box{width:42px;height:42px;background:linear-gradient(135deg,gold,#ff8c00);border-radius:12px;border:2px solid gold;display:flex;align-items:center;justify-content:center;font-weight:900;color:#000}
+.profile-pic{width:38px;height:38px;border-radius:50%;border:2px solid gold;object-fit:cover;cursor:pointer;background:#222;display:flex;align-items:center;justify-content:center;font-weight:900;color:gold}
+.card{background:#1a1a1a;border:1px solid #333;border-radius:16px;padding:12px;margin:10px}
+.btn-action{padding:6px 12px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:700;border:1px solid #444;background:#222;color:#fff}
+#profilePage{position:fixed;top:0;left:0;width:100%;height:100%;background:#0f0f0f;z-index:2000;display:none;overflow-y:auto}
+.profileHeader{padding:20px;background:linear-gradient(180deg,#1a1a1a,#0f0f0f);border-bottom:2px solid gold;text-align:center}
+.bigPic{width:110px;height:110px;border-radius:50%;border:4px solid gold;object-fit:cover;margin:auto;background:#222;display:flex;align-items:center;justify-content:center;font-size:40px;color:gold;font-weight:900}
+.statBox{display:flex;justify-content:center;gap:15px;margin-top:15px}
+.statBox div{background:#1a1a1a;border:1px solid #333;border-radius:12px;padding:10px 16px;text-align:center;min-width:65px}
+.statBox b{color:gold;font-size:18px;display:block}
+/* ✅ বাওঁফালে Fix */
+#chatBtn{position:fixed!important;bottom:110px!important;left:18px!important;right:auto!important;width:62px!important;height:62px!important;background:linear-gradient(135deg,gold,#ff8c00)!important;border-radius:50%!important;border:3px solid #000!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:28px!important;cursor:pointer!important;z-index:99999!important;box-shadow:0 5px 20px rgba(255,215,0,0.6)!important}
+#privateBox{position:fixed;bottom:180px;left:12px;right:auto;width:92%;max-width:380px;height:460px;background:#1a1a1a;border:2px solid gold;border-radius:18px;z-index:99998;display:none;flex-direction:column;overflow:hidden}
+.chatHead{background:#000;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;color:gold;font-weight:900;border-bottom:2px solid gold}
+#privateMessages{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;background:#0f0f0f}
+.pmsg{max-width:78%;padding:8px 12px;border-radius:14px;font-size:13px}
+.pmsg.me{align-self:flex-end;background:gold;color:#000;font-weight:600}
+.pmsg.other{align-self:flex-start;background:#222;color:#fff;border:1px solid #333}
+.chatInput{display:flex;gap:6px;padding:10px;background:#151515;border-top:1px solid #333}
+.chatInput input{flex:1;padding:10px 14px;border-radius:20px;border:2px solid gold;background:#fff;color:#000;font-weight:600;outline:none}
+#inboxList{max-height:110px;overflow-y:auto;background:#0f0f0f;padding:6px;border-bottom:1px solid #333}
+.inboxItem{padding:7px 10px;background:#222;margin:3px 0;border-radius:10px;cursor:pointer;font-size:13px;display:flex;justify-content:space-between}
+#scrollTopBtn{position:fixed;bottom:185px;right:20px;width:48px;height:48px;background:#222;border:2px solid gold;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:20px;cursor:pointer;z-index:99997;color:gold}
+#scrollBottomBtn{position:fixed;bottom:110px;right:18px;left:auto;width:48px;height:48px;background:#222;border:2px solid gold;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;z-index:99997;color:gold}
+</style>
+</head>
+<body>
+<div class="header">
+<div style="display:flex;align-items:center;gap:10px"><div class="logo-box">SA</div><h2 style="margin:0;color:gold;font-size:18px">সোণৰ অসম</h2></div>
+<div id="authArea" style="display:flex;align-items:center;gap:8px"></div>
 </div>
+<div id="feed"></div>
+
+<div id="profilePage">
+  <div class="profileHeader">
+    <div style="display:flex;justify-content:space-between;margin-bottom:15px"><button onclick="closeProfile()" style="padding:7px 14px;border-radius:20px;background:#222;color:#fff;border:1px solid #444">← Back</button><button onclick="logout()" style="padding:7px 14px;border-radius:20px;background:#ff2222;color:#fff;border:0">Logout</button></div>
+    <div id="bigPicArea"></div>
+    <h2 id="profName" style="color:gold;margin:12px 0 4px 0"></h2>
+    <p id="profBio" style="color:#aaa;margin:0;font-size:14px"></p>
+    <div class="statBox"><div><b id="myPostCount">0</b><span style="font-size:12px;color:#888">Posts</span></div><div><b id="myLikeCount">0</b><span style="font-size:12px;color:#888">Likes</span></div><div><b id="myCommentCount">0</b><span style="font-size:12px;color:#888">Comments</span></div></div>
+    <div style="margin-top:16px;display:flex;gap:8px;justify-content:center"><button onclick="editProfile()" style="padding:8px 16px;border-radius:20px;background:gold;color:#000;font-weight:900;border:0">✏️ Edit</button><button onclick="uploadProfile()" style="padding:8px 16px;border-radius:20px;background:#222;color:gold;border:1px solid gold">📸 Photo</button></div>
+
+    <!-- ✅ NEW: PREMIUM MEMBERSHIP CARD -->
+    <div style="margin-top:25px;text-align:center">
+      <h3 style="color:gold;margin-bottom:10px">💳 মোৰ Membership Card</h3>
+      <canvas id="memberCanvas" width="1200" height="675" style="display:none"></canvas>
+      <div id="cardPreview" style="background:#000;border:2px solid gold;border-radius:16px;padding:4px"></div>
+      <a id="downloadCard" href="#" download="SonorAxom-Card.png" style="display:inline-block;margin-top:12px;background:linear-gradient(135deg,gold,#ff8c00);color:#000;padding:10px 22px;border-radius:25px;text-decoration:none;font-weight:900">📥 Card Download</a>
+    </div>
+  </div>
+  <div style="padding:10px"><h3 style="color:gold;padding:0 10px">📝 মোৰ Posts</h3><div id="myPosts"></div></div>
 </div>
-<div id="logged" style="display:none;text-align:center"><img id="mImg" style="width:70px;height:70px;border-radius:50%;border:3px solid gold;margin:10px"><h4 id="mName"></h4><p id="mEmail" style="color:#aaa;font-size:12px"></p><button class="btn" style="background:#222;color:#fff;margin-top:12px;width:100%" onclick="logout()">Logout</button></div>
-<button class="btn" style="background:transparent;color:#888;margin-top:10px;width:100%" onclick="closeAuth()">Close</button>
-</div></div>
+
+<div id="chatBtn" onclick="toggleInbox()">💬</div>
+<div id="scrollTopBtn" onclick="scrollToTop()">⬆️</div>
+<div id="scrollBottomBtn" onclick="scrollToBottom()">⬇️</div>
+
+<div id="privateBox">
+  <div class="chatHead"><span id="privateTitle">📩 Private Inbox</span><div><span onclick="backToInbox()" style="cursor:pointer;margin-right:8px;font-size:11px;background:#222;padding:4px 8px;border-radius:10px">Inbox</span><span onclick="toggleInbox()" style="cursor:pointer">✕</span></div></div>
+  <div id="inboxList"></div>
+  <div id="privateMessages"></div>
+  <div class="chatInput"><input id="privateText" placeholder="Private message..." onkeypress="if(event.key==='Enter')sendPrivate()"><button onclick="sendPrivate()" style="width:42px;height:42px;border-radius:50%;background:gold;border:0">➤</button></div>
+</div>
+<input type="file" id="profileFile" accept="image/*" style="display:none">
+
 <script>
-const firebaseConfig = {apiKey: "AIzaSyDuJdr6IRg6U7FgQDIcZEG7IOMkinGxitI",authDomain: "sonor-assam.firebaseapp.com",projectId: "sonor-assam",storageBucket: "sonor-assam.firebasestorage.app",messagingSenderId: "353015301976",appId: "1:353015301976:web:b7cc25039edb136a8c872d"};
+const firebaseConfig = { apiKey:"YOUR_API_KEY", authDomain:"sonor-assam.firebaseapp.com", projectId:"sonor-assam" };
 if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore(); const auth = firebase.auth();
-let currentUser=null, allPosts=[], freeOTPValue="", freePhoneValue="", freeNameValue="";
-function openAuth(){document.getElementById('authModal').style.display='flex'}
-function closeAuth(){document.getElementById('authModal').style.display='none'}
-async function loginGoogle(){ try{ await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); closeAuth(); }catch(e){alert(e.message)} }
-function sendFreeOTP(){
-  const name=document.getElementById('freeName').value.trim();
-  const phone=document.getElementById('freePhone').value.trim();
-  if(name.length<2){alert('নাম লিখা বস!');return}
-  if(phone.length<10){alert('10 টা নম্বৰ দিয়া');return}
-  freeNameValue=name; freePhoneValue=phone.startsWith('+')?phone:'+91'+phone;
-  freeOTPValue=Math.floor(100000+Math.random()*900000).toString();
-  document.getElementById('otpBox').style.display='block';
-  document.getElementById('otpDisplay').innerText=freeOTPValue;
-  document.getElementById('otpMsg').innerHTML='<span style="color:#22c55e">✅ OTP: '+freeOTPValue+' - ওপৰৰ Box ত লিখা</span>';
+const db=firebase.firestore();
+let currentUser=JSON.parse(localStorage.getItem('sonor_user')||'null');
+let profilePic=localStorage.getItem('sonor_profile_pic')||"";
+let userBio=localStorage.getItem('sonor_bio')||"জয় আই অসম!";
+let allPosts=[]; let privateTarget=null; let inboxOpen=false; let privateUnsub=null;
+
+function renderAuth(){
+  const area=document.getElementById('authArea');
+  if(currentUser){
+    const pic=profilePic?`<img src="${profilePic}" class="profile-pic" onclick="openProfilePage()">`:`<div class="profile-pic" onclick="openProfilePage()">${currentUser.name[0]}</div>`;
+    area.innerHTML=`${pic}<span style="font-size:12px;cursor:pointer" onclick="openProfilePage()">${currentUser.name}</span>`;
+  }else{ area.innerHTML=`<button onclick="openAuth()" style="padding:8px 16px;border-radius:20px;background:gold;color:#000;font-weight:900;border:0">🔐 Login</button>`; }
 }
-function verifyFreeOTP(){
-  const input=document.getElementById('freeOTPInput').value.trim();
-  if(input!==freeOTPValue){document.getElementById('otpMsg').innerHTML='<span style="color:#ef4444">❌ ভুল OTP! সঠিক: '+freeOTPValue+'</span>';return}
-  const photoURL='https://ui-avatars.com/api/?name='+encodeURIComponent(freeNameValue)+'&background=gold&color=000&size=200';
-  const customUser={uid:freePhoneValue, displayName:freeNameValue, name:freeNameValue, email:freePhoneValue, phone:freePhoneValue, photoURL:photoURL, isCustom:true};
-  localStorage.setItem('sonor_custom_user', JSON.stringify(customUser));
-  currentUser=customUser; updateUI(customUser);
-  document.getElementById('otpMsg').innerHTML='<span style="color:#22c55e">✅ Success! Welcome '+freeNameValue+'</span>';
-  setTimeout(()=>closeAuth(),800);
+function openAuth(){ let n=prompt("নাম?"); if(!n) return; let p=prompt("মোবাইল?"); if(!p) return; currentUser={name:n.trim(),phone:p.trim()}; localStorage.setItem('sonor_user',JSON.stringify(currentUser)); renderAuth(); renderFeed(); }
+function logout(){ if(!confirm("Logout?")) return; localStorage.removeItem('sonor_user'); currentUser=null; closeProfile(); renderAuth(); renderFeed(); }
+function uploadProfile(){ if(!currentUser){openAuth();return;} document.getElementById('profileFile').click(); }
+document.getElementById('profileFile').addEventListener('change',async e=>{ const f=e.target.files[0]; if(!f) return; const b=await new Promise(r=>{let fr=new FileReader(); fr.onload=ev=>r(ev.target.result); fr.readAsDataURL(f);}); profilePic=b; localStorage.setItem('sonor_profile_pic',b); renderAuth(); openProfilePage(); renderFeed(); });
+
+// ✅ MEMBERSHIP CARD GENERATOR - Dynamic Name!
+function generateMembershipCard(){
+  if(!currentUser) return;
+  const canvas=document.getElementById('memberCanvas');
+  const ctx=canvas.getContext('2d');
+
+  // Black premium background
+  ctx.fillStyle="#0a0a0a";
+  ctx.fillRect(0,0,1200,675);
+  // Gold outer border
+  ctx.strokeStyle="#D4AF37";
+  ctx.lineWidth=3;
+  ctx.strokeRect(18,18,1164,639);
+  // Inner ornate border
+  ctx.strokeStyle="#8a6d1b";
+  ctx.lineWidth=1;
+  ctx.strokeRect(32,32,1136,611);
+
+  // Top emblem
+  ctx.fillStyle="#D4AF37";
+  ctx.font="bold 20px serif";
+  ctx.textAlign="center";
+  ctx.fillText("✦",600,70);
+
+  ctx.font="28px serif";
+  ctx.fillText("Sonor Axom - সোণৰ অসম",600,115);
+  ctx.font="14px sans-serif";
+  ctx.letterSpacing="4px";
+  ctx.fillText("PREMIUM MEMBERSHIP",600,150);
+
+  // Dynamic User Name
+  ctx.fillStyle="#ffdf7a";
+  ctx.font="bold 64px serif";
+  ctx.fillText(currentUser.name,600,310);
+
+  ctx.fillStyle="#D4AF37";
+  ctx.font="24px serif";
+  ctx.fillText("জয় আই অসম! সোণৰ অসমৰ সদস্য",600,365);
+
+  // Bottom Left - Seal EST 2024
+  ctx.beginPath();
+  ctx.arc(145,560,68,0,Math.PI*2);
+  ctx.fillStyle="radial-gradient";
+  ctx.fillStyle="#D4AF37";
+  ctx.fill();
+  ctx.strokeStyle="#8a6d1b";
+  ctx.lineWidth=3;
+  ctx.stroke();
+  ctx.fillStyle="#000";
+  ctx.font="bold 13px sans-serif";
+  ctx.fillText("EST. 2024",145,540);
+  ctx.font="bold 22px serif";
+  ctx.fillText("✦",145,565);
+  ctx.font="bold 11px sans-serif";
+  ctx.fillText("EST. 2024",145,585);
+
+  // Bottom Right - Main Logo
+  ctx.beginPath();
+  ctx.arc(1055,560,68,0,Math.PI*2);
+  ctx.fillStyle="#111";
+  ctx.fill();
+  ctx.strokeStyle="#D4AF37";
+  ctx.lineWidth=4;
+  ctx.stroke();
+  // Inner gold ring
+  ctx.beginPath();
+  ctx.arc(1055,560,58,0,Math.PI*2);
+  ctx.strokeStyle="#D4AF37";
+  ctx.lineWidth=1;
+  ctx.stroke();
+  ctx.fillStyle="#D4AF37";
+  ctx.font="bold 10px sans-serif";
+  ctx.fillText("SONOR AXOM",1055,600);
+  ctx.font="bold 18px sans-serif";
+  ctx.fillText("SA",1055,565);
+
+  // Preview
+  const dataUrl=canvas.toDataURL("image/png");
+  document.getElementById('cardPreview').innerHTML=`<img src="${dataUrl}" style="width:100%;border-radius:12px;display:block">`;
+  const dl=document.getElementById('downloadCard');
+  dl.href=dataUrl;
+  dl.download=currentUser.name+"-SonorAxom-Card.png";
 }
-function updateUI(user){
-  const notLogged=document.getElementById('notLogged'), logged=document.getElementById('logged'), postBox=document.getElementById('postBox'), loginPrompt=document.getElementById('loginPrompt'), accountBtn=document.getElementById('accountBtn'), userPic=document.getElementById('userPic'), userNameShow=document.getElementById('userNameShow');
-  if(user){notLogged.style.display='none'; logged.style.display='block'; postBox.style.display='block'; loginPrompt.style.display='none'; userPic.style.display='block'; accountBtn.style.display='none'; document.getElementById('mName').innerText=user.displayName; document.getElementById('mEmail').innerText=user.email||user.phone; document.getElementById('mImg').src=user.photoURL; document.getElementById('uImg').src=user.photoURL; document.getElementById('uImg').onclick=openAuth; userNameShow.innerText=user.displayName.split(' ')[0];}else{notLogged.style.display='block'; logged.style.display='none'; postBox.style.display='none'; loginPrompt.style.display='block'; userPic.style.display='none'; accountBtn.style.display='block'; userNameShow.innerText='Login কৰা';}
-}
-function logout(){localStorage.removeItem('sonor_custom_user'); if(auth.currentUser){auth.signOut();}else{currentUser=null;updateUI(null);} closeAuth();}
-auth.onAuthStateChanged(user=>{
-  if(user){currentUser=user;updateUI(user);}else{
-    const custom=localStorage.getItem('sonor_custom_user');
-    if(custom){try{currentUser=JSON.parse(custom);updateUI(currentUser);return}catch(e){}}
-    currentUser=null;updateUI(null);
-  }
-});
-async function uploadPost(){
+
+function openProfilePage(){
   if(!currentUser){openAuth();return;}
-  const text=document.getElementById('postText').value.trim(); if(!text){alert("Text লিখা Bos!");return;}
-  const status=document.getElementById('status'); status.innerText="Posting...";
-  const file=document.getElementById('postImage').files[0]; let imageBase64="";
-  if(file){ if(file.size>800000){alert("Photo 800KB তকৈ সৰু দিয়া");status.innerText="";return;} imageBase64=await new Promise(res=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.readAsDataURL(file);}); }
-  try{ await db.collection("posts").add({text:text,image:imageBase64,district:document.getElementById('fDist').value,likes:0,comments:[],uid:currentUser.uid||currentUser.phone,name:currentUser.displayName,photo:currentUser.photoURL,createdAt:firebase.firestore.FieldValue.serverTimestamp()}); status.innerText="Success Bos!";document.getElementById('postText').value="";document.getElementById('postImage').value="";setTimeout(()=>status.innerText="",2000); }catch(e){status.innerText=e.message}
+  document.getElementById('profilePage').style.display='block';
+  document.getElementById('bigPicArea').innerHTML=profilePic?`<img src="${profilePic}" class="bigPic">`:`<div class="bigPic">${currentUser.name[0]}</div>`;
+  document.getElementById('profName').innerText=currentUser.name;
+  document.getElementById('profBio').innerText=userBio;
+  const myPosts=allPosts.filter(p=>p.userName===currentUser.name);
+  document.getElementById('myPostCount').innerText=myPosts.length;
+  document.getElementById('myLikeCount').innerText=myPosts.reduce((s,p)=>s+(p.likes||0),0);
+  document.getElementById('myCommentCount').innerText=myPosts.reduce((s,p)=>s+(p.comments?.length||0),0);
+  document.getElementById('myPosts').innerHTML=myPosts.length?myPosts.map(d=>`<div class="card"><p>${d.text}</p>${d.image?`<img src="${d.image}" style="width:100%;border-radius:12px">`:''}<div style="margin-top:8px;display:flex;gap:6px"><span style="background:#222;padding:4px 10px;border-radius:12px;font-size:12px">👍 ${d.likes||0}</span><button onclick="deletePost('${d.id}','${d.userName}')" style="margin-left:auto;padding:5px 12px;border-radius:20px;background:#ff2222;color:#fff;border:0">🗑️ Delete</button></div></div>`).join(''):'<div class="card" style="text-align:center;color:#888">Post নাই</div>';
+  // ✅ Card Generate
+  setTimeout(generateMembershipCard,100);
 }
-function likePost(id,likes){ const key='liked_'+id; if(localStorage.getItem(key)){alert("Like কৰিছাই Bos!");return;} db.collection("posts").doc(id).update({likes:(likes||0)+1}); localStorage.setItem(key,'1'); }
-async function commentPost(id){ if(!currentUser){openAuth();return;} const txt=prompt("Comment লিখা Bos:"); if(!txt) return; const postRef=db.collection("posts").doc(id); const doc=await postRef.get(); const data=doc.data(); const cmts=data.comments||[]; cmts.push({name:currentUser.displayName,text:txt,time:new Date().toLocaleString('en-IN')}); await postRef.update({comments:cmts}); }
-function sharePost(id,text){ const url=location.href; if(navigator.share){navigator.share({title:'সোণৰ অসম',text:text,url:url})} else{navigator.clipboard.writeText(text+"\n"+url);alert("Link Copy হ'ল Bos!")} }
-db.collection("posts").orderBy("createdAt","desc").limit(100).onSnapshot(snap=>{ allPosts=[]; snap.forEach(d=>allPosts.push({id:d.id,...d.data()})); document.getElementById('pcnt').innerText=snap.size; renderFeed(); });
+function closeProfile(){ document.getElementById('profilePage').style.display='none'; }
+function editProfile(){ let n=prompt("নাম:",currentUser.name); if(n&&n.trim()){currentUser.name=n.trim(); localStorage.setItem('sonor_user',JSON.stringify(currentUser));} let b=prompt("Bio:",userBio); if(b!==null){userBio=b; localStorage.setItem('sonor_bio',b);} renderAuth(); openProfilePage(); renderFeed(); }
+
+function deletePost(id, ownerName){
+  if(!currentUser){openAuth();return;}
+  if(ownerName!== currentUser.name){
+    alert("⛔ তুমি আনৰ Post Delete কৰিব নোৱাৰা Bos!\nকেৱল নিজৰটোহে পাৰিবা!");
+    return;
+  }
+  if(confirm("তোমাৰ Post টো Delete কৰিবা নে? 🗑️")){
+    db.collection("posts").doc(id).delete().then(()=>alert("Delete হ'ল ✅"));
+  }
+}
+function likePost(id,l){ if(!currentUser){openAuth();return;} const k='liked_'+id; if(localStorage.getItem(k)){alert("Like কৰিছাই");return;} db.collection("posts").doc(id).update({likes:(l||0)+1}); localStorage.setItem(k,'1'); }
+async function commentPost(id){ if(!currentUser){openAuth();return;} const t=prompt("Comment:"); if(!t) return; const s=await db.collection("posts").doc(id).get(); let c=s.data().comments||[]; c.push({text:t,user:currentUser.name}); await db.collection("posts").doc(id).update({comments:c}); }
+function sharePost(id,text){ const url=location.href.split('#')[0]+'#'+id; if(navigator.share){navigator.share({title:'সোণৰ অসম',text:text.substring(0,80),url:url});} else {navigator.clipboard.writeText(url).then(()=>alert("Link Copy ✅")).catch(()=>prompt("Copy:",url));} }
+function toggleInbox(){ inboxOpen=!inboxOpen; document.getElementById('privateBox').style.display=inboxOpen?'flex':'none'; if(inboxOpen) loadInbox(); }
+function openPrivateChat(t){ if(!currentUser){openAuth();return;} if(t===currentUser.name){alert("নিজকে নোৱাৰি");return;} privateTarget=t; document.getElementById('privateTitle').innerText="🔒 "+t; document.getElementById('privateBox').style.display='flex'; inboxOpen=true; document.getElementById('inboxList').style.display='none'; listenPrivate(); }
+function backToInbox(){ privateTarget=null; document.getElementById('privateTitle').innerText="📩 Private Inbox"; document.getElementById('inboxList').style.display='block'; loadInbox(); if(privateUnsub) privateUnsub(); }
+function getConvId(a,b){ return [a.trim().toLowerCase(),b.trim().toLowerCase()].sort().join("__"); }
+function listenPrivate(){ if(!privateTarget||!currentUser) return; if(privateUnsub) privateUnsub(); const convId=getConvId(currentUser.name,privateTarget); privateUnsub=db.collection("private_messages").where("convId","==",convId).orderBy("createdAt","asc").limit(100).onSnapshot(snap=>{ const box=document.getElementById('privateMessages'); box.innerHTML=""; if(snap.empty){box.innerHTML=`<div style="text-align:center;color:#888;margin-top:30px">${privateTarget} ৰ লগত প্ৰথম Message 👋</div>`;return;} snap.forEach(doc=>{const d=doc.data(); box.innerHTML+=`<div class="pmsg ${d.from===currentUser.name?'me':'other'}">${d.text}</div>`;}); box.scrollTop=box.scrollHeight; }); }
+function sendPrivate(){ if(!currentUser){openAuth();return;} if(!privateTarget){alert("User select");return;} const txt=document.getElementById('privateText').value.trim(); if(!txt) return; db.collection("private_messages").add({convId:getConvId(currentUser.name,privateTarget),from:currentUser.name,to:privateTarget,participants:[currentUser.name.toLowerCase(),privateTarget.toLowerCase()],text:txt,createdAt:firebase.firestore.FieldValue.serverTimestamp()}); document.getElementById('privateText').value=""; }
+function loadInbox(){ if(!currentUser) return; db.collection("private_messages").where("participants","array-contains",currentUser.name.toLowerCase()).orderBy("createdAt","desc").limit(50).onSnapshot(snap=>{ const list=document.getElementById('inboxList'); if(!snap.empty){ let users={}; snap.forEach(doc=>{const d=doc.data(); const other=d.from===currentUser.name?d.to:d.from; if(!users[other]) users[other]=d;}); list.innerHTML=Object.keys(users).map(u=>`<div class="inboxItem" onclick="openPrivateChat('${u}')"><span>🔒 ${u}</span><span style="font-size:11px;color:#888">${users[u].text.substring(0,18)}</span></div>`).join(''); } else { list.innerHTML='<div style="color:#888;font-size:12px;text-align:center;padding:8px">Inbox খালী</div>'; } }); }
+function scrollToTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
+function scrollToBottom(){ window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}); }
+window.addEventListener('scroll',()=>{ const btn=document.getElementById('scrollTopBtn'); if(window.scrollY>400) btn.style.display='flex'; else btn.style.display='none'; });
+db.collection("posts").orderBy("createdAt","desc").limit(100).onSnapshot(snap=>{ allPosts=[]; snap.forEach(d=>allPosts.push({id:d.id,...d.data()})); renderFeed(); if(document.getElementById('profilePage').style.display!=='none') openProfilePage(); });
 function renderFeed(){
-  const feed=document.getElementById('feed'), filterD=document.getElementById('filterDistrict').value, search=document.getElementById('searchBox').value.toLowerCase(); feed.innerHTML="";
-  let filtered=allPosts.filter(p=>{ if(filterD && p.district!==filterD) return false; if(search &&!p.text.toLowerCase().includes(search)) return false; return true; });
-  if(filtered.length===0){feed.innerHTML='<div class="card" style="text-align:center;color:#888">কোনো Post নাই</div>';return;}
-  filtered.forEach(data=>{
-    const time=data.createdAt?data.createdAt.toDate().toLocaleString('en-IN'):'Just now'; const liked=localStorage.getItem('liked_'+data.id)?'liked':''; const commentsHtml=(data.comments||[]).map(c=>`<div class="cmt"><b>${c.name}:</b> ${c.text} <small style="color:#888"> - ${c.time}</small></div>`).join('');
-    feed.innerHTML+=`<div class="card"><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:#222;border:1px solid gold;display:flex;align-items:center;justify-content:center;font-size:12px">📍</div><div><small style="color:gold">📍 ${data.district||'Assam'} • ${time}</small><br><small style="color:#888;font-size:11px">সোণৰ অসম সদস্য</small></div></div><p style="margin:10px 0;white-space:pre-wrap">${data.text}</p>${data.image?`<img class="post-img" src="${data.image}">`:''}<div class="act"><button class="${liked}" onclick="likePost('${data.id}',${data.likes||0})">❤️ ${data.likes||0} Like</button><button onclick="commentPost('${data.id}')">💬 ${(data.comments||[]).length} Comment</button><button onclick="sharePost('${data.id}','${(data.text||'').replace(/'/g,'').substring(0,80)}')">↗️ Share</button></div>${commentsHtml}</div>`;
+  const feed=document.getElementById('feed');
+  feed.innerHTML=`<div class="card"><textarea id="postText" placeholder="কি ভাবিছা Bos?..." style="width:100%;min-height:60px;border-radius:12px;padding:10px;background:#222;color:#fff;border:1px solid #444"></textarea><div style="display:flex;gap:6px;margin-top:8px"><select id="fDist" style="flex:1;padding:9px;border-radius:20px;border:2px solid gold;background:#fff;color:#000;font-weight:700"><option value="">জিলা</option><option>Barpeta</option><option>Baksa</option><option>Sonitpur</option></select><input type="file" id="fImg" accept="image/*" style="flex:1"><button onclick="createPostReal()" style="padding:9px 16px;border-radius:20px;background:gold;color:#000;font-weight:900;border:0">Post</button></div></div>`;
+  allPosts.forEach(d=>{
+    const liked=localStorage.getItem('liked_'+d.id);
+    let avatar=d.userPhoto?`<img src="${d.userPhoto}" style="width:30px;height:30px;border-radius:50%;border:1px solid gold">`:`<div style="width:30px;height:30px;border-radius:50%;background:gold;color:#000;display:flex;align-items:center;justify-content:center;font-weight:900">${(d.userName||'U')[0]}</div>`;
+    if(currentUser && d.userName===currentUser.name && profilePic) avatar=`<img src="${profilePic}" style="width:30px;height:30px;border-radius:50%;border:1px solid gold">`;
+    const commentsHtml=(d.comments||[]).map(c=>`<div style="margin-top:6px;padding:6px 10px;background:#222;border-radius:10px;font-size:13px"><b>${c.user}:</b> ${c.text}</div>`).join('');
+    const deleteBtn = (currentUser && d.userName===currentUser.name)? `<button onclick="deletePost('${d.id}','${d.userName}')" class="btn-action" style="background:#ff2222">🗑️ Delete</button>` : '';
+    feed.innerHTML+=`<div class="card"><div style="display:flex;align-items:center;gap:8px"><div onclick="openPrivateChat('${d.userName}')" style="cursor:pointer;display:flex;align-items:center;gap:8px">${avatar}<b style="text-decoration:underline;text-decoration-color:gold">${d.userName||'User'}</b></div><span style="color:#888;font-size:11px">• ${d.district||''}</span></div><p style="margin:10px 0">${d.text||''}</p>${d.image?`<img src="${d.image}" style="width:100%;border-radius:12px;max-height:450px;object-fit:cover">`:''}<div style="display:flex;gap:5px;margin-top:10px;flex-wrap:wrap"><button onclick="likePost('${d.id}',${d.likes||0})" class="btn-action" style="background:${liked?'gold':'#222'};color:${liked?'#000':'#fff'}">👍 ${d.likes||0}</button><button onclick="commentPost('${d.id}')" class="btn-action">💬 ${(d.comments||[]).length}</button><button onclick="sharePost('${d.id}',\`${(d.text||'').replace(/`/g,'')}\`)" class="btn-action" style="color:gold;border-color:gold">↗️ Share</button>${deleteBtn}</div>${commentsHtml}</div>`;
   });
 }
-document.getElementById('filterDistrict').addEventListener('change',renderFeed);
-document.getElementById('searchBox').addEventListener('input',renderFeed);
+async function createPostReal(){ if(!currentUser){openAuth();return;} const txt=document.getElementById('postText').value.trim(); if(!txt){alert("লিখা");return;} let img=""; let file=document.getElementById('fImg')?.files[0]; if(file){ img=await new Promise(r=>{let fr=new FileReader(); fr.onload=e=>r(e.target.result); fr.readAsDataURL(file);}); } await db.collection("posts").add({text:txt,image:img,district:document.getElementById('fDist')?.value||"",likes:0,comments:[],userName:currentUser.name,userPhoto:profilePic||"",createdAt:firebase.firestore.FieldValue.serverTimestamp()}); document.getElementById('postText').value=""; }
+renderAuth(); loadInbox();
 </script>
-
-<button id="topBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:fixed;bottom:20px;right:20px;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,gold,#FF8C00);border:2px solid #000;color:#000;font-size:22px;font-weight:900;display:none;z-index:99;cursor:pointer;box-shadow:0 4px 15px rgba(255,215,0,.5)">⬆️</button>
-<script>
-window.onscroll=()=>{document.getElementById('topBtn').style.display=document.documentElement.scrollTop>300?'block':'none'}
-</script>
-
 </body>
 </html>
