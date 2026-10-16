@@ -1,10 +1,3 @@
-<div style="background:#1a1a1a; border:2px solid #FFD700; padding:15px; border-radius:15px;">
-
-<input type="text" placeholder="Search for Gold..." 
-style="background:#222 !important; color:white !important; border:2px solid gold !important; border-radius:25px; padding:12px; width:90%;">
-
-<select style="background:#222 !important; color:white !important; border:2px solid gold !important; border-radius:25px; padding:12px; width:90%; margin-top:10px;">
-<option>All Categories</option>
-</select>
-
-</div>
+.filters{display:flex;gap:8px;padding:10px;background:#151515;border-top:2px solid gold;border-bottom:1px solid #333}.filters select,.filters input{flex:1;padding:11px 14px;border-radius:20px;border:2px solid gold;background:#fff;color:#000;font-weight:700;font-size:14px}
+#loginPrompt p{color:gold!important;font-weight:700;font-size:15px}
+.stats{background:#151515!important;border-bottom:2px solid #333}
