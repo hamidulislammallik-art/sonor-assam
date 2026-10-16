@@ -94,7 +94,7 @@ function generateMembershipCard(){
   if(!currentUser) return;
   const canvas=document.getElementById('memberCanvas');
   const ctx=canvas.getContext('2d');
-  const logo=new Image(); logo.src="logo.png";
+  const logo=new Image(); logo.src="logo.jpg";
   const avatar=new Image(); if(profilePic) avatar.src=profilePic;
   logo.onload=()=>{
     const draw=()=>{
