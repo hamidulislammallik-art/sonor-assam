@@ -1,3 +1,7 @@
-.filters{display:flex;gap:8px;padding:10px;background:#151515;border-top:2px solid gold;border-bottom:1px solid #333}.filters select,.filters input{flex:1;padding:11px 14px;border-radius:20px;border:2px solid gold;background:#fff;color:#000;font-weight:700;font-size:14px}
-#loginPrompt p{color:gold!important;font-weight:700;font-size:15px}
+.filters{display:flex;gap:8px;padding:10px;background:#151515;border-top:2px solid gold;border-bottom:2px solid #333;overflow-x:auto}
+#loginPrompt p{color:gold!important;font-weight:700}
 .stats{background:#151515!important;border-bottom:2px solid #333}
+#chatBtn{position:fixed!important;bottom:20px!important;left:15px!important;width:56px!important;height:56px!important;background:linear-gradient(135deg,gold,#ff8c00)!important;border-radius:50%!important;border:3px solid #000!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:26px!important;z-index:99999!important;box-shadow:0 4px 15px rgba(255,215,0,.6)!important}
+#scrollBottomBtn{position:fixed!important;bottom:20px!important;right:15px!important;width:56px!important;height:56px!important;background:#222!important;border:2px solid gold!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:22px!important;z-index:99999!important;color:gold!important}
+#scrollTopBtn{position:fixed!important;bottom:85px!important;right:15px!important;width:44px!important;height:44px!important;background:#222!important;border:2px solid gold!important;border-radius:50%!important;display:none;align-items:center!important;justify-content:center!important;z-index:99998!important;color:gold!important}
+body{padding-bottom:90px!important}
