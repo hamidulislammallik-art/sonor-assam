@@ -1,35 +1,127 @@
-<!DOCTYPE html><html lang="as"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>সোণৰ অসম</title>
-<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui;background:#070d1f;color:#fff;min-height:100vh}
-.header{background:#0f1a33;border-bottom:2px solid #f59e0b;padding:14px 22px;display:flex;justify-content:space-between;align-items:center}
-.logo{display:flex;gap:12px;align-items:center}.logo-icon{width:48px;height:48px;background:#000;border:2px solid #f59e0b;border-radius:12px;display:flex;align-items:center;justify-content:center}
-.logo-title{color:#f59e0b;font-weight:900}.logo-sub{color:#8b9bb4;font-size:11px}
-.container{max-width:680px;margin:0 auto;padding:14px}.tabs{display:flex;gap:10px;margin:14px 0}.tab{flex:1;background:#111c36;border:2px solid #f59e0b33;color:#f59e0b;padding:14px;border-radius:14px;font-weight:800;cursor:pointer;text-align:center}.tab.active{background:#f59e0b;color:#000}
-.card{background:#141f3d;border:2px solid #f59e0b33;border-radius:18px;padding:18px;margin-bottom:14px}.card-login{border-color:#f59e0b88;text-align:center}
-.btn-main{width:100%;background:linear-gradient(90deg,#f59e0b,#fb923c);color:#000;border:none;padding:14px;border-radius:14px;font-weight:900;cursor:pointer}
-input,select,textarea{width:100%;padding:13px;border-radius:12px;border:1.5px solid #f59e0b33;background:#070d1f;color:#fff;margin:7px 0}
-#otpBox{display:none;background:#000;border:2px dashed #f59e0b;border-radius:14px;padding:14px;margin-top:10px}#otpDisplay{font-size:36px;font-weight:900;color:#f59e0b;letter-spacing:8px;text-align:center;margin:10px 0}
-.modal{display:none;position:fixed;inset:0;background:#000b;z-index:100;align-items:center;justify-content:center;padding:16px}.modal.show{display:flex}.modal-box{background:#141f3d;border:2px solid #f59e0b;width:100%;max-width:420px;border-radius:20px;padding:22px}
-.post-card{background:#0f1a33;border:2px solid #f59e0b22;border-radius:16px;padding:14px;margin-top:12px}.avatar{width:42px;height:42px;border-radius:50%;background:#f59e0b;color:#000;display:flex;align-items:center;justify-content:center;font-weight:900}
-.small{font-size:12px;color:#8b9bb4}</style></head><body>
-<div class="header"><div class="logo"><div class="logo-icon">👥</div><div><div class="logo-title">সোণৰ অসম</div><div class="logo-sub">অসমৰ এপ ❤️</div></div></div><button onclick="openAuth()" style="width:38px;height:38px;background:#000;border:1px solid #f59e0b55;color:#fff;border-radius:50%">👤</button></div>
-<div class="container"><div class="tabs"><button class="tab active">0 Post</button><button class="tab" onclick="filterPosts()">ওচৰৰ জিলা</button><button class="tab" onclick="openAuth()">Login</button></div>
-<div class="card card-login"><div id="beforeLogin"><p>Post + Message কৰিবলৈ Login কৰা</p><button class="btn-main" onclick="openAuth()" style="margin-top:10px">🔐 Login</button></div>
-<div id="afterLogin" style="display:none;text-align:left"><textarea id="postText" rows="3" placeholder="মনৰ কথা লিখা..."></textarea><select id="postDist"><option>Barpeta</option><option>Nalbari</option><option>Guwahati</option><option>Dibrugarh</option><option>Jorhat</option><option>All Assam</option></select><button class="btn-main" style="margin-top:10px" onclick="doPost()">📤 Post কৰা</button><button onclick="logout()" style="width:100%;margin-top:8px;background:none;border:1px solid #555;color:#fff;padding:10px;border-radius:10px">Logout</button></div></div>
-<div style="display:flex;gap:8px"><select id="distSelect" onchange="filterPosts()"><option value="all">All Assam</option><option>Barpeta</option><option>Guwahati</option></select><input id="searchInput" placeholder="Search..." oninput="filterPosts()"></div>
-<div id="postsList"><div class="card" style="text-align:center;color:#8b9bb4">আপোনাৰ প'ষ্ট ইয়াত দেখা যাব ❤️</div></div></div>
-<div id="loginModal" class="modal" onclick="if(event.target==this)closeAuth()"><div class="modal-box"><div style="display:flex;justify-content:space-between"><h3>Login কৰক</h3><button onclick="closeAuth()" style="background:none;border:none;color:#fff;font-size:22px">✕</button></div>
-<div id="notLogged"><label class="small">তোমাৰ নাম *</label><input id="userName" placeholder="যেনে: Hamidul Islam"><label class="small">মোবাইল *</label><input id="phoneNum" placeholder="9854XXXXXX"><button class="btn-main" onclick="sendOTP()">OTP পঠিয়াওক (FREE)</button>
-<div id="otpBox"><p style="text-align:center;color:#f59e0b;font-weight:700">তোমাৰ OTP 👇</p><div id="otpDisplay">------</div><input id="otpCode" placeholder="6 টা OTP"><button class="btn-main" onclick="verifyOTP()">✅ Verify</button><div id="otpMsg" style="text-align:center;margin-top:8px"></div></div></div>
-<div id="logged" style="display:none;text-align:center"><img id="mImg" width="80" style="border-radius:50%;border:3px solid #f59e0b"><h3 id="mName" style="margin-top:10px"></h3><p id="mPhone" class="small"></p><button class="btn-main" style="margin-top:12px" onclick="closeAuth()">Continue →</button></div></div></div>
+<!DOCTYPE html>
+<html lang="as"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>সোণৰ অসম</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{background:#0a0a0a;color:#fff;font-family:system-ui}
+.top{position:sticky;top:0;z-index:50;background:#0f0f0f;border-bottom:3px solid gold;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+.left{display:flex;align-items:center;gap:10px}.left img{width:48px;height:48px;border-radius:12px;border:2px solid gold}
+.pill{padding:8px 14px;border-radius:20px;border:1px solid gold;background:#222;color:gold;font-weight:800;cursor:pointer;font-size:13px}
+.card{background:#151515;border:1px solid #333;border-radius:16px;padding:16px;margin:10px}
+.stats{display:flex;gap:8px;padding:10px;background:#f5f2eb}.stats div{flex:1;background:#fff;color:#222;border-top:3px solid #ffcc66;border-radius:10px;padding:10px;text-align:center;font-weight:800;font-size:13px}
+.filters{display:flex;gap:8px;padding:10px;background:#f5f2eb}.filters select,.filters input{flex:1;padding:10px;border-radius:20px;border:1px solid #ddd;background:#fff}
+.main{max-width:640px;margin:auto}
+.post-img{width:100%;border-radius:12px;margin-top:10px;max-height:420px;object-fit:cover;border:1px solid #333}
+.act{display:flex;gap:6px;margin-top:12px;border-top:1px solid #2a2a2a;padding-top:10px}
+.act button{flex:1;padding:9px;border-radius:20px;border:1px solid #333;background:#222;color:#ddd;font-size:12px;cursor:pointer;font-weight:600}
+.act button.liked{background:gold;color:#000}
+textarea,select,input{width:100%;padding:12px;border-radius:12px;border:1px solid #333;background:#222;color:#fff;margin:6px 0;font-size:14px}
+.btn{padding:10px 18px;border-radius:24px;border:0;font-weight:800;cursor:pointer}.g{background:linear-gradient(90deg,gold,#FF8C00);color:#000;width:100%;margin-top:8px;font-size:16px}
+.cmt{background:#1f1f1f;border-radius:10px;padding:8px 10px;margin-top:8px;font-size:13px;border:1px solid #2a2a2a}
+#authModal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;z-index:100;align-items:center;justify-content:center;padding:20px}
+.box{background:#151515;border:2px solid gold;border-radius:18px;padding:20px;max-width:380px;width:100%;max-height:90vh;overflow-y:auto}
+#otpBox{display:none;background:#000;border:2px dashed gold;border-radius:12px;padding:12px;margin-top:10px}
+#otpDisplay{font-size:32px;font-weight:900;color:gold;letter-spacing:6px;text-align:center;margin:8px 0;background:#111;border-radius:8px;padding:6px}
+.divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:#666;font-size:12px}.divider:before,.divider:after{content:'';flex:1;height:1px;background:#333}
+</style></head><body>
+<div class="top"><div class="left"><img src="logo.jpg"><div><h1 style="color:gold;font-size:17px">সোণৰ অসম</h1><p style="color:#aaa;font-size:10px">অসমৰ নিজৰ App</p></div></div><div class="right"><button class="pill" id="accountBtn" onclick="openAuth()">👤 Account</button><div id="userPic" style="display:none"><img id="uImg" style="width:36px;height:36px;border-radius:50%;border:2px solid gold"></div></div></div>
+<div class="main"><div class="stats"><div><span id="pcnt">0</span><br>Post</div><div>৩৫ জিলা</div><div id="userNameShow">Login কৰা</div></div>
+<div class="card" id="postBox" style="display:none"><h4 style="color:gold">✍️ নতুন খবৰ দিয়ক</h4><select id="fDist"><option>Barpeta</option><option>Nalbari</option><option>Guwahati</option><option>Bongaigaon</option><option>Dhubri</option><option>Goalpara</option><option>Other</option></select><textarea id="postText" rows="3" placeholder="আজি কি হৈছে? লিখক..."></textarea><input type="file" id="postImage" accept="image/*"><button class="btn g" onclick="uploadPost()">📢 Post কৰক</button><p id="status" style="text-align:center;color:gold;font-weight:700;margin:8px 0"></p></div>
+<div class="card" id="loginPrompt"><p style="text-align:center">Post কৰিবলৈ 👤 Account ত Login কৰা Bos!</p><button class="btn g" onclick="openAuth()">🔐 Login কৰক</button></div>
+<div class="tag">• অসমৰ নিজৰ App</div>
+<div class="mission">📍 ৩৫ খন জিলা • একেলগে • আমাৰ ভাষা, আমাৰ গৌৰৱ</div>
+<div id="authModal"><div class="box"><h3 style="color:gold;text-align:center">👤 Account Login</h3>
+<div id="notLogged">
+<button class="btn g" onclick="loginGoogle()">🔐 Google ৰে Login</button>
+<div class="divider">বা</div>
+<p style="color:gold;font-weight:700;font-size:14px;margin-bottom:6px">📱 নাম + মোবাইলেৰে Login </p>
+<input id="freeName" placeholder="তোমাৰ নাম  Boss ">
+<input id="freePhone" placeholder="মোবাইল * 9854XXXXXX">
+<button class="btn" style="background:#222;color:gold;border:1px solid gold;width:100%;margin-top:6px" onclick="sendFreeOTP()">📲 OTP পঠিয়াওক (FREE)</button>
+<div id="otpBox">
+<p style="text-align:center;color:gold;font-weight:700;font-size:13px">তোমাৰ OTP 👇</p>
+<div id="otpDisplay">------</div>
+<input id="freeOTPInput" placeholder="6 টা OTP লিখা">
+<button class="btn g" onclick="verifyFreeOTP()">✅ Verify কৰা</button>
+<div id="otpMsg" style="text-align:center;margin-top:8px;font-weight:700;font-size:13px"></div>
+<p style="text-align:center;color:#888;font-size:10px;margin-top:6px">* FREE System - কোনো টকা নালাগে</p>
+</div>
+</div>
+<div id="logged" style="display:none;text-align:center"><img id="mImg" style="width:70px;height:70px;border-radius:50%;border:3px solid gold;margin:10px"><h4 id="mName"></h4><p id="mEmail" style="color:#aaa;font-size:12px"></p><button class="btn" style="background:#222;color:#fff;margin-top:12px;width:100%" onclick="logout()">Logout</button></div>
+<button class="btn" style="background:transparent;color:#888;margin-top:10px;width:100%" onclick="closeAuth()">Close</button>
+</div></div>
 <script>
-let freeOTP="",freePhone="",allPosts=JSON.parse(localStorage.getItem('sonor_posts')||'[]');
-function openAuth(){document.getElementById('loginModal').classList.add('show')}function closeAuth(){document.getElementById('loginModal').classList.remove('show')}
-function sendOTP(){let name=document.getElementById('userName').value.trim();let p=document.getElementById('phoneNum').value.trim();if(name.length<2){alert('নাম লিখা বস!');return}if(p.length<10){alert('Number দিয়া');return}if(!p.startsWith('+')){if(p.length==10)p='+91'+p}freeOTP=Math.floor(100000+Math.random()*900000).toString();freePhone=p;localStorage.setItem('sonor_tmp_name',name);document.getElementById('otpBox').style.display='block';document.getElementById('otpDisplay').innerText=freeOTP;document.getElementById('otpMsg').innerHTML='<span style="color:#22c55e">✅ OTP: '+freeOTP+'</span>'}
-function verifyOTP(){let c=document.getElementById('otpCode').value.trim();if(c!==freeOTP){document.getElementById('otpMsg').innerHTML='<span style="color:red">❌ ভুল! সঠিক: '+freeOTP+'</span>';return}let name=localStorage.getItem('sonor_tmp_name')||'User';let u={phone:freePhone,name:name,photoURL:'https://ui-avatars.com/api/?name='+encodeURIComponent(name)+'&background=f59e0b&color=000'};localStorage.setItem('sonor_user',JSON.stringify(u));document.getElementById('otpMsg').innerHTML='✅ Success!';setTimeout(()=>{checkLogin();closeAuth()},700)}
-function checkLogin(){let s=localStorage.getItem('sonor_user');if(s){let u=JSON.parse(s);document.getElementById('beforeLogin').style.display='none';document.getElementById('afterLogin').style.display='block';document.getElementById('notLogged').style.display='none';document.getElementById('logged').style.display='block';document.getElementById('mName').innerText=u.name;document.getElementById('mPhone').innerText=u.phone;document.getElementById('mImg').src=u.photoURL;return true}return false}
-function logout(){localStorage.removeItem('sonor_user');location.reload()}
-function doPost(){let t=document.getElementById('postText').value.trim();if(!t){alert('লিখা');return}let u=JSON.parse(localStorage.getItem('sonor_user')||'{}');let post={id:Date.now(),text:t,name:u.name||'User',phone:u.phone,dist:document.getElementById('postDist').value,time:new Date().toLocaleString('en-IN')};allPosts.unshift(post);localStorage.setItem('sonor_posts',JSON.stringify(allPosts));document.getElementById('postText').value='';renderPosts()}
-function renderPosts(f='all',s=''){let list=document.getElementById('postsList');let filtered=allPosts;if(f!=='all')filtered=filtered.filter(p=>p.dist===f);if(s)filtered=filtered.filter(p=>p.text.toLowerCase().includes(s.toLowerCase())||p.name.toLowerCase().includes(s.toLowerCase()));if(filtered.length===0){list.innerHTML='<div class="card" style="text-align:center;color:#8b9bb4">কোনো Post নাই</div>';return}list.innerHTML=filtered.map(p=>`<div class="post-card"><div style="display:flex;gap:10px"><div class="avatar">${p.name.charAt(0).toUpperCase()}</div><div><div style="font-weight:800">${p.name}</div><div class="small">${p.dist} • ${p.time}</div></div></div><div style="margin-top:10px">${p.text}</div></div>`).join('')}
-function filterPosts(){let d=document.getElementById('distSelect').value;let s=document.getElementById('searchInput').value;renderPosts(d,s)}
-checkLogin();renderPosts();
-</script></body></html>
+const firebaseConfig = {apiKey: "AIzaSyDuJdr6IRg6U7FgQDIcZEG7IOMkinGxitI",authDomain: "sonor-assam.firebaseapp.com",projectId: "sonor-assam",storageBucket: "sonor-assam.firebasestorage.app",messagingSenderId: "353015301976",appId: "1:353015301976:web:b7cc25039edb136a8c872d"};
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore(); const auth = firebase.auth();
+let currentUser=null, allPosts=[], freeOTPValue="", freePhoneValue="", freeNameValue="";
+function openAuth(){document.getElementById('authModal').style.display='flex'}
+function closeAuth(){document.getElementById('authModal').style.display='none'}
+async function loginGoogle(){ try{ await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); closeAuth(); }catch(e){alert(e.message)} }
+function sendFreeOTP(){
+  const name=document.getElementById('freeName').value.trim();
+  const phone=document.getElementById('freePhone').value.trim();
+  if(name.length<2){alert('নাম লিখা বস!');return}
+  if(phone.length<10){alert('10 টা নম্বৰ দিয়া');return}
+  freeNameValue=name; freePhoneValue=phone.startsWith('+')?phone:'+91'+phone;
+  freeOTPValue=Math.floor(100000+Math.random()*900000).toString();
+  document.getElementById('otpBox').style.display='block';
+  document.getElementById('otpDisplay').innerText=freeOTPValue;
+  document.getElementById('otpMsg').innerHTML='<span style="color:#22c55e">✅ OTP: '+freeOTPValue+' - ওপৰৰ Box ত লিখা</span>';
+}
+function verifyFreeOTP(){
+  const input=document.getElementById('freeOTPInput').value.trim();
+  if(input!==freeOTPValue){document.getElementById('otpMsg').innerHTML='<span style="color:#ef4444">❌ ভুল OTP! সঠিক: '+freeOTPValue+'</span>';return}
+  const photoURL='https://ui-avatars.com/api/?name='+encodeURIComponent(freeNameValue)+'&background=gold&color=000&size=200';
+  const customUser={uid:freePhoneValue, displayName:freeNameValue, name:freeNameValue, email:freePhoneValue, phone:freePhoneValue, photoURL:photoURL, isCustom:true};
+  localStorage.setItem('sonor_custom_user', JSON.stringify(customUser));
+  currentUser=customUser; updateUI(customUser);
+  document.getElementById('otpMsg').innerHTML='<span style="color:#22c55e">✅ Success! Welcome '+freeNameValue+'</span>';
+  setTimeout(()=>closeAuth(),800);
+}
+function updateUI(user){
+  const notLogged=document.getElementById('notLogged'), logged=document.getElementById('logged'), postBox=document.getElementById('postBox'), loginPrompt=document.getElementById('loginPrompt'), accountBtn=document.getElementById('accountBtn'), userPic=document.getElementById('userPic'), userNameShow=document.getElementById('userNameShow');
+  if(user){notLogged.style.display='none'; logged.style.display='block'; postBox.style.display='block'; loginPrompt.style.display='none'; userPic.style.display='block'; accountBtn.style.display='none'; document.getElementById('mName').innerText=user.displayName; document.getElementById('mEmail').innerText=user.email||user.phone; document.getElementById('mImg').src=user.photoURL; document.getElementById('uImg').src=user.photoURL; document.getElementById('uImg').onclick=openAuth; userNameShow.innerText=user.displayName.split(' ')[0];}else{notLogged.style.display='block'; logged.style.display='none'; postBox.style.display='none'; loginPrompt.style.display='block'; userPic.style.display='none'; accountBtn.style.display='block'; userNameShow.innerText='Login কৰা';}
+}
+function logout(){localStorage.removeItem('sonor_custom_user'); if(auth.currentUser){auth.signOut();}else{currentUser=null;updateUI(null);} closeAuth();}
+auth.onAuthStateChanged(user=>{
+  if(user){currentUser=user;updateUI(user);}else{
+    const custom=localStorage.getItem('sonor_custom_user');
+    if(custom){try{currentUser=JSON.parse(custom);updateUI(currentUser);return}catch(e){}}
+    currentUser=null;updateUI(null);
+  }
+});
+async function uploadPost(){
+  if(!currentUser){openAuth();return;}
+  const text=document.getElementById('postText').value.trim(); if(!text){alert("Text লিখা Bos!");return;}
+  const status=document.getElementById('status'); status.innerText="Posting...";
+  const file=document.getElementById('postImage').files[0]; let imageBase64="";
+  if(file){ if(file.size>800000){alert("Photo 800KB তকৈ সৰু দিয়া");status.innerText="";return;} imageBase64=await new Promise(res=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.readAsDataURL(file);}); }
+  try{ await db.collection("posts").add({text:text,image:imageBase64,district:document.getElementById('fDist').value,likes:0,comments:[],uid:currentUser.uid||currentUser.phone,name:currentUser.displayName,photo:currentUser.photoURL,createdAt:firebase.firestore.FieldValue.serverTimestamp()}); status.innerText="Success Bos!";document.getElementById('postText').value="";document.getElementById('postImage').value="";setTimeout(()=>status.innerText="",2000); }catch(e){status.innerText=e.message}
+}
+function likePost(id,likes){ const key='liked_'+id; if(localStorage.getItem(key)){alert("Like কৰিছাই Bos!");return;} db.collection("posts").doc(id).update({likes:(likes||0)+1}); localStorage.setItem(key,'1'); }
+async function commentPost(id){ if(!currentUser){openAuth();return;} const txt=prompt("Comment লিখা Bos:"); if(!txt) return; const postRef=db.collection("posts").doc(id); const doc=await postRef.get(); const data=doc.data(); const cmts=data.comments||[]; cmts.push({name:currentUser.displayName,text:txt,time:new Date().toLocaleString('en-IN')}); await postRef.update({comments:cmts}); }
+function sharePost(id,text){ const url=location.href; if(navigator.share){navigator.share({title:'সোণৰ অসম',text:text,url:url})} else{navigator.clipboard.writeText(text+"\n"+url);alert("Link Copy হ'ল Bos!")} }
+db.collection("posts").orderBy("createdAt","desc").limit(100).onSnapshot(snap=>{ allPosts=[]; snap.forEach(d=>allPosts.push({id:d.id,...d.data()})); document.getElementById('pcnt').innerText=snap.size; renderFeed(); });
+function renderFeed(){
+  const feed=document.getElementById('feed'), filterD=document.getElementById('filterDistrict').value, search=document.getElementById('searchBox').value.toLowerCase(); feed.innerHTML="";
+  let filtered=allPosts.filter(p=>{ if(filterD && p.district!==filterD) return false; if(search &&!p.text.toLowerCase().includes(search)) return false; return true; });
+  if(filtered.length===0){feed.innerHTML='<div class="card" style="text-align:center;color:#888">কোনো Post নাই</div>';return;}
+  filtered.forEach(data=>{
+    const time=data.createdAt?data.createdAt.toDate().toLocaleString('en-IN'):'Just now'; const liked=localStorage.getItem('liked_'+data.id)?'liked':''; const commentsHtml=(data.comments||[]).map(c=>`<div class="cmt"><b>${c.name}:</b> ${c.text} <small style="color:#888"> - ${c.time}</small></div>`).join('');
+    feed.innerHTML+=`<div class="card"><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:#222;border:1px solid gold;display:flex;align-items:center;justify-content:center;font-size:12px">📍</div><div><small style="color:gold">📍 ${data.district||'Assam'} • ${time}</small><br><small style="color:#888;font-size:11px">সোণৰ অসম সদস্য</small></div></div><p style="margin:10px 0;white-space:pre-wrap">${data.text}</p>${data.image?`<img class="post-img" src="${data.image}">`:''}<div class="act"><button class="${liked}" onclick="likePost('${data.id}',${data.likes||0})">❤️ ${data.likes||0} Like</button><button onclick="commentPost('${data.id}')">💬 ${(data.comments||[]).length} Comment</button><button onclick="sharePost('${data.id}','${(data.text||'').replace(/'/g,'').substring(0,80)}')">↗️ Share</button></div>${commentsHtml}</div>`;
+  });
+}
+document.getElementById('filterDistrict').addEventListener('change',renderFeed);
+document.getElementById('searchBox').addEventListener('input',renderFeed);
+</script>
+
+<button id="topBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:fixed;bottom:20px;right:20px;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,gold,#FF8C00);border:2px solid #000;color:#000;font-size:22px;font-weight:900;display:none;z-index:99;cursor:pointer;box-shadow:0 4px 15px rgba(255,215,0,.5)">⬆️</button>
+<script>
+window.onscroll=()=>{document.getElementById('topBtn').style.display=document.documentElement.scrollTop>300?'block':'none'}
+</script>
+
+</body>
+</html>
