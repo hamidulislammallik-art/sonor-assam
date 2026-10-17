@@ -93,7 +93,7 @@ let currentUser=JSON.parse(localStorage.getItem('sonor_user')||'null');
 let profilePic = "";
 function loadProfilePic(){
   const key = getProfileKey();
-  profilePic = localStorage.getItem(key) || localStorage.getItem('sonor_profile_pic') || "";
+  profilePic = localStorage.getItem(key) || "";
 }
 loadProfilePic();
 let userBio=localStorage.getItem('sonor_bio')||"জয় আই অসম!";
@@ -133,7 +133,6 @@ document.getElementById('profileFile').addEventListener('change',async e=>{
   const b=await new Promise(r=>{let fr=new FileReader();fr.onload=ev=>r(ev.target.result);fr.readAsDataURL(f);});
   profilePic=b;
   localStorage.setItem(getProfileKey(), b);
-  localStorage.setItem('sonor_profile_pic', b);
   renderAuth();openProfilePage();renderFeed();
 });
 function loadImage(src){
