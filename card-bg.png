@@ -1,0 +1,8 @@
+// Canvas ত
+ctx.fillText("Sonor Axom - সোণৰ অসম", x, y);
+ctx.fillText("PREMIUM MEMBERSHIP", x, y+40);
+// মাজত User ৰ নাম
+ctx.font = "bold 60px serif";
+ctx.fillText(currentUser.name, centerX, centerY);
+// তলত
+ctx.fillText("জয় আই অসম! সোণৰ অসমৰ সদস্য", x, y);
