@@ -58,12 +58,11 @@ body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:14
     <div style="margin-top:16px;display:flex;gap:8px;justify-content:center"><button onclick="editProfile()" style="padding:8px 16px;border-radius:20px;background:gold;color:#000;font-weight:900;border:0">✏️ Edit</button><button onclick="uploadProfile()" style="padding:8px 16px;border-radius:20px;background:#1a1a1a;color:gold;border:1px solid gold">📸 Photo</button></div>
     <div style="margin-top:28px;text-align:center">
       <h3 style="color:gold;margin-bottom:12px">💳 BOSS MEMBERSHIP CARD</h3>
-  <canvas id="memberCanvas" width="1200" height="675" style="display:none"></canvas>
-  <div id="cardPreview" style="background:url('card-bg.png') center/cover no-repeat;border:2px solid gold;border-radius:16px;padding:20px;min-height:240px;display:flex;justify-content:center;align-items:center">
-    <h2 id="cardNameDisplay" style="color:#f9e7b0;font-size:28px;margin:80px 0 10px 0;text-shadow:0 2px 8px #000"></h2>
+      <canvas id="memberCanvas" width="1200" height="675" style="display:none"></canvas>
+      <div id="cardPreview" style="background:#000;border:2px solid gold;border-radius:16px;padding:4px;min-height:220px;display:flex;align-items:center;justify-content:center;color:#666">Generating...</div>
+      <a id="downloadCard" href="#" download="SonorAxom-Boss-Card.png" style="display:inline-block;margin-top:14px;background:linear-gradient(135deg,gold,#ff8c00);color:#000;padding:12px 28px;border-radius:25px;text-decoration:none;font-weight:900;font-size:15px">📥 Boss Card Download</a>
+    </div>
   </div>
-  <a id="downloadCard" href="#" download="SonorAxom-Boss-Card.png" style="display:inline-block;margin-top:14px;background:gold;color:#000;padding:10px 20px;border-radius:8px;font-weight:bold;text-decoration:none">📥 Download Card</a>
-</div>
   <div style="padding:10px"><h3 style="color:gold;padding:0 10px">📝 মোৰ Posts</h3><div id="myPosts"></div></div>
 </div>
 
@@ -94,7 +93,7 @@ let currentUser=JSON.parse(localStorage.getItem('sonor_user')||'null');
 let profilePic = "";
 function loadProfilePic(){
   const key = getProfileKey();
-  profilePic = localStorage.getItem(key) || "";
+  profilePic = localStorage.getItem(key) || localStorage.getItem('sonor_profile_pic') || "";
 }
 loadProfilePic();
 let userBio=localStorage.getItem('sonor_bio')||"জয় আই অসম!";
@@ -134,6 +133,7 @@ document.getElementById('profileFile').addEventListener('change',async e=>{
   const b=await new Promise(r=>{let fr=new FileReader();fr.onload=ev=>r(ev.target.result);fr.readAsDataURL(f);});
   profilePic=b;
   localStorage.setItem(getProfileKey(), b);
+  localStorage.setItem('sonor_profile_pic', b);
   renderAuth();openProfilePage();renderFeed();
 });
 function loadImage(src){
@@ -152,37 +152,33 @@ async function generateMembershipCard(){
   const ctx=canvas.getContext('2d');
   const preview=document.getElementById('cardPreview');
   preview.innerHTML="Generating...";
-  let logoImg = await loadImage("logo.png");
-  if(!logoImg) logoImg = await loadImage("logo.jpg");
+  
+  let cardBg = await loadImage("card-bg.png?v="+Date.now());
   let avatarImg = null;
   if(profilePic) avatarImg = await loadImage(profilePic);
-  ctx.fillStyle="#050505"; ctx.fillRect(0,0,1200,675);
-  ctx.strokeStyle="#FFD700"; ctx.lineWidth=5; ctx.strokeRect(12,12,1176,651);
-  ctx.strokeStyle="#8a6d1b"; ctx.lineWidth=1; ctx.strokeRect(24,24,1152,627);
-  const grad=ctx.createLinearGradient(0,0,1200,0); grad.addColorStop(0,"#FFD700"); grad.addColorStop(1,"#FF8C00"); ctx.fillStyle=grad; ctx.fillRect(24,24,1152,4);
-  if(logoImg){
-    ctx.globalAlpha=0.13; ctx.drawImage(logoImg,400,80,400,400); ctx.globalAlpha=1;
-  }
-  ctx.textAlign="center"; ctx.fillStyle="#FFD700"; ctx.font="bold 13px sans-serif"; ctx.fillText("✦ PREMIUM COMMUNITY ✦",600,65);
-  ctx.font="bold 26px Georgia"; ctx.fillText("সোণৰ অসম - অসমৰ নিজৰ এপ",600,100);
-  if(logoImg){
-    ctx.save(); ctx.beginPath(); ctx.arc(1055,500,70,0,Math.PI*2); ctx.clip(); ctx.drawImage(logoImg,985,430,140,140); ctx.restore();
-    ctx.beginPath(); ctx.arc(1055,500,72,0,Math.PI*2); ctx.strokeStyle="#FFD700"; ctx.lineWidth=3; ctx.stroke();
-  }
-  ctx.beginPath(); ctx.arc(145,500,60,0,Math.PI*2); ctx.fillStyle="#FFD700"; ctx.fill(); ctx.fillStyle="#000"; ctx.font="bold 12px sans-serif"; ctx.fillText("EST",145,490); ctx.font="bold 20px sans-serif"; ctx.fillText("2024",145,512); ctx.font="bold 10px sans-serif"; ctx.fillText("ASSAM",145,528);
-  if(avatarImg){
-    ctx.save(); ctx.beginPath(); ctx.arc(600,250,75,0,Math.PI*2); ctx.clip(); ctx.drawImage(avatarImg,525,175,150,150); ctx.restore();
-    ctx.beginPath(); ctx.arc(600,250,78,0,Math.PI*2); ctx.strokeStyle="#FFD700"; ctx.lineWidth=4; ctx.stroke();
+  
+  ctx.clearRect(0,0,1200,675);
+  
+  if(cardBg){
+    ctx.drawImage(cardBg,0,0,1200,675);
   } else {
-    ctx.beginPath(); ctx.arc(600,250,75,0,Math.PI*2); ctx.fillStyle="#222"; ctx.fill();
-    ctx.strokeStyle="#FFD700"; ctx.lineWidth=3; ctx.stroke();
-    ctx.fillStyle="#FFD700"; ctx.font="bold 60px sans-serif"; ctx.fillText((currentUser.name[0]||"B").toUpperCase(),600,270);
+    ctx.fillStyle="#050505"; ctx.fillRect(0,0,1200,675);
+    ctx.strokeStyle="#FFD700"; ctx.lineWidth=5; ctx.strokeRect(12,12,1176,651);
   }
-  ctx.fillStyle="#fff"; ctx.font="bold 50px Georgia"; ctx.textAlign="center"; ctx.fillText(currentUser.name,600,380);
-  ctx.fillStyle="#FFD700"; ctx.font="18px Georgia"; ctx.fillText("জয় আই অসম! • "+selectedDistrict+" • Boss Member",600,415);
-  ctx.fillStyle="#888"; ctx.font="13px monospace"; ctx.fillText("ID: SA-"+Date.now().toString().slice(-6)+" | www.sonoraxom.com",600,445);
-  ctx.textAlign="left"; ctx.fillStyle="#444"; ctx.font="11px sans-serif"; ctx.fillText("Official Card - Sonor Axom",30,650);
-  ctx.textAlign="right"; ctx.fillStyle="#FFD700"; ctx.font="bold 11px sans-serif"; ctx.fillText("BOSS EDITION 2026",1170,650);
+
+  if(avatarImg){
+    ctx.save(); ctx.beginPath(); ctx.arc(600,250,75,0,Math.PI*2); ctx.clip(); 
+    ctx.drawImage(avatarImg,525,175,150,150); ctx.restore();
+    ctx.beginPath(); ctx.arc(600,250,78,0,Math.PI*2); ctx.strokeStyle="#FFD700"; ctx.lineWidth=4; ctx.stroke();
+  }
+  
+  ctx.fillStyle="#f9e7b0"; 
+  ctx.font="bold 52px Georgia"; 
+  ctx.textAlign="center"; 
+  ctx.shadowColor="black"; ctx.shadowBlur=10;
+  ctx.fillText(currentUser.name,600,395);
+  ctx.shadowBlur=0;
+  
   const dataUrl=canvas.toDataURL("image/png");
   preview.innerHTML=`<img src="${dataUrl}" style="width:100%;border-radius:12px;display:block">`;
   document.getElementById('downloadCard').href=dataUrl;
