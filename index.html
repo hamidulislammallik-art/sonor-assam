@@ -161,13 +161,13 @@ async function generateMembershipCard(){
   } else {
     ctx.fillStyle="#050505"; ctx.fillRect(0,0,1200,675);
   }
-  const photoY = 335; 
+  const photoY = 350; 
   if(avatarImg){
     ctx.save(); ctx.beginPath(); ctx.arc(600,photoY,75,0,Math.PI*2); ctx.clip(); 
     ctx.drawImage(avatarImg,525,photoY-75,150,150); ctx.restore();
     ctx.beginPath(); ctx.arc(600,photoY,78,0,Math.PI*2); ctx.strokeStyle="#FFD700"; ctx.lineWidth=4; ctx.stroke();
   }
-  const nameY = 485;
+  const nameY = 500;
   ctx.fillStyle="#f9e7b0"; 
   ctx.font="bold 54px Georgia"; 
   ctx.textAlign="center"; 
