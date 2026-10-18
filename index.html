@@ -72,7 +72,7 @@ async function uploadReelNow(){
     await db.collection('reels').add({title:title,url:url,type:file.type.startsWith('video')?'video':'audio',district:document.getElementById('reelDist').value||selectedDistrict,userName:currentUser.name,likes:0,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
     fill.style.width='100%';status.innerText='Success ✅';setTimeout(()=>{closeReelsUpload();switchTab('reels',document.querySelectorAll('.bottom-nav button')[1]);},1000);
   }catch(err){
-    if(file.size>9000000){alert('8MB তকৈ সৰু দিয়া বা 2 মিনিট পিছত try কৰা');return;}
+    if(file.size>9000000){alert('18MB তকৈ সৰু দিয়া বা 2 মিনিট পিছত try কৰা');return;}
     const reader=new FileReader();reader.onload=async e=>{await db.collection('reels').add({title:title,url:e.target.result,type:file.type.startsWith('video')?'video':'audio',district:selectedDistrict,userName:currentUser.name,likes:0,createdAt:firebase.firestore.FieldValue.serverTimestamp()});status.innerText='Success ✅';setTimeout(()=>{closeReelsUpload();},800);};reader.readAsDataURL(file);
   }
 }
