@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="as">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>সোণৰ অসম - অসমৰ নিজৰ এপ</title>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:90px}
+.header{padding:10px 14px;background:#0a0a0a;border-bottom:3px solid gold;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.logo{font-weight:900;color:gold;font-size:20px}
+.bottom-nav{position:fixed;bottom:0;left:0;width:100%;height:72px;background:#0a0a0a;border-top:2px solid gold;display:flex;justify-content:space-around;align-items:center;z-index:9999}
+.bottom-nav button{background:transparent;border:0;color:#888;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.bottom-nav button.active{color:gold}
+.upload-center{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,gold,#ff8c00);border:3px solid #000;display:flex;align-items:center;justify-content:center;font-size:34px;color:#000;font-weight:900;margin-top:-28px;box-shadow:0 4px 15px rgba(255,215,0,.7);cursor:pointer}
+.districts{display:flex;gap:8px;overflow-x:auto;padding:10px;background:#080808}
+.districts button{white-space:nowrap;padding:7px 14px;border-radius:20px;border:1px solid #2a2a2a;background:#151515;color:#aaa}
+.districts button.active{background:gold;color:#000;font-weight:800}
+.card{background:#111;border:1px solid #222;border-radius:16px;padding:12px;margin:10px}
+.reel-card{background:#111;border:1px solid #333;border-radius:16px;margin:12px;overflow:hidden}
+#reelsModal{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:99999;display:none;align-items:center;justify-content:center;padding:15px}
+.reelsBox{background:#111;border:2px solid gold;border-radius:18px;width:100%;max-width:400px;padding:18px}
+textarea,input,select{width:100%;padding:10px;border-radius:10px;background:#1a1a1a;color:#fff;border:1px solid #333}
+.btn-gold{padding:10px 18px;border-radius:20px;background:gold;color:#000;font-weight:900;border:0;cursor:pointer}
+.btn-dark{padding:10px 18px;border-radius:20px;background:#222;color:#fff;border:0;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="header"><div class="logo">সোণৰ অসম</div><div id="authArea"></div></div>
+<div class="districts" id="districtList"></div>
+<div id="feed"></div><div id="reelsFeed" style="display:none"></div>
+<div class="bottom-nav">
+<button class="active" onclick="switchTab('home',this)">🏠Home</button>
+<button onclick="switchTab('reels',this)">🎵Reels</button>
+<div class="upload-center" onclick="openReelsUpload()">+</div>
+<button onclick="alert('Inbox coming soon')">💬Inbox</button>
+<button onclick="openAuth()">👤Login</button>
+</div>
+<div id="reelsModal"><div class="reelsBox">
+<h3 style="color:gold;text-align:center">🎵 Reels Upload - FREE</h3>
+<p style="font-size:12px;color:#aaa;text-align:center">200MB লৈকে HD Video ছাফা Upload!</p>
+<input type="file" id="reelFile" accept="video/*,audio/*">
+<input type="text" id="reelTitle" placeholder="গানৰ নাম..." style="margin:8px 0">
+<select id="reelDist" style="margin-bottom:12px"></select>
+<div id="progBar" style="display:none;width:100%;height:10px;background:#222;border-radius:10px;overflow:hidden"><div id="progFill" style="height:100%;background:gold;width:0%"></div></div>
+<p id="uploadStatus" style="font-size:12px;color:#aaa;text-align:center"></p>
+<div style="display:flex;gap:8px;margin-top:14px"><button class="btn-dark" style="flex:1" onclick="closeReelsUpload()">Cancel</button><button class="btn-gold" style="flex:1" onclick="uploadReelNow()">Upload 🚀</button></div>
+</div></div>
+<script>
+const firebaseConfig={apiKey:"AIzaSyDuJdr6IRg6U7FgQDIcZEG7IOMkinGxitI",authDomain:"sonor-assam.firebaseapp.com",projectId:"sonor-assam",storageBucket:"sonor-assam.appspot.com",messagingSenderId:"353015301976",appId:"1:353015301976:web:b7cc25039edb136a8c872d"};
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);const db=firebase.firestore();
+let currentUser=JSON.parse(localStorage.getItem('sonor_user')||'null');let allPosts=[];let allReels=[];let selectedDistrict="All";
+const allDistricts=["Bajali","Baksa","Barpeta","Biswanath","Bongaigaon","Cachar","Charaideo","Chirang","Darrang","Dhemaji","Dhubri","Dibrugarh","Dima Hasao","Goalpara","Golaghat","Hailakandi","Hojai","Jorhat","Kamrup","Kamrup Metro","Karbi Anglong","Karimganj","Kokrajhar","Lakhimpur","Majuli","Morigaon","Nagaon","Nalbari","Sivasagar","Sonitpur","South Salmara","Tamulpur","Tinsukia","Udalguri","West Karbi Anglong"];
+document.getElementById('districtList').innerHTML='<button class="active" onclick="filterByDistrict(\'All\',this)">All Assam</button>'+allDistricts.map(d=>`<button onclick="filterByDistrict('${d}',this)">${d}</button>`).join('');document.getElementById('reelDist').innerHTML='<option value="">জিলা</option>'+allDistricts.map(d=>`<option>${d}</option>`).join('');
+function filterByDistrict(n,b){selectedDistrict=n;document.querySelectorAll('.districts button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderFeed();renderReels();}
+function switchTab(t,e){document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));if(e)e.classList.add('active');if(t==='home'){document.getElementById('feed').style.display='block';document.getElementById('reelsFeed').style.display='none';}else{document.getElementById('feed').style.display='none';document.getElementById('reelsFeed').style.display='block';}}
+function openReelsUpload(){if(!currentUser){openAuth();return;}document.getElementById('reelsModal').style.display='flex';}function closeReelsUpload(){document.getElementById('reelsModal').style.display='none';}
+function openAuth(){let n=prompt("নাম?");if(!n)return;let p=prompt("মোবাইল?");if(!p)return;currentUser={name:n.trim(),phone:p.trim()};localStorage.setItem('sonor_user',JSON.stringify(currentUser));renderAuth();}
+function renderAuth(){const a=document.getElementById('authArea');if(currentUser)a.innerHTML=currentUser.name;else a.innerHTML='<button onclick="openAuth()" class="btn-gold">Login</button>';}
+async function uploadReelNow(){
+  const file=document.getElementById('reelFile').files[0];const title=document.getElementById('reelTitle').value.trim();if(!file){alert('Video Select কৰা!');return;}if(!title){alert('নাম দিয়া!');return;}
+  const status=document.getElementById('uploadStatus');const bar=document.getElementById('progBar');const fill=document.getElementById('progFill');bar.style.display='block';fill.style.width='20%';status.innerText='Uploading...';
+  try{
+    const form=new FormData();form.append('reqtype','fileupload');form.append('fileToUpload',file);
+    fill.style.width='60%';
+    const resp=await fetch('https://catbox.moe/user/api.php',{method:'POST',body:form});
+    let url=(await resp.text()).trim();
+    if(!url.startsWith('http'))throw new Error('fail');
+    fill.style.width='85%';status.innerText='Saving...';
+    await db.collection('reels').add({title:title,url:url,type:file.type.startsWith('video')?'video':'audio',district:document.getElementById('reelDist').value||selectedDistrict,userName:currentUser.name,likes:0,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    fill.style.width='100%';status.innerText='Success ✅';setTimeout(()=>{closeReelsUpload();switchTab('reels',document.querySelectorAll('.bottom-nav button')[1]);},1000);
+  }catch(err){
+    if(file.size>9000000){alert('8MB তকৈ সৰু দিয়া বা 2 মিনিট পিছত try কৰা');return;}
+    const reader=new FileReader();reader.onload=async e=>{await db.collection('reels').add({title:title,url:e.target.result,type:file.type.startsWith('video')?'video':'audio',district:selectedDistrict,userName:currentUser.name,likes:0,createdAt:firebase.firestore.FieldValue.serverTimestamp()});status.innerText='Success ✅';setTimeout(()=>{closeReelsUpload();},800);};reader.readAsDataURL(file);
+  }
+}
+db.collection("reels").orderBy("createdAt","desc").limit(100).onSnapshot(s=>{allReels=[];s.forEach(d=>allReels.push({id:d.id,...d.data()}));renderReels();});
+function renderReels(){const f=document.getElementById('reelsFeed');let filtered=selectedDistrict==="All"?allReels:allReels.filter(p=>p.district===selectedDistrict);if(filtered.length===0){f.innerHTML='<div class="card" style="text-align:center;color:#888">🎵 Reels নাই - প্রথম তুমি Upload কৰা!</div>';return;}f.innerHTML=filtered.map(d=>{const m=d.type==='video'?`<video src="${d.url}" controls playsinline style="width:100%;max-height:520px;background:#000"></video>`:`<audio src="${d.url}" controls style="width:100%"></audio>`;return `<div class="reel-card">${m}<div style="padding:10px"><b style="color:gold">${d.title}</b><br><span style="font-size:11px;color:#888">${d.userName} • ${d.district||''}</span></div></div>`;}).join('');}
+db.collection("posts").orderBy("createdAt","desc").limit(100).onSnapshot(s=>{allPosts=[];s.forEach(d=>allPosts.push({id:d.id,...d.data()}));renderFeed();});
+function renderFeed(){const f=document.getElementById('feed');let filtered=selectedDistrict==="All"?allPosts:allPosts.filter(p=>p.district===selectedDistrict);f.innerHTML=`<div class="card"><textarea id="postText" placeholder="কি ভাবিছা?"></textarea><div style="display:flex;gap:6px;margin-top:8px"><select id="fDist"><option>${selectedDistrict}</option>${allDistricts.map(d=>`<option>${d}</option>`).join('')}</select><button class="btn-gold" onclick="createPost()">Post</button></div></div>`+filtered.map(d=>`<div class="card"><b>${d.userName}</b><p>${d.text||''}</p></div>`).join('');}
+async function createPost(){if(!currentUser){openAuth();return;}const t=document.getElementById('postText').value.trim();if(!t)return;await db.collection("posts").add({text:t,district:document.getElementById('fDist').value||selectedDistrict,userName:currentUser.name,createdAt:firebase.firestore.FieldValue.serverTimestamp()});document.getElementById('postText').value='';}
+renderAuth();
+</script></body></html>
