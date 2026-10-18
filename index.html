@@ -133,14 +133,74 @@ function filterByDistrict(name,btn){selectedDistrict=name;document.querySelector
 function switchTab(tab,el){currentTab=tab;document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));if(el) el.classList.add('active');if(tab==='home'){document.getElementById('feed').style.display='block';document.getElementById('reelsFeed').style.display='none';}else{document.getElementById('feed').style.display='none';document.getElementById('reelsFeed').style.display='block';renderReels();}}
 function openReelsUpload(){if(!currentUser){openAuth();return;}document.getElementById('reelsModal').style.display='flex';}
 function closeReelsUpload(){document.getElementById('reelsModal').style.display='none';document.getElementById('uploadStatus').innerText='';document.getElementById('progBar').style.display='none';}
+<!DOCTYPE html>
+<html lang="as">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>সোণৰ অসম - FREE REELS</title>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<style>
+/* Same style as before - Bottom Nav */
+body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:160px}
+.header{padding:10px 14px;background:#0a0a0a;border-bottom:3px solid gold;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.bottom-nav{position:fixed;bottom:0;left:0;width:100%;height:72px;background:#0a0a0a;border-top:2px solid gold;display:flex;justify-content:space-around;align-items:center;z-index:999999}
+.bottom-nav button{background:transparent;border:0;color:#888;font-size:11px;display:flex;flex-direction:column;align-items:center;cursor:pointer}
+.bottom-nav button.active{color:gold}
+.upload-center{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,gold,#ff8c00);border:3px solid #000;display:flex;align-items:center;justify-content:center;font-size:32px;color:#000;font-weight:900;margin-top:-28px;box-shadow:0 4px 15px rgba(255,215,0,0.7);cursor:pointer}
+#reelsModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);z-index:9999999;display:none;align-items:center;justify-content:center;padding:15px}
+.reelsBox{background:#111;border:2px solid gold;border-radius:18px;width:100%;max-width:380px;padding:18px}
+.card{background:#111;border:1px solid #222;border-radius:16px;padding:12px;margin:10px}
+.reel-card{background:#111;border:1px solid gold;border-radius:16px;margin:10px;overflow:hidden}
+</style>
+</head>
+<body>
+<!-- Full body same as before - I will give you complete file in next message because WhatsApp cuts long code -->
+
+<!-- MAIN FIX IS THIS FUNCTION - REPLACE YOUR uploadReelNow() WITH THIS -->
+<script>
 async function uploadReelNow(){
-  const file=document.getElementById('reelFile').files[0];const title=document.getElementById('reelTitle').value.trim();const dist=document.getElementById('reelDist').value;
-  if(!file){alert('Video/Audio select কৰা!');return;}if(!title){alert('গানৰ নাম দিয়া!');return;}
-  const status=document.getElementById('uploadStatus');const bar=document.getElementById('progBar');const fill=document.getElementById('progFill');
-  bar.style.display='block';status.innerText='Uploading... 0%';
-  const fileName='reels/'+Date.now()+'_'+file.name;const ref=storage.ref().child(fileName);const task=ref.put(file);
-  task.on('state_changed',snap=>{const pct=Math.round((snap.bytesTransferred/snap.totalBytes)*100);fill.style.width=pct+'%';status.innerText='Uploading... '+pct+'%';},err=>{status.innerText='Error: '+err.message;alert(err.message);},async()=>{const url=await ref.getDownloadURL();const isVideo=file.type.startsWith('video');await db.collection('reels').add({title:title,url:url,type:isVideo?'video':'audio',district:dist||selectedDistrict,userName:currentUser.name,userPhoto:profilePic||'',likes:0,createdAt:firebase.firestore.FieldValue.serverTimestamp()});status.innerText='Upload Success ✅';setTimeout(()=>{closeReelsUpload();switchTab('reels',document.querySelectorAll('.bottom-nav button')[1]);},800);document.getElementById('reelFile').value='';document.getElementById('reelTitle').value='';});
+  const file=document.getElementById('reelFile').files[0];
+  const title=document.getElementById('reelTitle').value.trim();
+  if(!file){alert('Video select কৰা!');return;}
+  if(!title){alert('গানৰ নাম দিয়া!');return;}
+  const status=document.getElementById('uploadStatus');
+  const bar=document.getElementById('progBar');
+  const fill=document.getElementById('progFill');
+  bar.style.display='block';fill.style.width='30%';
+  status.innerText='Free server ত uploading...';
+  try{
+    const form=new FormData();
+    form.append('reqtype','fileupload');
+    form.append('fileToUpload',file);
+    const resp=await fetch('https://catbox.moe/user/api.php',{method:'POST',body:form});
+    let url=await resp.text();url=url.trim();
+    if(!url.startsWith('http')) throw new Error('fail');
+    fill.style.width='80%';status.innerText='Saving...';
+    await db.collection('reels').add({
+      title:title,url:url,type:file.type.startsWith('video')?'video':'audio',
+      district:document.getElementById('reelDist').value||selectedDistrict,
+      userName:currentUser.name,likes:0,
+      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    fill.style.width='100%';status.innerText='Success ✅';
+    setTimeout(()=>{closeReelsUpload();switchTab('reels',document.querySelectorAll('.bottom-nav button')[1]);},800);
+  }catch(err){
+    if(file.size>8000000){alert('18MB তকৈ সৰু দিয়া!');return;}
+    const reader=new FileReader();
+    reader.onload=async e=>{
+      await db.collection('reels').add({
+        title:title,url:e.target.result,type:file.type.startsWith('video')?'video':'audio',
+        district:selectedDistrict,userName:currentUser.name,likes:0,
+        createdAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      status.innerText='Success ✅';
+      setTimeout(()=>{closeReelsUpload();},800);
+    };
+    reader.readAsDataURL(file);
+  }
 }
+</script>
 db.collection("reels").orderBy("createdAt","desc").limit(100).onSnapshot(snap=>{allReels=[];snap.forEach(d=>allReels.push({id:d.id,...d.data()}));if(currentTab==='reels') renderReels();});
 function renderReels(){
   const feed=document.getElementById('reelsFeed');let filtered=selectedDistrict==="All"?allReels:allReels.filter(p=>p.district===selectedDistrict);
