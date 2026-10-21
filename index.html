@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="as"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>সোণৰ অসম- অসমৰ নিজৰ এপ</title> Premium</title>
+<title>সোণৰ অসম -অসমৰ নিজৰ এপ Premium</title>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <style>
@@ -42,11 +42,11 @@ body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:16
 <div class="membership-real" id="membershipCard">
   <img src="card-bg.jpg" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.src='card-bg.png'">
   <div style="position:absolute;top:0;left:0;width:100%;height:100%;">
-    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:27%;aspect-ratio:1/1;border-radius:50%;border:3px solid #d4af37;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;box-shadow:0 0 15px gold">
-      <img id="cardProfileImg" src="" style="width:100%;height:100%;object-fit:cover;display:none" crossorigin="anonymous">
-      <span id="cardProfileLetter" style="font-size:32px;font-weight:900;color:gold">H</span>
+    <div style="position:absolute;top:48%;left:50%;transform:translate(-50%,-50%);width:19%;aspect-ratio:1/1;border-radius:50%;border:2.5px solid #d4af37;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px gold">
+      <img id="cardProfileImg" src="" style="width:100%;height:100%;object-fit:cover;display:none">
+      <span id="cardProfileLetter" style="font-size:22px;font-weight:900;color:gold">H</span>
     </div>
-    <div id="cardName" style="position:absolute;top:65%;left:50%;transform:translateX(-50%);color:#fff;font-size:11px;font-weight:800;text-align:center;text-shadow:0 1px 3px #000,0 0 6px gold;white-space:nowrap;background:rgba(0,0,0,0.7);padding:3px 14px;border-radius:10px;border:1px solid rgba(212,175,55,0.6)">Hamidul Islam</div>
+    <div id="cardName" style="position:absolute;top:68.5%;left:50%;transform:translateX(-50%);color:#fff;font-size:11px;font-weight:800;text-align:center;text-shadow:0 1px 3px #000,0 0 6px gold;white-space:nowrap;background:rgba(0,0,0,0.7);padding:3px 14px;border-radius:10px;border:1px solid rgba(212,175,55,0.6)">Hamidul Islam</div>
   </div>
 </div>
 <div style="text-align:center;margin-top:12px">
@@ -64,7 +64,7 @@ body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:16
 <button onclick="openProfilePage()"><span class="icon">👤</span>Profile</button>
 </div>
 <div id="reelsModal"><div class="reelsBox">
-<h3 style="color:gold;text-align:center;margin:0 0 12px 0">HD Reels Upload (FREE - No Card)</h3>
+<h3 style="color:gold;text-align:center;margin:0 0 12px 0">HD Reels Upload (FREE)</h3>
 <input type="file" id="reelFile" accept="video/*" style="width:100%;padding:10px;border-radius:10px;background:#1a1a1a;color:#fff;border:1px solid #333;margin-bottom:10px">
 <input type="text" id="reelTitle" placeholder="গানৰ নাম লিখা..." style="width:100%;padding:10px;border-radius:10px;background:#1a1a1a;color:#fff;border:1px solid #333;margin-bottom:10px">
 <select id="reelDist" style="width:100%;padding:10px;border-radius:10px;background:#1a1a1a;color:#fff;border:1px solid #333;margin-bottom:10px"></select>
@@ -90,7 +90,7 @@ function switchTab(t,e){currentTab=t;document.querySelectorAll('.bottom-nav butt
 function openReelsUpload(){if(!currentUser){openAuth();return;}document.getElementById('reelsModal').style.display='flex';}
 function closeReelsUpload(){document.getElementById('reelsModal').style.display='none';document.getElementById('uploadStatus').innerText='';document.getElementById('progBar').style.display='none';}
 function compressImage(file, maxW, quality){return new Promise(res=>{const r=new FileReader();r.onload=e=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;if(w>maxW){h=h*maxW/w;w=maxW;}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',quality));};img.src=e.target.result;};r.readAsDataURL(file);});}
-function isVideoUrl(url){if(!url) return false; return url.startsWith('data:video') || url.includes('.mp4') || url.includes('.webm') || url.includes('.mov') || url.includes('video/upload') || url.includes('/video/') || url.includes('catbox');}
+function isVideoUrl(url){if(!url) return false; return url.startsWith('data:video') || url.includes('.mp4') || url.includes('.webm') || url.includes('catbox');}
 async function uploadReelNow(){
   const file=document.getElementById('reelFile').files[0];
   const title=document.getElementById('reelTitle').value.trim();
@@ -100,24 +100,24 @@ async function uploadReelNow(){
   if(!file){alert('Video Select কৰা!');return;}
   if(!title){alert('গানৰ নাম লিখা!');return;}
   if(file.size>150000000){alert('150MB তকৈ ডাঙৰ!');return;}
-  bar.style.display='block';fill.style.width='20%';status.innerText='Uploading Video (FREE)...';
+  bar.style.display='block';fill.style.width='20%';status.innerText='Uploading (FREE)...';
   try{
     let fd=new FormData();fd.append('reqtype','fileupload');fd.append('fileToUpload',file);
     fill.style.width='50%';
     let resp=await fetch('https://catbox.moe/user/api.php',{method:'POST',body:fd});
     let url=(await resp.text()).trim();
-    if(!url.startsWith('http')) throw new Error('Catbox busy - 30 Sec পিছত Try');
+    if(!url.startsWith('http')) throw new Error('Catbox busy');
     fill.style.width='85%';status.innerText='Saving...';
     await db.collection('reels').add({title:title,url:url,type:'video',district:document.getElementById('reelDist').value||selectedDistrict,userName:currentUser.name,userPhoto:profilePic||'',likes:0,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-    fill.style.width='100%';status.innerText='SUCCESS! Video Home + Reels + Profile ত দেখিব!';
+    fill.style.width='100%';status.innerText='SUCCESS!';
     setTimeout(()=>{closeReelsUpload();document.getElementById('reelFile').value='';document.getElementById('reelTitle').value='';switchTab('reels',document.querySelectorAll('.bottom-nav button')[1]);},800);
-  }catch(e){status.innerText='Failed: '+e.message;alert('Error: '+e.message);bar.style.display='none';}
+  }catch(e){status.innerText='Failed: '+e.message;alert(e.message);bar.style.display='none';}
 }
 db.collection("reels").orderBy("createdAt","desc").limit(100).onSnapshot(s=>{allReels=[];s.forEach(d=>allReels.push({id:d.id,...d.data()}));if(currentTab==='reels')renderReels();if(document.getElementById('profilePage').style.display==='block')openProfilePage();});
 function renderReels(){
   const feed=document.getElementById('reelsFeed');
   let filtered=selectedDistrict==="All"?allReels:allReels.filter(p=>p.district===selectedDistrict);
-  if(!filtered.length){feed.innerHTML='<div class="card" style="text-align:center;color:#888;padding:30px">Reels নাই - + ত ক্লিক কৰি Video দিয়া (FREE)</div>';return;}
+  if(!filtered.length){feed.innerHTML='<div class="card" style="text-align:center;color:#888;padding:30px">Reels নাই - + ত ক্লিক কৰি Video দিয়া</div>';return;}
   feed.innerHTML=filtered.map(d=>`<div class="reel-card"><video src="${d.url}" controls playsinline preload="metadata" style="width:100%;max-height:600px;background:#000"></video><div style="padding:10px;display:flex;justify-content:space-between"><div><b style="color:gold">${d.title}</b><br><span style="font-size:11px;color:#888">${d.userName} • ${d.district||''}</span></div><button onclick="likeReel('${d.id}',${d.likes||0})" style="background:#1a1a1a;border:1px solid gold;border-radius:20px;padding:6px 12px;color:gold">❤️ ${d.likes||0}</button></div></div>`).join('');
 }
 function likeReel(id,l){if(!currentUser){openAuth();return;}if(localStorage.getItem('liked_reel_'+id))return;db.collection("reels").doc(id).update({likes:(l||0)+1});localStorage.setItem('liked_reel_'+id,'1');}
@@ -161,9 +161,6 @@ function openProfilePage(){
   if(profilePic && cpImg){
     cpImg.src=profilePic;
     cpImg.style.display='block';
-    cpImg.style.objectFit='cover';
-    cpImg.style.width='100%';
-    cpImg.style.height='100%';
     if(cpLet) cpLet.style.display='none';
   }else{
     if(cpLet){cpLet.innerText=currentUser.name[0].toUpperCase();cpLet.style.display='block';}
@@ -175,7 +172,7 @@ function deleteReel(id,o){if(o!==currentUser.name){alert("আনৰ Reels নো
 function downloadCard(){
   const cardBg=document.querySelector('#membershipCard img');
   const btn=document.querySelector('button[onclick="downloadCard()"]');
-  if(btn) btn.innerText='⏳ Creating HD...';
+  if(btn) btn.innerText='⏳ Creating...';
   const bgSrc=cardBg?cardBg.src:'card-bg.jpg';
   const name=currentUser?currentUser.name:'Member';
   const canvas=document.createElement('canvas');
@@ -187,37 +184,35 @@ function downloadCard(){
   bgImg.onload=()=>{
     ctx.drawImage(bgImg,0,0,canvas.width,canvas.height);
     const photoX=canvas.width/2;
-    const photoY=canvas.height*0.44;
-    const photoR=(canvas.width*0.27)/2; // 15%
-    
+    const photoY=canvas.height*0.48;
+    const photoR=(canvas.width*0.19)/2;
     const drawNameFinal=()=>{
-      const nameY=canvas.height*0.71;
-      ctx.font='bold 52px Arial';
+      const nameY=canvas.height*0.715;
+      ctx.font='bold 48px Arial';
       ctx.textAlign='center';
       const textW=ctx.measureText(name).width;
-      const pillW=textW+80;
-      const pillH=54;
+      const pillW=textW+70;
+      const pillH=50;
       const pillX=canvas.width/2 - pillW/2;
-      const pillY=nameY - 32;
+      const pillY=nameY - 30;
       ctx.fillStyle='rgba(0,0,0,0.75)';
       ctx.beginPath();
-      if(ctx.roundRect){ctx.roundRect(pillX,pillY,pillW,pillH,26);} else {ctx.rect(pillX,pillY,pillW,pillH);}
+      if(ctx.roundRect){ctx.roundRect(pillX,pillY,pillW,pillH,22);} else {ctx.rect(pillX,pillY,pillW,pillH);}
       ctx.fill();
-      ctx.strokeStyle='rgba(212,175,55,0.7)';
-      ctx.lineWidth=2;
+      ctx.strokeStyle='rgba(212,175,55,0.6)';
+      ctx.lineWidth=1.5;
       ctx.stroke();
       ctx.fillStyle='#fff';
       ctx.shadowColor='gold';
-      ctx.shadowBlur=12;
-      ctx.fillText(name,canvas.width/2,nameY+6);
+      ctx.shadowBlur=10;
+      ctx.fillText(name,canvas.width/2,nameY+4);
       ctx.shadowBlur=0;
       const link=document.createElement('a');
-      link.download=`Sonor-Axom-${name.replace(/\s/g,'_')}-BOSS-15.png`;
+      link.download=`Sonor-Axom-${name.replace(/\s/g,'_')}-19PCT.png`;
       link.href=canvas.toDataURL('image/png',1.0);
       link.click();
       if(btn) btn.innerText='⬇️ Download HD Card';
     };
-
     if(profilePic){
       const pImg=new Image();
       pImg.onload=()=>{
@@ -230,8 +225,8 @@ function downloadCard(){
         ctx.beginPath();
         ctx.arc(photoX,photoY,photoR,0,Math.PI*2);
         ctx.strokeStyle='#d4af37';
-        ctx.lineWidth=7;
-        ctx.shadowColor='gold'; ctx.shadowBlur=20;
+        ctx.lineWidth=6;
+        ctx.shadowColor='gold'; ctx.shadowBlur=15;
         ctx.stroke();
         ctx.shadowBlur=0;
         drawNameFinal();
@@ -244,12 +239,12 @@ function downloadCard(){
       ctx.fillStyle='#000';
       ctx.fill();
       ctx.strokeStyle='#d4af37';
-      ctx.lineWidth=7;
+      ctx.lineWidth=6;
       ctx.stroke();
       ctx.fillStyle='gold';
-      ctx.font='bold 100px Arial';
+      ctx.font='bold 70px Arial';
       ctx.textAlign='center';
-      ctx.fillText(name[0].toUpperCase(),photoX,photoY+32);
+      ctx.fillText(name[0].toUpperCase(),photoX,photoY+20);
       drawNameFinal();
     }
   };
