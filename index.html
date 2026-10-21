@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="as"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>সোণৰ অসম -অসমৰ নিজৰ এপ</title> Premium</title>
+<title>সোণৰ অসম -অসমৰ নিজৰ এপ Premium</title>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
 body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:160px}
 .header{padding:10px 14px;background:#0a0a0a;border-bottom:3px solid gold;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
@@ -42,11 +43,11 @@ body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:16
 <div class="membership-real" id="membershipCard">
   <img src="card-bg.jpg" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.src='card-bg.png'">
   <div style="position:absolute;top:0;left:0;width:100%;height:100%;">
-    <div style="position:absolute;top:51%;left:50%;transform:translate(-50%,-50%);width:16%;aspect-ratio:1/1;border-radius:50%;border:2.5px solid #d4af37;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px gold">
+    <div style="position:absolute;top:54%;left:50%;transform:translate(-50%,-50%);width:16.5%;aspect-ratio:1/1;border-radius:50%;border:2.5px solid #d4af37;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px gold">
       <img id="cardProfileImg" src="" style="width:100%;height:100%;object-fit:cover;display:none">
-      <span id="cardProfileLetter" style="font-size:22px;font-weight:900;color:gold">H</span>
+      <span id="cardProfileLetter" style="font-size:20px;font-weight:900;color:gold">H</span>
     </div>
-    <div id="cardName" style="position:absolute;top:64%;left:50%;transform:translateX(-50%);color:#fff;font-size:11px;font-weight:800;text-align:center;text-shadow:0 1px 3px #000,0 0 6px gold;white-space:nowrap;background:rgba(0,0,0,0.7);padding:3px 14px;border-radius:10px;border:1px solid rgba(212,175,55,0.6)">Hamidul Islam</div>
+    <div id="cardName" style="position:absolute;top:73%;left:50%;transform:translateX(-50%);color:#fff;font-size:11px;font-weight:800;text-align:center;text-shadow:0 1px 3px #000,0 0 6px gold;white-space:nowrap;background:rgba(0,0,0,0.72);padding:3px 14px;border-radius:10px;border:1px solid rgba(212,175,55,0.6)">Hamidul Islam</div>
   </div>
 </div>
 <div style="text-align:center;margin-top:12px">
@@ -169,86 +170,82 @@ function openProfilePage(){
 }
 function closeProfile(){document.getElementById('profilePage').style.display='none';}
 function deleteReel(id,o){if(o!==currentUser.name){alert("আনৰ Reels নোৱাৰি!");return;}if(confirm("Reel Delete?"))db.collection("reels").doc(id).delete();}
-function downloadCard(){
-  const cardBg=document.querySelector('#membershipCard img');
-  const btn=document.querySelector('button[onclick="downloadCard()"]');
-  if(btn) btn.innerText='⏳ Creating...';
-  const bgSrc=cardBg?cardBg.src:'card-bg.jpg';
-  const name=currentUser?currentUser.name:'Member';
-  const canvas=document.createElement('canvas');
-  const ctx=canvas.getContext('2d');
-  canvas.width=1600;
-  canvas.height=1000;
-  const bgImg=new Image();
-  bgImg.crossOrigin='anonymous';
-  bgImg.onload=()=>{
-    ctx.drawImage(bgImg,0,0,canvas.width,canvas.height);
-    const photoX=canvas.width/2;
-    const photoY=canvas.height*0.48;
-    const photoR=(canvas.width*0.15)/2;
-    const drawNameFinal=()=>{
-      const nameY=canvas.height*0.715;
-      ctx.font='bold 48px Arial';
-      ctx.textAlign='center';
-      const textW=ctx.measureText(name).width;
-      const pillW=textW+70;
-      const pillH=50;
-      const pillX=canvas.width/2 - pillW/2;
-      const pillY=nameY - 30;
-      ctx.fillStyle='rgba(0,0,0,0.75)';
-      ctx.beginPath();
-      if(ctx.roundRect){ctx.roundRect(pillX,pillY,pillW,pillH,22);} else {ctx.rect(pillX,pillY,pillW,pillH);}
-      ctx.fill();
-      ctx.strokeStyle='rgba(212,175,55,0.6)';
-      ctx.lineWidth=1.5;
-      ctx.stroke();
-      ctx.fillStyle='#fff';
-      ctx.shadowColor='gold';
-      ctx.shadowBlur=10;
-      ctx.fillText(name,canvas.width/2,nameY+4);
-      ctx.shadowBlur=0;
-      const link=document.createElement('a');
-      link.download=`Sonor-Axom-${name.replace(/\s/g,'_')}-15PCT.png`;
-      link.href=canvas.toDataURL('image/png',1.0);
-      link.click();
-      if(btn) btn.innerText='⬇️ Download HD Card';
-    };
-    if(profilePic){
-      const pImg=new Image();
-      pImg.onload=()=>{
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(photoX,photoY,photoR,0,Math.PI*2);
-        ctx.clip();
-        ctx.drawImage(pImg,photoX-photoR,photoY-photoR,photoR*2,photoR*2);
-        ctx.restore();
-        ctx.beginPath();
-        ctx.arc(photoX,photoY,photoR,0,Math.PI*2);
-        ctx.strokeStyle='#d4af37';
-        ctx.lineWidth=6;
-        ctx.shadowColor='gold'; ctx.shadowBlur=15;
-        ctx.stroke();
-        ctx.shadowBlur=0;
-        drawNameFinal();
+// FIXED DOWNLOAD - SAME AS PREVIEW - WYSIWYG!
+async function downloadCard(){
+  const card = document.getElementById('membershipCard');
+  const btn = document.querySelector('button[onclick="downloadCard()"]');
+  if(!card){alert('Card not found'); return;}
+  btn.innerText='⏳ HD Creating...';
+  try{
+    // Wait images load
+    const imgs = card.querySelectorAll('img');
+    await Promise.all(Array.from(imgs).map(img => {
+      if(img.complete) return Promise.resolve();
+      return new Promise(res => { img.onload=res; img.onerror=res; setTimeout(res,2000); });
+    }));
+    const canvas = await html2canvas(card, {
+      scale: 3,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: null,
+      logging: false,
+      imageTimeout: 0
+    });
+    const link = document.createElement('a');
+    link.download = `Sonor-Axom-${(currentUser?currentUser.name:'Member').replace(/\s/g,'_')}-HD-PERFECT.png`;
+    link.href = canvas.toDataURL('image/png', 1.0);
+    link.click();
+    btn.innerText='⬇️ Download HD Card';
+  }catch(e){
+    console.error(e);
+    alert('HD Download Fail, Trying Normal Method...');
+    // Fallback old method with correct 16.5% + 55%
+    const cardBg=document.querySelector('#membershipCard img');
+    const bgSrc=cardBg?cardBg.src:'card-bg.jpg';
+    const name=currentUser?currentUser.name:'Member';
+    const canvas=document.createElement('canvas');
+    const ctx=canvas.getContext('2d');
+    canvas.width=1600; canvas.height=1000;
+    const bgImg=new Image(); bgImg.crossOrigin='anonymous';
+    bgImg.onload=()=>{
+      ctx.drawImage(bgImg,0,0,canvas.width,canvas.height);
+      const photoX=canvas.width/2;
+      const photoY=canvas.height*0.54; // FIXED - Middle, not top!
+      const photoR=(canvas.width*0.165)/2;
+      const drawNameFinal=()=>{
+        const nameY=canvas.height*0.73;
+        ctx.font='bold 48px Arial'; ctx.textAlign='center';
+        const textW=ctx.measureText(name).width;
+        ctx.fillStyle='rgba(0,0,0,0.75)';
+        ctx.beginPath(); ctx.roundRect(canvas.width/2-textW/2-35, nameY-32, textW+70, 50, 22); ctx.fill();
+        ctx.strokeStyle='rgba(212,175,55,0.6)'; ctx.lineWidth=1.5; ctx.stroke();
+        ctx.fillStyle='#fff'; ctx.shadowColor='gold'; ctx.shadowBlur=10;
+        ctx.fillText(name,canvas.width/2,nameY+4); ctx.shadowBlur=0;
+        const link=document.createElement('a');
+        link.download=`Sonor-Axom-${name.replace(/\s/g,'_')}-HD.png`;
+        link.href=canvas.toDataURL('image/png',1.0); link.click();
+        btn.innerText='⬇️ Download HD Card';
       };
-      pImg.onerror=drawNameFinal;
-      pImg.src=profilePic;
-    }else{
-      ctx.beginPath();
-      ctx.arc(photoX,photoY,photoR,0,Math.PI*2);
-      ctx.fillStyle='#000';
-      ctx.fill();
-      ctx.strokeStyle='#d4af37';
-      ctx.lineWidth=6;
-      ctx.stroke();
-      ctx.fillStyle='gold';
-      ctx.font='bold 70px Arial';
-      ctx.textAlign='center';
-      ctx.fillText(name[0].toUpperCase(),photoX,photoY+20);
-      drawNameFinal();
-    }
-  };
-  bgImg.src=bgSrc;
+      if(profilePic){
+        const pImg=new Image();
+        pImg.onload=()=>{
+          ctx.save(); ctx.beginPath(); ctx.arc(photoX,photoY,photoR,0,Math.PI*2); ctx.clip();
+          ctx.drawImage(pImg,photoX-photoR,photoY-photoR,photoR*2,photoR*2); ctx.restore();
+          ctx.beginPath(); ctx.arc(photoX,photoY,photoR,0,Math.PI*2);
+          ctx.strokeStyle='#d4af37'; ctx.lineWidth=6; ctx.stroke();
+          drawNameFinal();
+        };
+        pImg.onerror=drawNameFinal; pImg.src=profilePic;
+      }else{
+        ctx.beginPath(); ctx.arc(photoX,photoY,photoR,0,Math.PI*2); ctx.fillStyle='#000'; ctx.fill();
+        ctx.strokeStyle='#d4af37'; ctx.lineWidth=6; ctx.stroke();
+        ctx.fillStyle='gold'; ctx.font='bold 70px Arial'; ctx.textAlign='center';
+        ctx.fillText(name[0].toUpperCase(),photoX,photoY+20); drawNameFinal();
+      }
+    };
+    bgImg.onerror=()=>{alert('card-bg.jpg not found'); btn.innerText='⬇️ Download HD Card';};
+    bgImg.src=bgSrc;
+  }
 }
 function deletePost(id,o){if(o!==currentUser.name){alert("আনৰ Post নোৱাৰি!");return;}if(confirm("Delete?"))db.collection("posts").doc(id).delete();}
 function likePost(id,l){if(!currentUser){openAuth();return;}if(localStorage.getItem('liked_'+id))return;db.collection("posts").doc(id).update({likes:(l||0)+1});localStorage.setItem('liked_'+id,'1');}
