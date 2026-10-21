@@ -118,7 +118,7 @@ async function uploadReelNow(){
   const fill=document.getElementById('progFill');
   if(!file){alert('Video Select কৰা!');return;}
   if(!title){alert('গানৰ নাম লিখা!');return;}
-  if(file.size>80000000){alert('Video 80MB তকৈ ডাঙৰ! 20 Sec কৰা!');return;}
+  if(file.size>80000000){alert('Video 80MB তকৈ ডাঙৰ! 60 Sec কৰা!');return;}
   bar.style.display='block';fill.style.width='5%';status.innerText='Uploading...';
   let videoUrl="";
   const uploaders=[
