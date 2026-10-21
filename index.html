@@ -40,15 +40,14 @@ body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:16
 <div id="bigPicArea"></div><h2 id="profName" style="color:gold;margin:10px 0"></h2>
 <button onclick="uploadProfile()" style="margin-top:6px;padding:8px 16px;border-radius:20px;background:gold;color:#000;font-weight:800;border:0">📷 Profile Photo</button>
 <div style="padding:10px">
-<div class="membership-real" id="membershipCard">
-  <img src="card-bg.jpg" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.src='card-bg.png'">
-  <div style="position:absolute;top:0;left:0;width:100%;height:100%;">
-    <div style="position:absolute;top:46%;left:50%;transform:translate(-50%,-50%);width:22%;aspect-ratio:1/1;border-radius:50%;border:4px solid #d4af37;overflow:hidden;background:#111;box-shadow:0 0 15px gold;display:flex;align-items:center;justify-content:center">
-      <img id="cardProfileImg" src="" style="width:100%;height:100%;object-fit:cover;display:none"><span id="cardProfileLetter" style="font-size:36px;font-weight:900;color:gold">H</span>
-    </div>
-    <div id="cardName" style="position:absolute;top:68%;left:50%;transform:translateX(-50%);color:#fff;font-size:20px;font-weight:900;text-align:center;text-shadow:0 0 8px #000,0 0 15px gold;white-space:nowrap;background:linear-gradient(90deg,transparent,rgba(0,0,0,0.85),transparent);padding:4px 20px;border-radius:8px;width:75%">Hamidul Islam</div>
-  </div>
-</div>
+if(profilePic&&cpImg){
+  cpImg.src=profilePic;
+  cpImg.style.display='block';
+  cpImg.style.objectFit='cover';
+  cpImg.style.width='100%';
+  cpImg.style.height='100%';
+  if(cpLet) cpLet.style.display='none';
+}
 <div style="text-align:center;margin-top:12px">
   <button onclick="downloadCard()" style="padding:11px 24px;border-radius:25px;background:linear-gradient(135deg,gold,#ff8c00);color:#000;font-weight:900;border:0">⬇️ Download HD Card</button>
   <p style="color:#666;font-size:10px;margin-top:8px">ID: <span id="cardIdShow">SA-0000</span> • <span id="cardDistrictShow">All Assam</span></p>
