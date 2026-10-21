@@ -159,17 +159,86 @@ function openProfilePage(){
 }
 function closeProfile(){document.getElementById('profilePage').style.display='none';}
 function downloadCard(){
-  const card=document.getElementById('membershipCard');
-  const pImg=document.getElementById('cardProfileImg');
-  if(pImg && profilePic){pImg.src=profilePic;pImg.style.display='block';}
-  setTimeout(()=>{
-    html2canvas(card,{scale:3,useCORS:true,allowTaint:true,backgroundColor:null,logging:false}).then(canvas=>{
+  const cardBg=document.querySelector('#membershipCard img');
+  const statusBtn=document.querySelector('button[onclick="downloadCard()"]');
+  if(statusBtn) statusBtn.innerText='⏳ HD Creating...';
+  const bgSrc=cardBg?cardBg.src:'card-bg.jpg';
+  const name=currentUser?currentUser.name:'Member';
+  const canvas=document.createElement('canvas');
+  const ctx=canvas.getContext('2d');
+  canvas.width=1600;
+  canvas.height=1000;
+  const bgImg=new Image();
+  bgImg.crossOrigin='anonymous';
+  bgImg.onload=()=>{
+    ctx.drawImage(bgImg,0,0,canvas.width,canvas.height);
+    const photoX=canvas.width/2;
+    const photoY=canvas.height*0.60;
+    const photoR=canvas.width*0.095/2*2.2;
+    if(profilePic){
+      const pImg=new Image();
+      pImg.onload=()=>{
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(photoX,photoY,photoR,0,Math.PI*2);
+        ctx.clip();
+        ctx.drawImage(pImg,photoX-photoR,photoY-photoR,photoR*2,photoR*2);
+        ctx.restore();
+        ctx.beginPath();
+        ctx.arc(photoX,photoY,photoR,0,Math.PI*2);
+        ctx.strokeStyle='#d4af37';
+        ctx.lineWidth=6;
+        ctx.stroke();
+        drawName();
+      };
+      pImg.onerror=()=>{ drawName(); };
+      pImg.src=profilePic;
+    }else{
+      ctx.beginPath();
+      ctx.arc(photoX,photoY,photoR,0,Math.PI*2);
+      ctx.fillStyle='#000';
+      ctx.fill();
+      ctx.strokeStyle='#d4af37';
+      ctx.lineWidth=6;
+      ctx.stroke();
+      ctx.fillStyle='gold';
+      ctx.font='bold 60px Arial';
+      ctx.textAlign='center';
+      ctx.fillText(name[0].toUpperCase(),photoX,photoY+20);
+      drawName();
+    }
+    function drawName(){
+      const nameY=canvas.height*0.735;
+      ctx.font='bold 38px Arial';
+      ctx.textAlign='center';
+      const textW=ctx.measureText(name).width;
+      const pillW=textW+80;
+      const pillH=52;
+      const pillX=canvas.width/2 - pillW/2;
+      const pillY=nameY - 32;
+      ctx.fillStyle='rgba(0,0,0,0.75)';
+      ctx.beginPath();
+      ctx.roundRect(pillX,pillY,pillW,pillH,26);
+      ctx.fill();
+      ctx.strokeStyle='rgba(212,175,55,0.6)';
+      ctx.lineWidth=2;
+      ctx.stroke();
+      ctx.fillStyle='#fff';
+      ctx.shadowColor='gold';
+      ctx.shadowBlur=15;
+      ctx.fillText(name,canvas.width/2,nameY+2);
       const link=document.createElement('a');
-      link.download=`Sonor-Axom-${currentUser.name}.png`;
+      link.download=`Sonor-Axom-${name.replace(/\s/g,'_')}-Premium.png`;
       link.href=canvas.toDataURL('image/png',1.0);
       link.click();
-    });
-  },400);
+      if(statusBtn) statusBtn.innerText='⬇️ Download HD Card';
+    }
+  };
+  bgImg.onerror=()=>{
+    alert('card-bg.jpg Load Error!');
+    if(statusBtn) statusBtn.innerText='⬇️ Download HD Card';
+  };
+  bgImg.src=bgSrc;
 }
 function deletePost(id,o){if(o!==currentUser.name){alert("আনৰ Post নোৱাৰি!");return;}if(confirm("Delete?"))db.collection("posts").doc(id).delete();}
 function likePost(id,l){if(!currentUser){openAuth();return;}if(localStorage.getItem('liked_'+id))return;db.collection("posts").doc(id).update({likes:(l||0)+1});localStorage.setItem('liked_'+id,'1');}
