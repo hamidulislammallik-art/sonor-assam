@@ -139,7 +139,7 @@ async function uploadReelNow(){
       if(finalUrl&&finalUrl.startsWith('http')){videoUrl=finalUrl;break;}
     }catch(e){continue;}
   }
-  if(!videoUrl){bar.style.display='none';alert('সকলো Server Busy! Video Size 10-15 Sec কৰি আকৌ চেষ্টা কৰা!');return;}
+  if(!videoUrl){bar.style.display='none';alert('সকলো Server Busy! Video Size 50-60 Sec কৰি আকৌ চেষ্টা কৰা!');return;}
   try{
     fill.style.width='95%';status.innerText='Saving 95%...';
     await db.collection('reels').add({title:title,url:videoUrl,type:'video',district:document.getElementById('reelDist').value||selectedDistrict,userName:currentUser.name,userPhoto:profilePic||'',likes:0,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
@@ -291,7 +291,7 @@ async function createPostReal(){
         if(url&&url.startsWith('http')){finalImg=url;break;}
       }catch(e){continue;}
     }
-    if(!finalImg){alert('Photo Server Busy! 2MB কৰি চেষ্টা কৰা!'); if(txtEl) txtEl.placeholder="কি ভাবিছা?"; return;}
+    if(!finalImg){alert('Photo Server Busy! 10MB কৰি চেষ্টা কৰা!'); if(txtEl) txtEl.placeholder="কি ভাবিছা?"; return;}
   }
   try{
     await db.collection("posts").add({text:txt,image:finalImg||"",district:dist,likes:0,comments:[],userName:currentUser.name,userPhoto:profilePic||"",createdAt:firebase.firestore.FieldValue.serverTimestamp()});
