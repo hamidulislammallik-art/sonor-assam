@@ -188,7 +188,7 @@ function downloadCard(){
     ctx.drawImage(bgImg,0,0,canvas.width,canvas.height);
     const photoX=canvas.width/2;
     const photoY=canvas.height*0.44;
-    const photoR=(canvas.width*0.27)/2; // 20% BIG!
+    const photoR=(canvas.width*0.27)/2; // 15%
     
     const drawNameFinal=()=>{
       const nameY=canvas.height*0.71;
@@ -212,7 +212,7 @@ function downloadCard(){
       ctx.fillText(name,canvas.width/2,nameY+6);
       ctx.shadowBlur=0;
       const link=document.createElement('a');
-      link.download=`Sonor-Axom-${name.replace(/\s/g,'_')}-BOSS-27.png`;
+      link.download=`Sonor-Axom-${name.replace(/\s/g,'_')}-BOSS-15.png`;
       link.href=canvas.toDataURL('image/png',1.0);
       link.click();
       if(btn) btn.innerText='⬇️ Download HD Card';
