@@ -172,14 +172,14 @@ function downloadCard(){
   bgImg.crossOrigin='anonymous';
   bgImg.onload=()=>{
     ctx.drawImage(bgImg,0,0,canvas.width,canvas.height);
-    // Website ত যেনেকৈ top:60% width:9.5% - Same
+    // Website ত যেনেকৈ top:50% width:9.5% - Same
     const photoX=canvas.width/2;
-    const photoY=canvas.height*0.60; // Website same 60%
+    const photoY=canvas.height*0.60; // Website same 50%
     const photoR=(canvas.width*0.095)/2; // Website same 9.5% - সৰু!
     
     const drawNameFinal=()=>{
-      const nameY=canvas.height*0.72; // Website same 71-72%
-      ctx.font='bold 32px Arial';
+      const nameY=canvas.height*0.72; // Website same 65%
+      ctx.font='bold 45px Arial';
       ctx.textAlign='center';
       const textW=ctx.measureText(name).width;
       const pillW=textW+60;
