@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="as"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>সোণৰ অসম - Official Premium</title>
+<html lang="as">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>সোণৰ অসম - অসমৰ নিজৰ এপ</title>
+<link rel="icon" href="logo.png">
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
-body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:160px}
+body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:140px}
 .header{padding:10px 14px;background:#0a0a0a;border-bottom:3px solid gold;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
-.logo-box{width:46px;height:46px;border-radius:50%;border:2px solid gold;object-fit:cover;background:#000}
+.logo-box{width:46px;height:46px;border-radius:12px;border:2px solid gold;object-fit:cover;background:linear-gradient(135deg,gold,#ff8c00)}
 .profile-pic{width:38px;height:38px;border-radius:50%;border:2px solid gold;object-fit:cover;cursor:pointer;background:#222;display:flex;align-items:center;justify-content:center;font-weight:900;color:gold}
 .card{background:#111;border:1px solid #222;border-radius:16px;padding:12px;margin:10px}
 .btn-action{padding:6px 12px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:700;border:1px solid #333;background:#1a1a1a;color:#fff}
@@ -17,266 +19,223 @@ body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:16
 .statBox{display:flex;justify-content:center;gap:12px;margin-top:15px}
 .statBox div{background:#111;border:1px solid #222;border-radius:12px;padding:10px 16px;text-align:center;min-width:68px}
 .statBox b{color:gold;font-size:18px;display:block}
-.districts{display:flex;gap:8px;overflow-x:auto;padding:10px;background:#080808;border-bottom:1px solid #111}
-.districts button{white-space:nowrap;padding:7px 14px;border-radius:20px;border:1px solid #2a2a2a;background:#151515;color:#aaa;font-size:12.5px}
-.districts button.active{background:gold;color:#000;font-weight:800}
-.bottom-nav{position:fixed;bottom:0;left:0;width:100%;height:72px;background:#0a0a0a;border-top:2px solid gold;display:flex;justify-content:space-around;align-items:center;z-index:999999}
-.bottom-nav button{background:transparent;border:0;color:#888;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;font-weight:700}
-.bottom-nav button.active{color:gold}
-.bottom-nav button span.icon{font-size:22px}
-.upload-center{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,gold,#ff8c00);border:3px solid #000;display:flex;align-items:center;justify-content:center;font-size:32px;color:#000;font-weight:900;margin-top:-28px;box-shadow:0 4px 15px rgba(255,215,0,0.7);cursor:pointer}
-#reelsModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);z-index:9999999;display:none;align-items:center;justify-content:center;padding:15px}
-.reelsBox{background:#111;border:2px solid gold;border-radius:18px;width:100%;max-width:380px;padding:18px}
-.progressBar{width:100%;height:8px;background:#222;border-radius:10px;overflow:hidden;margin-top:8px;display:none}
-.progressFill{height:100%;background:gold;width:0%;transition:width 0.3s}
-.reel-card{background:#111;border:1px solid gold;border-radius:16px;margin:10px;overflow:hidden}
+#chatBtn{position:fixed!important;bottom:110px!important;left:18px!important;width:62px!important;height:62px!important;background:linear-gradient(135deg,gold,#ff8c00)!important;border-radius:50%!important;border:3px solid #000!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:28px!important;cursor:pointer!important;z-index:99999!important;box-shadow:0 5px 20px rgba(255,215,0,0.6)!important}
 #privateBox{position:fixed;bottom:180px;left:12px;width:92%;max-width:380px;height:460px;background:#111;border:2px solid gold;border-radius:18px;z-index:99998;display:none;flex-direction:column;overflow:hidden}
-.membership-real{position:relative;width:100%;max-width:520px;margin:0 auto;border-radius:12px;overflow:hidden;box-shadow:0 0 25px rgba(212,175,55,0.5);border:2px solid #d4af37;aspect-ratio:16/10;background:#000}
-</style></head><body>
-<div class="header"><div style="display:flex;align-items:center;gap:10px"><img src="logo.jpg" class="logo-box" onerror="this.style.display='none'"><div><h2 style="margin:0;color:gold;font-size:18px">সোণৰ অসম</h2><p style="margin:0;color:#aaa;font-size:10px">Official • Premium</p></div></div><div id="authArea"></div></div>
-<div class="districts" id="districtList"></div><div id="feed"></div><div id="reelsFeed" style="display:none"></div>
-<div id="profilePage"><div class="profileHeader">
-<div style="display:flex;justify-content:space-between;margin-bottom:15px"><button onclick="closeProfile()" style="padding:7px 14px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #444">Back</button><button onclick="logout()" style="padding:7px 14px;border-radius:20px;background:#ff2222;color:#fff;border:0">Logout</button></div>
-<div id="bigPicArea"></div><h2 id="profName" style="color:gold;margin:10px 0"></h2>
-<button onclick="uploadProfile()" style="margin-top:6px;padding:8px 16px;border-radius:20px;background:gold;color:#000;font-weight:800;border:0">📷 Profile Photo</button>
-<div style="padding:10px">
-<div class="membership-real" id="membershipCard">
-  <img src="card-bg.jpg" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.src='card-bg.png'">
-  <div style="position:absolute;top:0;left:0;width:100%;height:100%;">
-    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:11%;aspect-ratio:1/1;border-radius:50%;border:2px solid #d4af37;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;box-shadow:0 0 8px gold">
-      <img id="cardProfileImg" src="" style="width:100%;height:100%;object-fit:cover;display:none" crossorigin="anonymous">
-      <span id="cardProfileLetter" style="font-size:16px;font-weight:900;color:gold">H</span>
+.chatHead{background:#000;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;color:gold;font-weight:900;border-bottom:2px solid gold}
+#privateMessages{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;background:#000}
+.pmsg{max-width:78%;padding:8px 12px;border-radius:14px;font-size:13px}.pmsg.me{align-self:flex-end;background:gold;color:#000;font-weight:600}.pmsg.other{align-self:flex-start;background:#222;color:#fff;border:1px solid #333}
+.chatInput{display:flex;gap:6px;padding:10px;background:#151515;border-top:1px solid #333}.chatInput input{flex:1;padding:10px 14px;border-radius:20px;border:2px solid gold;background:#fff;color:#000;font-weight:600;outline:none}
+#inboxList{max-height:110px;overflow-y:auto;background:#0a0a0a;padding:6px;border-bottom:1px solid #222}.inboxItem{padding:7px 10px;background:#1a1a1a;margin:3px 0;border-radius:10px;cursor:pointer;font-size:13px;display:flex;justify-content:space-between}
+#scrollTopBtn{position:fixed;bottom:185px;right:20px;width:48px;height:48px;background:#1a1a1a;border:2px solid gold;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:20px;cursor:pointer;z-index:99997;color:gold}
+#scrollBottomBtn{position:fixed;bottom:110px;right:18px;width:48px;height:48px;background:#1a1a1a;border:2px solid gold;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;z-index:99997;color:gold}
+.districts{display:flex;gap:8px;overflow-x:auto;padding:10px;scrollbar-width:none;background:#080808;border-bottom:1px solid #111}.districts::-webkit-scrollbar{display:none}.districts button{white-space:nowrap;padding:7px 14px;border-radius:20px;border:1px solid #2a2a2a;background:#151515;color:#aaa;font-size:12.5px}.districts button.active{background:gold;color:#000;font-weight:800}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;gap:10px">
+    <img src="logo.png" class="logo-box" id="mainLogo" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src='logo.jpg';}else{this.style.display='none';document.getElementById('logoFallback').style.display='flex'}">
+    <div id="logoFallback" style="width:46px;height:46px;border-radius:12px;border:2px solid gold;background:linear-gradient(135deg,gold,#ff8c00);display:none;align-items:center;justify-content:center;font-weight:900;color:#000">SA</div>
+    <div style="line-height:1.1">
+      <h2 style="margin:0;color:gold;font-size:19px;font-weight:900;letter-spacing:0.3px">সোণৰ অসম</h2>
+      <p style="margin:2px 0 0 0;color:#aaa;font-size:11px;font-weight:600;letter-spacing:0.8px">অসমৰ নিজৰ এপ</p>
     </div>
-    <div id="cardName" style="position:absolute;top:65%;left:50%;transform:translateX(-50%);color:#fff;font-size:10px;font-weight:800;text-align:center;text-shadow:0 1px 3px #000,0 0 6px gold;white-space:nowrap;background:rgba(0,0,0,0.6);padding:2px 12px;border-radius:10px;border:0.5px solid rgba(212,175,55,0.5);letter-spacing:0.3px">Hamidul Islam</div>
   </div>
+  <div id="authArea" style="display:flex;align-items:center;gap:8px"></div>
 </div>
-<div style="text-align:center;margin-top:12px">
-  <button onclick="downloadCard()" style="padding:11px 24px;border-radius:25px;background:linear-gradient(135deg,gold,#ff8c00);color:#000;font-weight:900;border:0">⬇️ Download HD Card</button>
-  <p style="color:#666;font-size:10px;margin-top:8px">ID: <span id="cardIdShow">SA-0000</span> • <span id="cardDistrictShow">All Assam</span></p>
+
+<div class="districts" id="districtList"></div>
+<div id="feed"></div>
+
+<div id="profilePage">
+  <div class="profileHeader">
+    <div style="display:flex;justify-content:space-between;margin-bottom:15px"><button onclick="closeProfile()" style="padding:7px 14px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #444">← Back</button><button onclick="logout()" style="padding:7px 14px;border-radius:20px;background:#ff2222;color:#fff;border:0">Logout</button></div>
+    <div id="bigPicArea"></div>
+    <h2 id="profName" style="color:gold;margin:12px 0 4px 0"></h2>
+    <p id="profBio" style="color:#aaa;margin:0;font-size:14px"></p>
+    <div class="statBox"><div><b id="myPostCount">0</b><span style="font-size:11px;color:#888">Posts</span></div><div><b id="myLikeCount">0</b><span style="font-size:11px;color:#888">Likes</span></div><div><b id="myCommentCount">0</b><span style="font-size:11px;color:#888">Comments</span></div></div>
+    <div style="margin-top:16px;display:flex;gap:8px;justify-content:center"><button onclick="editProfile()" style="padding:8px 16px;border-radius:20px;background:gold;color:#000;font-weight:900;border:0">✏️ Edit</button><button onclick="uploadProfile()" style="padding:8px 16px;border-radius:20px;background:#1a1a1a;color:gold;border:1px solid gold">📸 Photo</button></div>
+    <div style="margin-top:28px;text-align:center">
+      <h3 style="color:gold;margin-bottom:12px">💳 BOSS MEMBERSHIP CARD</h3>
+      <canvas id="memberCanvas" width="1200" height="675" style="display:none"></canvas>
+      <div id="cardPreview" style="background:#000;border:2px solid gold;border-radius:16px;padding:4px;min-height:220px;display:flex;align-items:center;justify-content:center;color:#666">Generating...</div>
+      <a id="downloadCard" href="#" download="SonorAxom-Boss-Card.png" style="display:inline-block;margin-top:14px;background:linear-gradient(135deg,gold,#ff8c00);color:#000;padding:12px 28px;border-radius:25px;text-decoration:none;font-weight:900;font-size:15px">📥 Boss Card Download</a>
+    </div>
+  </div>
+  <div style="padding:10px"><h3 style="color:gold;padding:0 10px">📝 মোৰ Posts</h3><div id="myPosts"></div></div>
 </div>
-</div>
-<div class="statBox"><div><b id="myPostCount">0</b><span style="font-size:11px;color:#888">Posts</span></div><div><b id="myLikeCount">0</b><span style="font-size:11px;color:#888">Likes</span></div><div><b id="myCommentCount">0</b><span style="font-size:11px;color:#888">Comments</span></div></div>
-</div><div style="padding:10px"><h3 style="color:gold;padding:0 10px">মোৰ Posts</h3><div id="myPosts"></div></div></div>
-<div class="bottom-nav">
-<button class="active" onclick="switchTab('home',this)"><span class="icon">🏠</span>Home</button>
-<button onclick="switchTab('reels',this)"><span class="icon">🎵</span>Reels</button>
-<div class="upload-center" onclick="openReelsUpload()">+</div>
-<button onclick="toggleInbox()"><span class="icon">💬</span>Inbox</button>
-<button onclick="openProfilePage()"><span class="icon">👤</span>Profile</button>
-</div>
-<div id="reelsModal"><div class="reelsBox">
-<h3 style="color:gold;text-align:center;margin:0 0 12px 0">HD Reels Upload</h3>
-<input type="file" id="reelFile" accept="video/*" style="width:100%;padding:10px;border-radius:10px;background:#1a1a1a;color:#fff;border:1px solid #333;margin-bottom:10px">
-<input type="text" id="reelTitle" placeholder="গানৰ নাম লিখা..." style="width:100%;padding:10px;border-radius:10px;background:#1a1a1a;color:#fff;border:1px solid #333;margin-bottom:10px">
-<select id="reelDist" style="width:100%;padding:10px;border-radius:10px;background:#1a1a1a;color:#fff;border:1px solid #333;margin-bottom:10px"></select>
-<div class="progressBar" id="progBar"><div class="progressFill" id="progFill"></div></div>
-<p id="uploadStatus" style="font-size:12px;color:#aaa;text-align:center;margin:8px 0"></p>
-<div style="display:flex;gap:8px"><button onclick="closeReelsUpload()" style="flex:1;padding:10px;border-radius:20px;background:#222;color:#fff;border:1px solid #444">Cancel</button><button onclick="uploadReelNow()" style="flex:1;padding:10px;border-radius:20px;background:gold;color:#000;font-weight:900;border:0">Upload</button></div>
-</div></div>
-<div id="privateBox"><div style="background:#000;padding:10px;display:flex;justify-content:space-between;color:gold;font-weight:900;border-bottom:2px solid gold"><span id="privateTitle">Inbox</span><div><span onclick="backToInbox()" style="cursor:pointer;margin-right:8px;font-size:11px;background:#222;padding:4px 8px;border-radius:10px">Inbox</span><span onclick="toggleInbox()" style="cursor:pointer">X</span></div></div><div id="inboxList" style="max-height:100px;overflow-y:auto;background:#0a0a0a;padding:6px"></div><div id="privateMessages" style="flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;background:#000"></div><div style="display:flex;gap:6px;padding:10px;background:#151515"><input id="privateText" placeholder="Message..." style="flex:1;padding:10px;border-radius:20px;border:2px solid gold"><button onclick="sendPrivate()" style="width:42px;height:42px;border-radius:50%;background:gold;border:0">></button></div></div>
-<input type="file" id="profileFile" accept="image/*" style="display:none"><input type="file" id="postImageFile" accept="image/*" style="display:none">
+
+<div id="chatBtn" onclick="toggleInbox()">💬</div>
+<div id="scrollTopBtn" onclick="scrollToTop()">⬆️</div>
+<div id="scrollBottomBtn" onclick="scrollToBottom()">⬇️</div>
+<div id="privateBox"><div class="chatHead"><span id="privateTitle">📩 Inbox</span><div><span onclick="backToInbox()" style="cursor:pointer;margin-right:8px;font-size:11px;background:#222;padding:4px 8px;border-radius:10px">Inbox</span><span onclick="toggleInbox()" style="cursor:pointer">✕</span></div></div><div id="inboxList"></div><div id="privateMessages"></div><div class="chatInput"><input id="privateText" placeholder="Message..." onkeypress="if(event.key==='Enter')sendPrivate()"><button onclick="sendPrivate()" style="width:42px;height:42px;border-radius:50%;background:gold;border:0">➤</button></div></div>
+<input type="file" id="profileFile" accept="image/*" style="display:none">
+
 <script>
-const firebaseConfig={apiKey:"AIzaSyDuJdr6IRg6U7FgQDIcZEG7IOMkinGxitI",authDomain:"sonor-assam.firebaseapp.com",projectId:"sonor-assam",storageBucket:"sonor-assam.appspot.com",messagingSenderId:"353015301976",appId:"1:353015301976:web:b7cc25039edb136a8c872d"};
-if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);const db=firebase.firestore();
+const firebaseConfig = {
+  apiKey: "AIzaSyDuJdr6IRg6U7FgQDIcZEG7IOMkinGxitI",
+  authDomain: "sonor-assam.firebaseapp.com",
+  projectId: "sonor-assam",
+  storageBucket: "sonor-assam.appspot.com",
+  messagingSenderId: "353015301976",
+  appId: "1:353015301976:web:b7cc25039edb136a8c872d",
+  measurementId: "G-84Z9492SRD"
+};
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const db=firebase.firestore();
+
+function getProfileKey(){
+  if(!currentUser) return 'sonor_profile_pic_guest';
+  return 'sonor_profile_pic_' + (currentUser.phone||'') + '_' + (currentUser.name||'').toLowerCase().replace(/\s+/g,'');
+}
 let currentUser=JSON.parse(localStorage.getItem('sonor_user')||'null');
-function getProfileKey(){if(!currentUser)return 'sonor_profile_pic_guest';return 'sonor_profile_pic_'+(currentUser.phone||'');}
-let profilePic="";function loadProfilePic(){profilePic=localStorage.getItem(getProfileKey())||"";}loadProfilePic();
-let allPosts=[],allReels=[],privateTarget=null,inboxOpen=false,currentTab='home',selectedPostImage="",postImageFileObj=null;
+let profilePic = "";
+function loadProfilePic(){
+  const key = getProfileKey();
+  profilePic = localStorage.getItem(key) || localStorage.getItem('sonor_profile_pic') || "";
+}
+loadProfilePic();
+let userBio=localStorage.getItem('sonor_bio')||"জয় আই অসম!";
+let allPosts=[]; let privateTarget=null; let inboxOpen=false; let privateUnsub=null;
 const allDistricts=["Bajali","Baksa","Barpeta","Biswanath","Bongaigaon","Cachar","Charaideo","Chirang","Darrang","Dhemaji","Dhubri","Dibrugarh","Dima Hasao","Goalpara","Golaghat","Hailakandi","Hojai","Jorhat","Kamrup","Kamrup Metro","Karbi Anglong","Karimganj","Kokrajhar","Lakhimpur","Majuli","Morigaon","Nagaon","Nalbari","Sivasagar","Sonitpur","South Salmara","Tamulpur","Tinsukia","Udalguri","West Karbi Anglong"];
-document.getElementById('districtList').innerHTML='<button class="active" onclick="filterByDistrict(\'All\',this)">All Assam</button>'+allDistricts.map(d=>`<button onclick="filterByDistrict('${d}',this)">${d}</button>`).join('');
-document.getElementById('reelDist').innerHTML='<option value="">জিলা</option>'+allDistricts.map(d=>`<option>${d}</option>`).join('');
+const dList=document.getElementById('districtList'); dList.innerHTML='<button class="active" onclick="filterByDistrict(\'All\',this)">All Assam</button>'+allDistricts.map(d=>`<button onclick="filterByDistrict('${d}',this)">${d}</button>`).join('');
 let selectedDistrict="All";
-function filterByDistrict(n,b){selectedDistrict=n;document.querySelectorAll('.districts button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderFeed();renderReels();}
-function switchTab(t,e){currentTab=t;document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));if(e) e.classList.add('active');if(t==='home'){document.getElementById('feed').style.display='block';document.getElementById('reelsFeed').style.display='none';renderFeed();}else{document.getElementById('feed').style.display='none';document.getElementById('reelsFeed').style.display='block';renderReels();}}
-function openReelsUpload(){if(!currentUser){openAuth();return;}document.getElementById('reelsModal').style.display='flex';}
-function closeReelsUpload(){document.getElementById('reelsModal').style.display='none';document.getElementById('uploadStatus').innerText='';document.getElementById('progBar').style.display='none';}
-function compressImage(file, maxW, quality){return new Promise(res=>{const r=new FileReader();r.onload=e=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;if(w>maxW){h=h*maxW/w;w=maxW;}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',quality));};img.src=e.target.result;};r.readAsDataURL(file);});}
-async function uploadReelNow(){
-  const file=document.getElementById('reelFile').files[0];
-  const title=document.getElementById('reelTitle').value.trim();
-  const status=document.getElementById('uploadStatus');
-  const bar=document.getElementById('progBar');
-  const fill=document.getElementById('progFill');
-  if(!file){alert('Video Select কৰা!');return;}
-  if(!title){alert('গানৰ নাম লিখা!');return;}
-  if(file.size>150000000){alert('150MB তকৈ ডাঙৰ!');return;}
-  bar.style.display='block';fill.style.width='20%';status.innerText='Uploading Video...';
-  try{
-    let fd=new FormData();fd.append('reqtype','fileupload');fd.append('fileToUpload',file);
-    fill.style.width='50%';
-    let resp=await fetch('https://catbox.moe/user/api.php',{method:'POST',body:fd});
-    let url=(await resp.text()).trim();
-    if(!url.startsWith('http')) throw new Error('Catbox busy - আকৌ Try');
-    fill.style.width='85%';status.innerText='Saving...';
-    await db.collection('reels').add({title:title,url:url,type:'video',district:document.getElementById('reelDist').value||selectedDistrict,userName:currentUser.name,userPhoto:profilePic||'',likes:0,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-    fill.style.width='100%';status.innerText='SUCCESS!';
-    setTimeout(()=>{closeReelsUpload();document.getElementById('reelFile').value='';document.getElementById('reelTitle').value='';switchTab('reels',document.querySelectorAll('.bottom-nav button')[1]);},800);
-  }catch(e){status.innerText='Failed: '+e.message;alert('Error: '+e.message+' - 30 Sec পিছত Try');bar.style.display='none';}
+function filterByDistrict(name,btn){selectedDistrict=name;document.querySelectorAll('.districts button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderFeed();}
+function renderAuth(){
+  loadProfilePic();
+  const area=document.getElementById('authArea');
+  if(currentUser){
+    const pic=profilePic?`<img src="${profilePic}" class="profile-pic" onclick="openProfilePage()">`:`<div class="profile-pic" onclick="openProfilePage()">${currentUser.name[0]}</div>`;
+    area.innerHTML=`${pic}<span style="font-size:12px;cursor:pointer" onclick="openProfilePage()">${currentUser.name}</span>`;
+  }else{
+    area.innerHTML=`<button onclick="openAuth()" style="padding:8px 16px;border-radius:20px;background:gold;color:#000;font-weight:900;border:0">🔐 Login</button>`;
+  }
 }
-db.collection("reels").orderBy("createdAt","desc").limit(100).onSnapshot(s=>{allReels=[];s.forEach(d=>allReels.push({id:d.id,...d.data()}));if(currentTab==='reels')renderReels();});
-function renderReels(){
-  const feed=document.getElementById('reelsFeed');
-  let filtered=selectedDistrict==="All"?allReels:allReels.filter(p=>p.district===selectedDistrict);
-  if(!filtered.length){feed.innerHTML='<div class="card" style="text-align:center;color:#888;padding:30px">Reels নাই</div>';return;}
-  feed.innerHTML=filtered.map(d=>`<div class="reel-card"><video src="${d.url}" controls playsinline style="width:100%;max-height:500px;background:#000"></video><div style="padding:10px;display:flex;justify-content:space-between"><div><b style="color:gold">${d.title}</b><br><span style="font-size:11px;color:#888">${d.userName}</span></div><button onclick="likeReel('${d.id}',${d.likes||0})" style="background:#1a1a1a;border:1px solid gold;border-radius:20px;padding:6px 12px;color:gold">❤️ ${d.likes||0}</button></div></div>`).join('');
+function openAuth(){
+  let n=prompt("নাম?");if(!n)return;
+  let p=prompt("মোবাইল?");if(!p)return;
+  currentUser={name:n.trim(),phone:p.trim()};
+  localStorage.setItem('sonor_user',JSON.stringify(currentUser));
+  loadProfilePic();
+  renderAuth();renderFeed();
 }
-function likeReel(id,l){if(!currentUser){openAuth();return;}if(localStorage.getItem('liked_reel_'+id))return;db.collection("reels").doc(id).update({likes:(l||0)+1});localStorage.setItem('liked_reel_'+id,'1');}
-function renderAuth(){loadProfilePic();const a=document.getElementById('authArea');if(currentUser){a.innerHTML=profilePic?`<img src="${profilePic}" class="profile-pic" onclick="openProfilePage()">`:`<div class="profile-pic" onclick="openProfilePage()">${currentUser.name[0]}</div>`;}else{a.innerHTML=`<button onclick="openAuth()" style="padding:8px 16px;border-radius:20px;background:gold;color:#000;font-weight:900;border:0">Login</button>`;}}
-function openAuth(){let n=prompt("নাম?");if(!n)return;let p=prompt("মোবাইল?");if(!p)return;currentUser={name:n.trim(),phone:p.trim()};localStorage.setItem('sonor_user',JSON.stringify(currentUser));loadProfilePic();renderAuth();renderFeed();}
-function logout(){if(!confirm("Logout?"))return;localStorage.removeItem('sonor_user');currentUser=null;profilePic="";closeProfile();renderAuth();renderFeed();}
+function logout(){
+  if(!confirm("Logout?"))return;
+  localStorage.removeItem('sonor_user');
+  currentUser=null;
+  profilePic="";
+  closeProfile();renderAuth();renderFeed();
+}
 function uploadProfile(){if(!currentUser){openAuth();return;}document.getElementById('profileFile').click();}
-document.getElementById('profileFile').addEventListener('change',async e=>{let f=e.target.files[0];if(!f)return;let c=await compressImage(f,400,0.85);profilePic=c;try{localStorage.setItem(getProfileKey(),c);}catch{localStorage.clear();localStorage.setItem('sonor_user',JSON.stringify(currentUser));localStorage.setItem(getProfileKey(),c);}renderAuth();openProfilePage();renderFeed();});
-function getStableMemberId(){if(!currentUser)return "SA-0000";let s=localStorage.getItem('sonor_member_id_'+currentUser.phone);if(s)return s;let nid=`SA-${(currentUser.phone||'0000').slice(-4)}-${(currentUser.name||'AX').substring(0,2).toUpperCase()}${Math.floor(100+Math.random()*900)}`;localStorage.setItem('sonor_member_id_'+currentUser.phone,nid);return nid;}
+document.getElementById('profileFile').addEventListener('change',async e=>{
+  const f=e.target.files[0];if(!f)return;
+  const b=await new Promise(r=>{let fr=new FileReader();fr.onload=ev=>r(ev.target.result);fr.readAsDataURL(f);});
+  profilePic=b;
+  localStorage.setItem(getProfileKey(), b);
+  localStorage.setItem('sonor_profile_pic', b);
+  renderAuth();openProfilePage();renderFeed();
+});
+function loadImage(src){
+  return new Promise(resolve=>{
+    if(!src){ resolve(null); return; }
+    const img=new Image();
+    img.onload=()=>resolve(img);
+    img.onerror=()=>resolve(null);
+    img.src=src;
+    setTimeout(()=>resolve(null), 2000);
+  });
+}
+async function generateMembershipCard(){
+  if(!currentUser) return;
+  const canvas=document.getElementById('memberCanvas');
+  const ctx=canvas.getContext('2d');
+  const preview=document.getElementById('cardPreview');
+  preview.innerHTML="Generating...";
+  
+  let cardBg = await loadImage("card-bg.png?v="+Date.now());
+  let avatarImg = null;
+  if(profilePic) avatarImg = await loadImage(profilePic);
+  
+  ctx.clearRect(0,0,1200,675);
+  
+  if(cardBg){
+    ctx.drawImage(cardBg,0,0,1200,675);
+  } else {
+    ctx.fillStyle="#050505"; ctx.fillRect(0,0,1200,675);
+    ctx.strokeStyle="#FFD700"; ctx.lineWidth=5; ctx.strokeRect(12,12,1176,651);
+  }
+
+  if(avatarImg){
+    ctx.save(); ctx.beginPath(); ctx.arc(600,250,75,0,Math.PI*2); ctx.clip(); 
+    ctx.drawImage(avatarImg,525,175,150,150); ctx.restore();
+    ctx.beginPath(); ctx.arc(600,250,78,0,Math.PI*2); ctx.strokeStyle="#FFD700"; ctx.lineWidth=4; ctx.stroke();
+  }
+  
+  ctx.fillStyle="#f9e7b0"; 
+  ctx.font="bold 52px Georgia"; 
+  ctx.textAlign="center"; 
+  ctx.shadowColor="black"; ctx.shadowBlur=10;
+  ctx.fillText(currentUser.name,600,395);
+  ctx.shadowBlur=0;
+  
+  const dataUrl=canvas.toDataURL("image/png");
+  preview.innerHTML=`<img src="${dataUrl}" style="width:100%;border-radius:12px;display:block">`;
+  document.getElementById('downloadCard').href=dataUrl;
+  document.getElementById('downloadCard').download=currentUser.name+"-SonorAxom-Boss.png";
+}
 function openProfilePage(){
   if(!currentUser){openAuth();return;}
   loadProfilePic();
   document.getElementById('profilePage').style.display='block';
-  document.getElementById('bigPicArea').innerHTML=profilePic?`<img src="${profilePic}" class="bigPic">`:`<div class="bigPic" style="display:flex;align-items:center;justify-content:center;font-size:50px;background:gold;color:#000;font-weight:900">${currentUser.name[0]}</div>`;
+  document.getElementById('bigPicArea').innerHTML=profilePic?`<img src="${profilePic}" class="bigPic">`:`<div class="bigPic" style="display:flex;align-items:center;justify-content:center;font-size:40px">${currentUser.name[0]}</div>`;
   document.getElementById('profName').innerText=currentUser.name;
-  let my=allPosts.filter(p=>p.userName===currentUser.name);
-  document.getElementById('myPostCount').innerText=my.length;
-  document.getElementById('myLikeCount').innerText=my.reduce((s,p)=>s+(p.likes||0),0);
-  document.getElementById('myCommentCount').innerText=my.reduce((s,p)=>s+(p.comments?.length||0),0);
-  document.getElementById('myPosts').innerHTML=my.length?my.map(d=>`<div class="card"><p>${d.text||''}</p>${d.image?`<img src="${d.image}" style="width:100%;border-radius:12px">`:''}<br><button onclick="deletePost('${d.id}','${d.userName}')" style="background:#ff2222;color:#fff;border:0;border-radius:20px;padding:6px 12px">Delete</button></div>`).join(''):'<div class="card" style="text-align:center">Post নাই</div>';
-  const cpImg=document.getElementById('cardProfileImg');
-  const cpLet=document.getElementById('cardProfileLetter');
-  const cName=document.getElementById('cardName');
-  if(cName) cName.innerText=currentUser.name;
-  document.getElementById('cardIdShow').innerText=getStableMemberId();
-  document.getElementById('cardDistrictShow').innerText=selectedDistrict;
-  if(profilePic && cpImg){
-    cpImg.src=profilePic;
-    cpImg.style.display='block';
-    cpImg.style.objectFit='cover';
-    cpImg.style.width='100%';
-    cpImg.style.height='100%';
-    cpImg.setAttribute('crossorigin','anonymous');
-    if(cpLet) cpLet.style.display='none';
-  }else{
-    if(cpLet){cpLet.innerText=currentUser.name[0].toUpperCase();cpLet.style.display='block';}
-    if(cpImg) cpImg.style.display='none';
-  }
+  document.getElementById('profBio').innerText=userBio;
+  const myPosts=allPosts.filter(p=>p.userName===currentUser.name);
+  document.getElementById('myPostCount').innerText=myPosts.length;
+  document.getElementById('myLikeCount').innerText=myPosts.reduce((s,p)=>s+(p.likes||0),0);
+  document.getElementById('myCommentCount').innerText=myPosts.reduce((s,p)=>s+(p.comments?.length||0),0);
+  document.getElementById('myPosts').innerHTML=myPosts.length?myPosts.map(d=>`<div class="card"><p>${d.text}</p>${d.image?`<img src="${d.image}" style="width:100%;border-radius:12px">`:''}<div style="margin-top:8px;display:flex;gap:6px"><span style="background:#1a1a1a;padding:4px 10px;border-radius:12px;font-size:12px">👍 ${d.likes||0}</span><button onclick="deletePost('${d.id}','${d.userName}')" style="margin-left:auto;padding:5px 12px;border-radius:20px;background:#ff2222;color:#fff;border:0">🗑️ Delete</button></div></div>`).join(''):'<div class="card" style="text-align:center;color:#888">Post নাই</div>';
+  setTimeout(generateMembershipCard,300);
 }
 function closeProfile(){document.getElementById('profilePage').style.display='none';}
-function downloadCard(){
-  const cardBg=document.querySelector('#membershipCard img');
-  const btn=document.querySelector('button[onclick="downloadCard()"]');
-  if(btn) btn.innerText='⏳ Creating...';
-  const bgSrc=cardBg?cardBg.src:'card-bg.jpg';
-  const name=currentUser?currentUser.name:'Member';
-  const canvas=document.createElement('canvas');
-  const ctx=canvas.getContext('2d');
-  canvas.width=1600;
-  canvas.height=1000;
-  const bgImg=new Image();
-  bgImg.crossOrigin='anonymous';
-  bgImg.onload=()=>{
-    ctx.drawImage(bgImg,0,0,canvas.width,canvas.height);
-    // Website ত যেনেকৈ top:50% width:9.5% - Same
-    const photoX=canvas.width/2;
-    const photoY=canvas.height*0.60; // Website same 50%
-    const photoR=(canvas.width*0.095)/2; // Website same 9.5% - সৰু!
-    
-    const drawNameFinal=()=>{
-      const nameY=canvas.height*0.72; // Website same 65%
-      ctx.font='bold 45px Arial';
-      ctx.textAlign='center';
-      const textW=ctx.measureText(name).width;
-      const pillW=textW+60;
-      const pillH=44;
-      const pillX=canvas.width/2 - pillW/2;
-      const pillY=nameY - 26;
-      ctx.fillStyle='rgba(0,0,0,0.70)';
-      ctx.beginPath();
-      if(ctx.roundRect){ctx.roundRect(pillX,pillY,pillW,pillH,22);} else {ctx.rect(pillX,pillY,pillW,pillH);}
-      ctx.fill();
-      ctx.strokeStyle='rgba(212,175,55,0.5)';
-      ctx.lineWidth=1.5;
-      ctx.stroke();
-      ctx.fillStyle='#fff';
-      ctx.shadowColor='gold';
-      ctx.shadowBlur=8;
-      ctx.fillText(name,canvas.width/2,nameY+4);
-      ctx.shadowBlur=0;
-      const link=document.createElement('a');
-      link.download=`Sonor-Axom-${name.replace(/\s/g,'_')}.png`;
-      link.href=canvas.toDataURL('image/png',1.0);
-      link.click();
-      if(btn) btn.innerText='⬇️ Download HD Card';
-    };
-
-    if(profilePic){
-      const pImg=new Image();
-      pImg.onload=()=>{
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(photoX,photoY,photoR,0,Math.PI*2);
-        ctx.clip();
-        // Cover crop
-        const size=photoR*2;
-        ctx.drawImage(pImg,photoX-photoR,photoY-photoR,size,size);
-        ctx.restore();
-        ctx.beginPath();
-        ctx.arc(photoX,photoY,photoR,0,Math.PI*2);
-        ctx.strokeStyle='#d4af37';
-        ctx.lineWidth=4;
-        ctx.stroke();
-        drawNameFinal();
-      };
-      pImg.onerror=drawNameFinal;
-      pImg.src=profilePic;
-    }else{
-      ctx.beginPath();
-      ctx.arc(photoX,photoY,photoR,0,Math.PI*2);
-      ctx.fillStyle='#000';
-      ctx.fill();
-      ctx.strokeStyle='#d4af37';
-      ctx.lineWidth=4;
-      ctx.stroke();
-      ctx.fillStyle='gold';
-      ctx.font='bold 36px Arial';
-      ctx.textAlign='center';
-      ctx.fillText(name[0].toUpperCase(),photoX,photoY+12);
-      drawNameFinal();
-    }
-  };
-  bgImg.src=bgSrc;
-}
-function deletePost(id,o){if(o!==currentUser.name){alert("আনৰ Post নোৱাৰি!");return;}if(confirm("Delete?"))db.collection("posts").doc(id).delete();}
-function likePost(id,l){if(!currentUser){openAuth();return;}if(localStorage.getItem('liked_'+id))return;db.collection("posts").doc(id).update({likes:(l||0)+1});localStorage.setItem('liked_'+id,'1');}
-async function commentPost(id){if(!currentUser){openAuth();return;}let t=prompt("Comment:");if(!t)return;let s=await db.collection("posts").doc(id).get();let c=s.data().comments||[];c.push({text:t,user:currentUser.name});await db.collection("posts").doc(id).update({comments:c});}
-function toggleInbox(){inboxOpen=!inboxOpen;document.getElementById('privateBox').style.display=inboxOpen?'flex':'none';}
-function openPrivateChat(t){if(!currentUser){openAuth();return;}if(t===currentUser.name)return;privateTarget=t;document.getElementById('privateTitle').innerText=t;document.getElementById('privateBox').style.display='flex';inboxOpen=true;listenPrivate();}
-function backToInbox(){privateTarget=null;document.getElementById('privateTitle').innerText="Inbox";}
+function editProfile(){let n=prompt("নাম:",currentUser.name);if(n&&n.trim()){currentUser.name=n.trim();localStorage.setItem('sonor_user',JSON.stringify(currentUser));}let b=prompt("Bio:",userBio);if(b!==null){userBio=b;localStorage.setItem('sonor_bio',b);}renderAuth();openProfilePage();renderFeed();}
+function deletePost(id,ownerName){if(!currentUser){openAuth();return;}if(ownerName!==currentUser.name){alert("⛔ আনৰ Post Delete নোৱাৰি!");return;}if(confirm("Delete কৰিবা?")){db.collection("posts").doc(id).delete().then(()=>alert("Delete ✅"));}}
+function likePost(id,l){if(!currentUser){openAuth();return;}const k='liked_'+id;if(localStorage.getItem(k)){alert("Like কৰিছাই");return;}db.collection("posts").doc(id).update({likes:(l||0)+1});localStorage.setItem(k,'1');}
+async function commentPost(id){if(!currentUser){openAuth();return;}const t=prompt("Comment:");if(!t)return;const s=await db.collection("posts").doc(id).get();let c=s.data().comments||[];c.push({text:t,user:currentUser.name});await db.collection("posts").doc(id).update({comments:c});}
+function sharePost(id,text){const url=location.href.split('#')[0]+'#'+id;if(navigator.share){navigator.share({title:'সোণৰ অসম',text:text.substring(0,80),url:url});}else{navigator.clipboard.writeText(url).then(()=>alert("Link Copy ✅")).catch(()=>prompt("Copy:",url));}}
+function toggleInbox(){inboxOpen=!inboxOpen;document.getElementById('privateBox').style.display=inboxOpen?'flex':'none';if(inboxOpen)loadInbox();}
+function openPrivateChat(t){if(!currentUser){openAuth();return;}if(t===currentUser.name){alert("নিজকে নোৱাৰি");return;}privateTarget=t;document.getElementById('privateTitle').innerText="🔒 "+t;document.getElementById('privateBox').style.display='flex';inboxOpen=true;document.getElementById('inboxList').style.display='none';listenPrivate();}
+function backToInbox(){privateTarget=null;document.getElementById('privateTitle').innerText="📩 Inbox";document.getElementById('inboxList').style.display='block';loadInbox();if(privateUnsub)privateUnsub();}
 function getConvId(a,b){return [a.trim().toLowerCase(),b.trim().toLowerCase()].sort().join("__");}
-function listenPrivate(){if(!privateTarget||!currentUser)return;let convId=getConvId(currentUser.name,privateTarget);db.collection("private_messages").where("convId","==",convId).orderBy("createdAt","asc").onSnapshot(s=>{let box=document.getElementById('privateMessages');box.innerHTML="";s.forEach(doc=>{let d=doc.data();box.innerHTML+=`<div style="max-width:78%;padding:8px 12px;border-radius:14px;font-size:13px;${d.from===currentUser.name?'align-self:flex-end;background:gold;color:#000;margin-left:auto':'align-self:flex-start;background:#222;color:#fff'}">${d.text}</div>`;});box.scrollTop=box.scrollHeight;});}
-function sendPrivate(){if(!currentUser){openAuth();return;}if(!privateTarget)return;let txt=document.getElementById('privateText').value.trim();if(!txt)return;db.collection("private_messages").add({convId:getConvId(currentUser.name,privateTarget),from:currentUser.name,to:privateTarget,participants:[currentUser.name.toLowerCase(),privateTarget.toLowerCase()],text:txt,createdAt:firebase.firestore.FieldValue.serverTimestamp()});document.getElementById('privateText').value="";}
-db.collection("posts").orderBy("createdAt","desc").limit(100).onSnapshot(s=>{allPosts=[];s.forEach(d=>allPosts.push({id:d.id,...d.data()}));renderFeed();if(document.getElementById('profilePage').style.display==='block')openProfilePage();});
+function listenPrivate(){if(!privateTarget||!currentUser)return;if(privateUnsub)privateUnsub();const convId=getConvId(currentUser.name,privateTarget);privateUnsub=db.collection("private_messages").where("convId","==",convId).orderBy("createdAt","asc").limit(100).onSnapshot(snap=>{const box=document.getElementById('privateMessages');box.innerHTML="";if(snap.empty){box.innerHTML=`<div style="text-align:center;color:#888;margin-top:30px">${privateTarget} ৰ লগত প্ৰথম Message 👋</div>`;return;}snap.forEach(doc=>{const d=doc.data();box.innerHTML+=`<div class="pmsg ${d.from===currentUser.name?'me':'other'}">${d.text}</div>`;});box.scrollTop=box.scrollHeight;});}
+function sendPrivate(){if(!currentUser){openAuth();return;}if(!privateTarget){alert("User select");return;}const txt=document.getElementById('privateText').value.trim();if(!txt)return;db.collection("private_messages").add({convId:getConvId(currentUser.name,privateTarget),from:currentUser.name,to:privateTarget,participants:[currentUser.name.toLowerCase(),privateTarget.toLowerCase()],text:txt,createdAt:firebase.firestore.FieldValue.serverTimestamp()});document.getElementById('privateText').value="";}
+function loadInbox(){if(!currentUser)return;db.collection("private_messages").where("participants","array-contains",currentUser.name.toLowerCase()).orderBy("createdAt","desc").limit(50).onSnapshot(snap=>{const list=document.getElementById('inboxList');if(!snap.empty){let users={};snap.forEach(doc=>{const d=doc.data();const other=d.from===currentUser.name?d.to:d.from;if(!users[other])users[other]=d;});list.innerHTML=Object.keys(users).map(u=>`<div class="inboxItem" onclick="openPrivateChat('${u}')"><span>🔒 ${u}</span><span style="font-size:11px;color:#888">${users[u].text.substring(0,18)}</span></div>`).join('');}else{list.innerHTML='<div style="color:#888;font-size:12px;text-align:center;padding:8px">Inbox খালী</div>';}});}
+function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'});}function scrollToBottom(){window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});}
+window.addEventListener('scroll',()=>{const btn=document.getElementById('scrollTopBtn');if(window.scrollY>400)btn.style.display='flex';else btn.style.display='none';});
+db.collection("posts").orderBy("createdAt","desc").limit(100).onSnapshot(snap=>{allPosts=[];snap.forEach(d=>allPosts.push({id:d.id,...d.data()}));renderFeed();if(document.getElementById('profilePage').style.display!=='none')openProfilePage();});
 function renderFeed(){
-  const feed=document.getElementById('feed');let filtered=selectedDistrict==="All"?allPosts:allPosts.filter(p=>p.district===selectedDistrict);
-  feed.innerHTML=`<div class="card"><textarea id="postText" placeholder="কি ভাবিছা?" style="width:100%;min-height:60px;border-radius:12px;padding:10px;background:#1a1a1a;color:#fff;border:1px solid #333;box-sizing:border-box"></textarea><div style="display:flex;gap:6px;margin-top:8px"><select id="fDist" style="flex:1;padding:9px;border-radius:20px;border:2px solid gold;background:#fff;color:#000;font-weight:700"><option value="">জিলা</option>${allDistricts.map(d=>`<option ${d===selectedDistrict?'selected':''}>${d}</option>`).join('')}</select><button onclick="document.getElementById('postImageFile').click()" style="padding:9px 12px;border-radius:20px;background:#222;color:gold;border:1px solid gold">📷 Photo</button><button onclick="createPostReal()" style="padding:9px 16px;border-radius:20px;background:gold;color:#000;font-weight:900;border:0">Post</button></div><div id="postImgPreview" style="margin-top:8px"></div></div>`+filtered.map(d=>{
-    let liked=localStorage.getItem('liked_'+d.id);
+  const feed=document.getElementById('feed');
+  let filtered=selectedDistrict==="All"?allPosts:allPosts.filter(p=>p.district===selectedDistrict);
+  feed.innerHTML=`<div class="card"><textarea id="postText" placeholder="কি ভাবিছা Bos?..." style="width:100%;min-height:60px;border-radius:12px;padding:10px;background:#1a1a1a;color:#fff;border:1px solid #333"></textarea><div style="display:flex;gap:6px;margin-top:8px"><select id="fDist" style="flex:1;padding:9px;border-radius:20px;border:2px solid gold;background:#fff;color:#000;font-weight:700"><option value="">জিলা</option>${allDistricts.map(d=>`<option>${d}</option>`).join('')}</select><input type="file" id="fImg" accept="image/*" style="flex:1"><button onclick="createPostReal()" style="padding:9px 16px;border-radius:20px;background:gold;color:#000;font-weight:900;border:0">Post</button></div></div>`+filtered.map(d=>{
+    const liked=localStorage.getItem('liked_'+d.id);
     let avatar=d.userPhoto?`<img src="${d.userPhoto}" style="width:30px;height:30px;border-radius:50%;border:1px solid gold">`:`<div style="width:30px;height:30px;border-radius:50%;background:gold;color:#000;display:flex;align-items:center;justify-content:center;font-weight:900">${(d.userName||'U')[0]}</div>`;
     if(currentUser&&d.userName===currentUser.name&&profilePic) avatar=`<img src="${profilePic}" style="width:30px;height:30px;border-radius:50%;border:1px solid gold">`;
-    let commentsHtml=(d.comments||[]).map(c=>`<div style="margin-top:6px;padding:6px 10px;background:#1a1a1a;border-radius:10px;font-size:13px"><b>${c.user}:</b> ${c.text}</div>`).join('');
-    let delBtn=(currentUser&&d.userName===currentUser.name)?`<button onclick="deletePost('${d.id}','${d.userName}')" class="btn-action" style="background:#ff2222">Delete</button>`:'';
-    return `<div class="card"><div style="display:flex;align-items:center;gap:8px">${avatar}<b>${d.userName}</b><span style="color:#888;font-size:11px">• ${d.district||''}</span></div><p style="margin:10px 0">${d.text||''}</p>${d.image?`<img src="${d.image}" style="width:100%;border-radius:12px;max-height:600px;object-fit:contain;background:#000">`:''}<div style="display:flex;gap:5px;margin-top:10px;flex-wrap:wrap"><button onclick="likePost('${d.id}',${d.likes||0})" class="btn-action" style="background:${liked?'gold':'#1a1a1a'};color:${liked?'#000':'#fff'}">❤️ ${d.likes||0}</button><button onclick="commentPost('${d.id}')" class="btn-action">💬 ${(d.comments||[]).length}</button><button onclick="openPrivateChat('${d.userName}')" class="btn-action" style="border-color:gold;color:gold">💬 Inbox</button>${delBtn}</div>${commentsHtml}</div>`;
+    const commentsHtml=(d.comments||[]).map(c=>`<div style="margin-top:6px;padding:6px 10px;background:#1a1a1a;border-radius:10px;font-size:13px"><b>${c.user}:</b> ${c.text}</div>`).join('');
+    const deleteBtn=(currentUser&&d.userName===currentUser.name)?`<button onclick="deletePost('${d.id}','${d.userName}')" class="btn-action" style="background:#ff2222">🗑️ Delete</button>`:``;
+    return `<div class="card"><div style="display:flex;align-items:center;gap:8px"><div onclick="openPrivateChat('${d.userName}')" style="cursor:pointer;display:flex;align-items:center;gap:8px">${avatar}<b style="text-decoration:underline;text-decoration-color:gold">${d.userName||'User'}</b></div><span style="color:#888;font-size:11px">• ${d.district||''}</span></div><p style="margin:10px 0">${d.text||''}</p>${d.image?`<img src="${d.image}" style="width:100%;border-radius:12px;max-height:450px;object-fit:cover">`:''}<div style="display:flex;gap:5px;margin-top:10px;flex-wrap:wrap"><button onclick="likePost('${d.id}',${d.likes||0})" class="btn-action" style="background:${liked?'gold':'#1a1a1a'};color:${liked?'#000':'#fff'}">👍 ${d.likes||0}</button><button onclick="commentPost('${d.id}')" class="btn-action">💬 ${(d.comments||[]).length}</button><button onclick="sharePost('${d.id}',\`${(d.text||'').replace(/`/g,'')}\`)" class="btn-action" style="color:gold;border-color:gold">↗️ Share</button>${deleteBtn}</div>${commentsHtml}</div>`;
   }).join('');
-  let imgInp=document.getElementById('postImageFile');
-  if(imgInp && !imgInp._bound){imgInp._bound=true;imgInp.addEventListener('change',async e=>{let file=e.target.files[0];if(!file)return;let compressed=await compressImage(file,1920,0.85);selectedPostImage=compressed;let pv=document.getElementById('postImgPreview');if(pv) pv.innerHTML=`<div style="position:relative"><img src="${compressed}" style="width:100%;max-height:400px;border-radius:12px"><button onclick="clearPostImage()" style="position:absolute;top:8px;right:8px;padding:6px 12px;border-radius:20px;background:#ff2222;color:#fff;border:0">X</button></div>`;});}
 }
-function clearPostImage(){selectedPostImage="";let p=document.getElementById('postImgPreview');if(p) p.innerHTML="";let i=document.getElementById('postImageFile');if(i) i.value="";}
 async function createPostReal(){
   if(!currentUser){openAuth();return;}
-  let txtEl=document.getElementById('postText');let txt=txtEl?txtEl.value.trim():"";
-  let dist=document.getElementById('fDist')?document.getElementById('fDist').value||selectedDistrict:selectedDistrict;
-  if(!txt && !selectedPostImage){alert("লিখা বা Photo দিয়া!");return;}
-  if(txtEl) txtEl.placeholder="Posting...";
-  try{
-    await db.collection("posts").add({text:txt,image:selectedPostImage||"",district:dist,likes:0,comments:[],userName:currentUser.name,userPhoto:profilePic||"",createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-    if(txtEl){txtEl.value="";txtEl.placeholder="কি ভাবিছা?";}
-    clearPostImage();
-  }catch(err){alert('Error: '+err.message);}
+  loadProfilePic();
+  const txt=document.getElementById('postText').value.trim();if(!txt){alert("লিখা");return;}
+  let img="";let file=document.getElementById('fImg')?.files[0];
+  if(file){img=await new Promise(r=>{let fr=new FileReader();fr.onload=e=>r(e.target.result);fr.readAsDataURL(file);});}
+  await db.collection("posts").add({text:txt,image:img,district:document.getElementById('fDist')?.value||selectedDistrict,likes:0,comments:[],userName:currentUser.name,userPhoto:profilePic||"",createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+  document.getElementById('postText').value="";
 }
-renderAuth();
-</script></body></html>
+renderAuth();loadInbox();
+</script>
+</body>
+</html>
