@@ -185,7 +185,7 @@ function downloadCard(){
     ctx.drawImage(bgImg,0,0,canvas.width,canvas.height);
     const photoX=canvas.width/2;
     const photoY=canvas.height*0.48;
-    const photoR=(canvas.width*0.19)/2;
+    const photoR=(canvas.width*0.15)/2;
     const drawNameFinal=()=>{
       const nameY=canvas.height*0.715;
       ctx.font='bold 48px Arial';
@@ -208,7 +208,7 @@ function downloadCard(){
       ctx.fillText(name,canvas.width/2,nameY+4);
       ctx.shadowBlur=0;
       const link=document.createElement('a');
-      link.download=`Sonor-Axom-${name.replace(/\s/g,'_')}-19PCT.png`;
+      link.download=`Sonor-Axom-${name.replace(/\s/g,'_')}-15PCT.png`;
       link.href=canvas.toDataURL('image/png',1.0);
       link.click();
       if(btn) btn.innerText='⬇️ Download HD Card';
