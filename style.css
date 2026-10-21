@@ -5,3 +5,4 @@
 #scrollBottomBtn{position:fixed!important;bottom:20px!important;right:15px!important;width:56px!important;height:56px!important;background:#222!important;border:2px solid gold!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:22px!important;z-index:99999!important;color:gold!important}
 #scrollTopBtn{position:fixed!important;bottom:85px!important;right:15px!important;width:44px!important;height:44px!important;background:#222!important;border:2px solid gold!important;border-radius:50%!important;display:none;align-items:center!important;justify-content:center!important;z-index:99998!important;color:gold!important}
 body{padding-bottom:90px!important}
+.logo-box{width:46px;height:46px;border-radius:50%;border:2px solid gold;object-fit:cover}
