@@ -3,7 +3,6 @@
 <title>সোণৰ অসম -অসমৰ নিজৰ এপ Premium</title>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
 body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:160px}
 .header{padding:10px 14px;background:#0a0a0a;border-bottom:3px solid gold;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
@@ -170,82 +169,62 @@ function openProfilePage(){
 }
 function closeProfile(){document.getElementById('profilePage').style.display='none';}
 function deleteReel(id,o){if(o!==currentUser.name){alert("আনৰ Reels নোৱাৰি!");return;}if(confirm("Reel Delete?"))db.collection("reels").doc(id).delete();}
-// FIXED DOWNLOAD - SAME AS PREVIEW - WYSIWYG!
 async function downloadCard(){
-  const card = document.getElementById('membershipCard');
+  const cardBg = document.querySelector('#membershipCard img');
   const btn = document.querySelector('button[onclick="downloadCard()"]');
-  if(!card){alert('Card not found'); return;}
-  btn.innerText='⏳ HD Creating...';
-  try{
-    // Wait images load
-    const imgs = card.querySelectorAll('img');
-    await Promise.all(Array.from(imgs).map(img => {
-      if(img.complete) return Promise.resolve();
-      return new Promise(res => { img.onload=res; img.onerror=res; setTimeout(res,2000); });
-    }));
-    const canvas = await html2canvas(card, {
-      scale: 3,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: null,
-      logging: false,
-      imageTimeout: 0
-    });
-    const link = document.createElement('a');
-    link.download = `Sonor-Axom-${(currentUser?currentUser.name:'Member').replace(/\s/g,'_')}-HD-PERFECT.png`;
-    link.href = canvas.toDataURL('image/png', 1.0);
-    link.click();
-    btn.innerText='⬇️ Download HD Card';
-  }catch(e){
-    console.error(e);
-    alert('HD Download Fail, Trying Normal Method...');
-    // Fallback old method with correct 16.5% + 55%
-    const cardBg=document.querySelector('#membershipCard img');
-    const bgSrc=cardBg?cardBg.src:'card-bg.jpg';
-    const name=currentUser?currentUser.name:'Member';
-    const canvas=document.createElement('canvas');
-    const ctx=canvas.getContext('2d');
-    canvas.width=1600; canvas.height=1000;
-    const bgImg=new Image(); bgImg.crossOrigin='anonymous';
-    bgImg.onload=()=>{
-      ctx.drawImage(bgImg,0,0,canvas.width,canvas.height);
-      const photoX=canvas.width/2;
-      const photoY=canvas.height*0.54; // FIXED - Middle, not top!
-      const photoR=(canvas.width*0.165)/2;
-      const drawNameFinal=()=>{
-        const nameY=canvas.height*0.73;
-        ctx.font='bold 48px Arial'; ctx.textAlign='center';
-        const textW=ctx.measureText(name).width;
-        ctx.fillStyle='rgba(0,0,0,0.75)';
-        ctx.beginPath(); ctx.roundRect(canvas.width/2-textW/2-35, nameY-32, textW+70, 50, 22); ctx.fill();
-        ctx.strokeStyle='rgba(212,175,55,0.6)'; ctx.lineWidth=1.5; ctx.stroke();
-        ctx.fillStyle='#fff'; ctx.shadowColor='gold'; ctx.shadowBlur=10;
-        ctx.fillText(name,canvas.width/2,nameY+4); ctx.shadowBlur=0;
-        const link=document.createElement('a');
-        link.download=`Sonor-Axom-${name.replace(/\s/g,'_')}-HD.png`;
-        link.href=canvas.toDataURL('image/png',1.0); link.click();
-        btn.innerText='⬇️ Download HD Card';
-      };
-      if(profilePic){
-        const pImg=new Image();
-        pImg.onload=()=>{
-          ctx.save(); ctx.beginPath(); ctx.arc(photoX,photoY,photoR,0,Math.PI*2); ctx.clip();
-          ctx.drawImage(pImg,photoX-photoR,photoY-photoR,photoR*2,photoR*2); ctx.restore();
-          ctx.beginPath(); ctx.arc(photoX,photoY,photoR,0,Math.PI*2);
-          ctx.strokeStyle='#d4af37'; ctx.lineWidth=6; ctx.stroke();
-          drawNameFinal();
-        };
-        pImg.onerror=drawNameFinal; pImg.src=profilePic;
-      }else{
-        ctx.beginPath(); ctx.arc(photoX,photoY,photoR,0,Math.PI*2); ctx.fillStyle='#000'; ctx.fill();
-        ctx.strokeStyle='#d4af37'; ctx.lineWidth=6; ctx.stroke();
-        ctx.fillStyle='gold'; ctx.font='bold 70px Arial'; ctx.textAlign='center';
-        ctx.fillText(name[0].toUpperCase(),photoX,photoY+20); drawNameFinal();
-      }
+  if(!cardBg){ alert('card-bg.jpg নাই!'); return; }
+  if(!currentUser){ alert('Login কৰা!'); return; }
+  btn.innerText='⏳ Creating HD...';
+  const bgSrc = cardBg.src;
+  const name = currentUser.name;
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = 1600; canvas.height = 1000;
+  const bgImg = new Image(); bgImg.crossOrigin='anonymous';
+  bgImg.onload = () => {
+    ctx.drawImage(bgImg,0,0,canvas.width,canvas.height);
+    const photoX = canvas.width/2;
+    const photoY = canvas.height*0.535;
+    const photoR = (canvas.width*0.165)/2;
+    function drawCover(img,x,y,r){
+      ctx.save();
+      ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.clip();
+      const ir = img.width/img.height;
+      let sx,sy,sW,sH;
+      if(ir>1){ sH=img.height; sW=sH; sx=(img.width-sW)/2; sy=0; }
+      else{ sW=img.width; sH=sW; sx=0; sy=(img.height-sH)/2; }
+      ctx.drawImage(img,sx,sy,sW,sH,x-r,y-r,r*2,r*2);
+      ctx.restore();
+      ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
+      ctx.strokeStyle='#d4af37'; ctx.lineWidth=6; ctx.stroke();
+    }
+    const drawName = () => {
+      const nameY = canvas.height*0.735;
+      ctx.font='bold 46px Arial'; ctx.textAlign='center';
+      const textW = ctx.measureText(name).width;
+      ctx.fillStyle='rgba(0,0,0,0.75)';
+      ctx.beginPath(); ctx.roundRect(canvas.width/2-textW/2-35,nameY-32,textW+70,48,22); ctx.fill();
+      ctx.strokeStyle='rgba(212,175,55,0.6)'; ctx.lineWidth=1.5; ctx.stroke();
+      ctx.fillStyle='#fff'; ctx.shadowColor='gold'; ctx.shadowBlur=10;
+      ctx.fillText(name,canvas.width/2,nameY+2); ctx.shadowBlur=0;
+      const link=document.createElement('a');
+      link.download=`Sonor-Axom-${name.replace(/\s/g,'_')}-FINAL.png`;
+      link.href=canvas.toDataURL('image/png',1.0); link.click();
+      btn.innerText='⬇️ Download HD Card';
     };
-    bgImg.onerror=()=>{alert('card-bg.jpg not found'); btn.innerText='⬇️ Download HD Card';};
-    bgImg.src=bgSrc;
-  }
+    if(profilePic){
+      const pImg=new Image();
+      pImg.onload=()=>{ drawCover(pImg,photoX,photoY,photoR); drawName(); };
+      pImg.onerror=drawName; pImg.src=profilePic;
+    }else{
+      ctx.beginPath(); ctx.arc(photoX,photoY,photoR,0,Math.PI*2);
+      ctx.fillStyle='#000'; ctx.fill(); ctx.strokeStyle='#d4af37'; ctx.lineWidth=6; ctx.stroke();
+      ctx.fillStyle='gold'; ctx.font='bold 80px Arial'; ctx.textAlign='center';
+      ctx.fillText(name[0].toUpperCase(),photoX,photoY+24); drawName();
+    }
+  };
+  bgImg.onerror=()=>{alert('card-bg.jpg load fail'); btn.innerText='⬇️ Download HD Card';};
+  bgImg.src=bgSrc;
 }
 function deletePost(id,o){if(o!==currentUser.name){alert("আনৰ Post নোৱাৰি!");return;}if(confirm("Delete?"))db.collection("posts").doc(id).delete();}
 function likePost(id,l){if(!currentUser){openAuth();return;}if(localStorage.getItem('liked_'+id))return;db.collection("posts").doc(id).update({likes:(l||0)+1});localStorage.setItem('liked_'+id,'1');}
