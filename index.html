@@ -57,16 +57,29 @@ body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:16
     <div id="bigPicArea"></div>
     <h2 id="profName" style="color:gold;margin:10px 0"></h2>
     <button onclick="uploadProfile()" style="margin-top:6px;padding:8px 16px;border-radius:20px;background:gold;color:#000;font-weight:800;border:0">📷 Profile Photo</button>
-    <div class="membership-card" id="membershipCard">
-      <div class="card-top">
-        <div style="display:flex;align-items:center;gap:8px">
-          <img src="logo.jpg" class="card-logo" onerror="this.style.display='none'">
-          <div><div style="color:gold;font-weight:900;font-size:14px">সোণৰ অসম</div><div style="color:#aaa;font-size:10px">OFFICIAL MEMBER</div></div>
-        </div>
-        <div style="background:gold;color:#000;font-weight:900;font-size:9px;padding:3px 8px;border-radius:10px">GOLD MEMBER</div>
+   <div class="membership-card-premium" id="membershipCard">
+  <div class="premium-inner">
+    <div style="text-align:center">
+      <div style="font-size:26px">🪷</div>
+      <div style="color:#d4af37;font-size:18px;font-weight:700">Sonor Axom - সোণৰ অসম</div>
+      <div style="color:#c9a86a;font-size:11px;letter-spacing:4px;margin-top:5px">PREMIUM MEMBERSHIP</div>
+    </div>
+    <div style="text-align:center;margin:35px 0">
+      <div id="cardName" style="color:#fff;font-size:26px;font-weight:900">Loading...</div>
+      <div style="display:flex;justify-content:center;gap:15px;margin-top:10px">
+        <div><span style="color:#888;font-size:9px">DISTRICT</span><br><span id="cardDistrict" style="color:gold;font-weight:700">All Assam</span></div>
+        <div><span style="color:#888;font-size:9px">ID</span><br><span id="cardId" style="color:#fff;font-family:monospace">SA-0000</span></div>
+        <div><span style="color:#888;font-size:9px">SINCE</span><br><span id="cardSince" style="color:#aaa">2024</span></div>
       </div>
-      <div style="display:flex;justify-content:space-between">
-        <div>
+      <div id="cardQr" style="display:none"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:end">
+      <div style="width:70px;height:70px;background:gold;border-radius:50%;border:3px solid #8B6914;display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:7px;font-weight:900">EST. 2024</span><span style="font-size:16px">🪷</span><span style="font-size:7px;font-weight:900">EST. 2024</span></div>
+      <div style="flex:1;text-align:center"><p style="color:#d4af37;font-size:13px;margin:0">জয় আই অসম! সোণৰ অসমৰ সদস্য</p></div>
+      <div style="width:70px;height:70px;background:#000;border:3px solid gold;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:20px">👥</span><span style="color:gold;font-size:6px">SONOR AXOM</span></div>
+    </div>
+  </div>
+</div>
           <div style="color:#888;font-size:10px">MEMBER NAME</div>
           <div id="cardName" style="color:#fff;font-weight:900;font-size:16px;margin-bottom:8px">Loading...</div>
           <div style="color:#888;font-size:10px">DISTRICT</div>
