@@ -1,7 +1,3 @@
-.filters{display:flex;gap:8px;padding:10px;background:#151515;border-top:2px solid gold;border-bottom:2px solid #333;overflow-x:auto}
-#loginPrompt p{color:gold!important;font-weight:700}
-.stats{background:#151515!important;border-bottom:2px solid #333}
-#chatBtn{position:fixed!important;bottom:20px!important;left:15px!important;width:56px!important;height:56px!important;background:linear-gradient(135deg,gold,#ff8c00)!important;border-radius:50%!important;border:3px solid #000!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:26px!important;z-index:99999!important;box-shadow:0 4px 15px rgba(255,215,0,.6)!important}
-#scrollBottomBtn{position:fixed!important;bottom:20px!important;right:15px!important;width:56px!important;height:56px!important;background:#222!important;border:2px solid gold!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:22px!important;z-index:99999!important;color:gold!important}
-#scrollTopBtn{position:fixed!important;bottom:85px!important;right:15px!important;width:44px!important;height:44px!important;background:#222!important;border:2px solid gold!important;border-radius:50%!important;display:none;align-items:center!important;justify-content:center!important;z-index:99998!important;color:gold!important}
-body{padding-bottom:90px!important}
+.membership-card-premium{background:#0a0a0a;border:2px solid #d4af37;border-radius:12px;padding:4px;margin:15px 10px;box-shadow:0 0 20px rgba(212,175,55,0.35);position:relative}
+.premium-inner{background:#111;background-image:radial-gradient(rgba(212,175,55,0.05) 1px, transparent 1px);background-size:20px 20px;border:1px solid rgba(212,175,55,0.6);border-radius:8px;padding:18px 12px}
+.premium-inner::before{content:'';position:absolute;top:10px;left:10px;right:10px;bottom:10px;border:1px solid rgba(212,175,55,0.25);border-radius:6px;pointer-events:none}
