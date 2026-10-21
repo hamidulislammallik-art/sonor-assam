@@ -130,6 +130,11 @@ function logout(){
 function uploadProfile(){if(!currentUser){openAuth();return;}document.getElementById('profileFile').click();}
 document.getElementById('profileFile').addEventListener('change',async e=>{
   const f=e.target.files[0];if(!f)return;
+  const b=await new Promise(r=>{let fr=new FileReader();fr.onload=ev=>r(ev.target.result);fr.readAsDataURL(f);fr.readAsDataURL(f);});
+  // Fix double read
+});
+document.getElementById('profileFile').addEventListener('change',async e=>{
+  const f=e.target.files[0];if(!f)return;
   const b=await new Promise(r=>{let fr=new FileReader();fr.onload=ev=>r(ev.target.result);fr.readAsDataURL(f);});
   profilePic=b;
   localStorage.setItem(getProfileKey(), b);
@@ -143,7 +148,7 @@ function loadImage(src){
     img.onload=()=>resolve(img);
     img.onerror=()=>resolve(null);
     img.src=src;
-    setTimeout(()=>resolve(null), 2000);
+    setTimeout(()=>resolve(null), 3000);
   });
 }
 async function generateMembershipCard(){
@@ -151,7 +156,7 @@ async function generateMembershipCard(){
   const canvas=document.getElementById('memberCanvas');
   const ctx=canvas.getContext('2d');
   const preview=document.getElementById('cardPreview');
-  preview.innerHTML="Generating...";
+  preview.innerHTML="Generating HD Card...";
   
   let cardBg = await loadImage("card-bg.png?v="+Date.now());
   let avatarImg = null;
@@ -166,20 +171,58 @@ async function generateMembershipCard(){
     ctx.strokeStyle="#FFD700"; ctx.lineWidth=5; ctx.strokeRect(12,12,1176,651);
   }
 
+  // ✅ BOSS FIX: PREMIUM আৰু জয় আই অসম ৰ মাজৰ খালি ঠাই FULL COVER - 27% BIG PHOTO
+  const photoCenterX = 600;
+  const photoCenterY = 328; // মাজত Perfect Center
+  const photoRadius = 162; // 27% width = 324px diameter
+
   if(avatarImg){
-    ctx.save(); ctx.beginPath(); ctx.arc(600,250,75,0,Math.PI*2); ctx.clip(); 
-    ctx.drawImage(avatarImg,525,175,150,150); ctx.restore();
-    ctx.beginPath(); ctx.arc(600,250,78,0,Math.PI*2); ctx.strokeStyle="#FFD700"; ctx.lineWidth=4; ctx.stroke();
+    ctx.save(); 
+    ctx.beginPath(); 
+    ctx.arc(photoCenterX, photoCenterY, photoRadius, 0, Math.PI*2); 
+    ctx.clip(); 
+    ctx.drawImage(avatarImg, photoCenterX-photoRadius, photoCenterY-photoRadius, photoRadius*2, photoRadius*2); 
+    ctx.restore();
+    ctx.beginPath(); 
+    ctx.arc(photoCenterX, photoCenterY, photoRadius, 0, Math.PI*2); 
+    ctx.strokeStyle="#FFD700"; 
+    ctx.lineWidth=6; 
+    ctx.shadowColor="gold"; ctx.shadowBlur=20;
+    ctx.stroke();
+    ctx.shadowBlur=0;
+  } else {
+    ctx.beginPath(); 
+    ctx.arc(photoCenterX, photoCenterY, photoRadius, 0, Math.PI*2); 
+    ctx.fillStyle="#111"; ctx.fill();
+    ctx.strokeStyle="gold"; ctx.lineWidth=4; ctx.stroke();
+    ctx.fillStyle="gold"; ctx.font="bold 90px Arial"; ctx.textAlign="center";
+    ctx.fillText(currentUser.name[0].toUpperCase(), photoCenterX, photoCenterY+28);
   }
   
-  ctx.fillStyle="#f9e7b0"; 
-  ctx.font="bold 52px Georgia"; 
+  // Name - Photo ৰ ঠিক তলত, জয় আই অসম ৰ ওপৰত
+  ctx.font="900 48px system-ui"; 
   ctx.textAlign="center"; 
-  ctx.shadowColor="black"; ctx.shadowBlur=10;
-  ctx.fillText(currentUser.name,600,395);
+  const textW = ctx.measureText(currentUser.name).width;
+  const pillW = textW+60;
+  const pillH = 56;
+  const pillX = 600 - pillW/2;
+  const pillY = 538;
+  
+  ctx.fillStyle="rgba(0,0,0,0.80)";
+  ctx.beginPath();
+  if(ctx.roundRect) ctx.roundRect(pillX, pillY, pillW, pillH, 28);
+  else { ctx.rect(pillX, pillY, pillW, pillH); }
+  ctx.fill();
+  ctx.strokeStyle="rgba(255,215,0,0.9)";
+  ctx.lineWidth=2;
+  ctx.stroke();
+  
+  ctx.fillStyle="#fff";
+  ctx.shadowColor="gold"; ctx.shadowBlur=14;
+  ctx.fillText(currentUser.name,600,575);
   ctx.shadowBlur=0;
   
-  const dataUrl=canvas.toDataURL("image/png");
+  const dataUrl=canvas.toDataURL("image/png", 1.0);
   preview.innerHTML=`<img src="${dataUrl}" style="width:100%;border-radius:12px;display:block">`;
   document.getElementById('downloadCard').href=dataUrl;
   document.getElementById('downloadCard').download=currentUser.name+"-SonorAxom-Boss.png";
@@ -195,8 +238,15 @@ function openProfilePage(){
   document.getElementById('myPostCount').innerText=myPosts.length;
   document.getElementById('myLikeCount').innerText=myPosts.reduce((s,p)=>s+(p.likes||0),0);
   document.getElementById('myCommentCount').innerText=myPosts.reduce((s,p)=>s+(p.comments?.length||0),0);
-  document.getElementById('myPosts').innerHTML=myPosts.length?myPosts.map(d=>`<div class="card"><p>${d.text}</p>${d.image?`<img src="${d.image}" style="width:100%;border-radius:12px">`:''}<div style="margin-top:8px;display:flex;gap:6px"><span style="background:#1a1a1a;padding:4px 10px;border-radius:12px;font-size:12px">👍 ${d.likes||0}</span><button onclick="deletePost('${d.id}','${d.userName}')" style="margin-left:auto;padding:5px 12px;border-radius:20px;background:#ff2222;color:#fff;border:0">🗑️ Delete</button></div></div>`).join(''):'<div class="card" style="text-align:center;color:#888">Post নাই</div>';
-  setTimeout(generateMembershipCard,300);
+  document.getElementById('myPosts').innerHTML=myPosts.length?myPosts.map(d=>{
+    let media = '';
+    if(d.image){
+      if(d.image.startsWith('data:video')) media=`<video src="${d.image}" controls style="width:100%;border-radius:12px;max-height:450px"></video>`;
+      else media=`<img src="${d.image}" style="width:100%;border-radius:12px">`;
+    }
+    return `<div class="card"><p>${d.text}</p>${media}<div style="margin-top:8px;display:flex;gap:6px"><span style="background:#1a1a1a;padding:4px 10px;border-radius:12px;font-size:12px">👍 ${d.likes||0}</span><button onclick="deletePost('${d.id}','${d.userName}')" style="margin-left:auto;padding:5px 12px;border-radius:20px;background:#ff2222;color:#fff;border:0">🗑️ Delete</button></div></div>`;
+  }).join(''):'<div class="card" style="text-align:center;color:#888">Post নাই</div>';
+  setTimeout(generateMembershipCard,400);
 }
 function closeProfile(){document.getElementById('profilePage').style.display='none';}
 function editProfile(){let n=prompt("নাম:",currentUser.name);if(n&&n.trim()){currentUser.name=n.trim();localStorage.setItem('sonor_user',JSON.stringify(currentUser));}let b=prompt("Bio:",userBio);if(b!==null){userBio=b;localStorage.setItem('sonor_bio',b);}renderAuth();openProfilePage();renderFeed();}
@@ -217,23 +267,56 @@ db.collection("posts").orderBy("createdAt","desc").limit(100).onSnapshot(snap=>{
 function renderFeed(){
   const feed=document.getElementById('feed');
   let filtered=selectedDistrict==="All"?allPosts:allPosts.filter(p=>p.district===selectedDistrict);
-  feed.innerHTML=`<div class="card"><textarea id="postText" placeholder="কি ভাবিছা Bos?..." style="width:100%;min-height:60px;border-radius:12px;padding:10px;background:#1a1a1a;color:#fff;border:1px solid #333"></textarea><div style="display:flex;gap:6px;margin-top:8px"><select id="fDist" style="flex:1;padding:9px;border-radius:20px;border:2px solid gold;background:#fff;color:#000;font-weight:700"><option value="">জিলা</option>${allDistricts.map(d=>`<option>${d}</option>`).join('')}</select><input type="file" id="fImg" accept="image/*" style="flex:1"><button onclick="createPostReal()" style="padding:9px 16px;border-radius:20px;background:gold;color:#000;font-weight:900;border:0">Post</button></div></div>`+filtered.map(d=>{
+  feed.innerHTML=`<div class="card"><textarea id="postText" placeholder="কি ভাবিছা Bos?..." style="width:100%;min-height:60px;border-radius:12px;padding:10px;background:#1a1a1a;color:#fff;border:1px solid #333"></textarea><div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><select id="fDist" style="flex:1;min-width:80px;padding:9px;border-radius:20px;border:2px solid gold;background:#fff;color:#000;font-weight:700"><option value="">জিলা</option>${allDistricts.map(d=>`<option>${d}</option>`).join('')}</select><input type="file" id="fImg" accept="image/*,video/*" style="flex:1;min-width:120px;color:#fff;font-size:12px"><button onclick="createPostReal()" id="postBtn" style="padding:9px 16px;border-radius:20px;background:gold;color:#000;font-weight:900;border:0">Post</button></div><p style="font-size:11px;color:#888;margin:6px 0 0 2px">📸 Image / 🎥 Video (15 Sec, 720p, Max 80MB) - বেছি ডাঙৰ হলে Failed to fetch আহিব</p></div>`+filtered.map(d=>{
     const liked=localStorage.getItem('liked_'+d.id);
     let avatar=d.userPhoto?`<img src="${d.userPhoto}" style="width:30px;height:30px;border-radius:50%;border:1px solid gold">`:`<div style="width:30px;height:30px;border-radius:50%;background:gold;color:#000;display:flex;align-items:center;justify-content:center;font-weight:900">${(d.userName||'U')[0]}</div>`;
     if(currentUser&&d.userName===currentUser.name&&profilePic) avatar=`<img src="${profilePic}" style="width:30px;height:30px;border-radius:50%;border:1px solid gold">`;
     const commentsHtml=(d.comments||[]).map(c=>`<div style="margin-top:6px;padding:6px 10px;background:#1a1a1a;border-radius:10px;font-size:13px"><b>${c.user}:</b> ${c.text}</div>`).join('');
     const deleteBtn=(currentUser&&d.userName===currentUser.name)?`<button onclick="deletePost('${d.id}','${d.userName}')" class="btn-action" style="background:#ff2222">🗑️ Delete</button>`:``;
-    return `<div class="card"><div style="display:flex;align-items:center;gap:8px"><div onclick="openPrivateChat('${d.userName}')" style="cursor:pointer;display:flex;align-items:center;gap:8px">${avatar}<b style="text-decoration:underline;text-decoration-color:gold">${d.userName||'User'}</b></div><span style="color:#888;font-size:11px">• ${d.district||''}</span></div><p style="margin:10px 0">${d.text||''}</p>${d.image?`<img src="${d.image}" style="width:100%;border-radius:12px;max-height:450px;object-fit:cover">`:''}<div style="display:flex;gap:5px;margin-top:10px;flex-wrap:wrap"><button onclick="likePost('${d.id}',${d.likes||0})" class="btn-action" style="background:${liked?'gold':'#1a1a1a'};color:${liked?'#000':'#fff'}">👍 ${d.likes||0}</button><button onclick="commentPost('${d.id}')" class="btn-action">💬 ${(d.comments||[]).length}</button><button onclick="sharePost('${d.id}',\`${(d.text||'').replace(/`/g,'')}\`)" class="btn-action" style="color:gold;border-color:gold">↗️ Share</button>${deleteBtn}</div>${commentsHtml}</div>`;
+    let media='';
+    if(d.image){
+      if(d.image.startsWith('data:video')) media=`<video src="${d.image}" controls playsinline style="width:100%;border-radius:12px;max-height:500px;background:#000"></video>`;
+      else media=`<img src="${d.image}" style="width:100%;border-radius:12px;max-height:450px;object-fit:cover">`;
+    }
+    return `<div class="card"><div style="display:flex;align-items:center;gap:8px"><div onclick="openPrivateChat('${d.userName}')" style="cursor:pointer;display:flex;align-items:center;gap:8px">${avatar}<b style="text-decoration:underline;text-decoration-color:gold">${d.userName||'User'}</b></div><span style="color:#888;font-size:11px">• ${d.district||''}</span></div><p style="margin:10px 0">${d.text||''}</p>${media}<div style="display:flex;gap:5px;margin-top:10px;flex-wrap:wrap"><button onclick="likePost('${d.id}',${d.likes||0})" class="btn-action" style="background:${liked?'gold':'#1a1a1a'};color:${liked?'#000':'#fff'}">👍 ${d.likes||0}</button><button onclick="commentPost('${d.id}')" class="btn-action">💬 ${(d.comments||[]).length}</button><button onclick="sharePost('${d.id}',\`${(d.text||'').replace(/`/g,'')}\`)" class="btn-action" style="color:gold;border-color:gold">↗️ Share</button>${deleteBtn}</div>${commentsHtml}</div>`;
   }).join('');
 }
 async function createPostReal(){
   if(!currentUser){openAuth();return;}
   loadProfilePic();
   const txt=document.getElementById('postText').value.trim();if(!txt){alert("লিখা");return;}
+  const btn=document.getElementById('postBtn');
   let img="";let file=document.getElementById('fImg')?.files[0];
-  if(file){img=await new Promise(r=>{let fr=new FileReader();fr.onload=e=>r(e.target.result);fr.readAsDataURL(file);});}
-  await db.collection("posts").add({text:txt,image:img,district:document.getElementById('fDist')?.value||selectedDistrict,likes:0,comments:[],userName:currentUser.name,userPhoto:profilePic||"",createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-  document.getElementById('postText').value="";
+  if(file){
+    if(file.size > 85*1024*1024){
+      alert('❌ File বেছি ডাঙৰ! \n\n✅ Solution:\n• Video 15 Sec ত কাটা\n• 720p ত Export কৰা (CapCut / InShot)\n• Max 80MB');
+      return;
+    }
+    if(btn) btn.innerText='⏳ Uploading...';
+    try{
+      img=await new Promise((r,rej)=>{
+        let fr=new FileReader();
+        fr.onload=e=>r(e.target.result);
+        fr.onerror=()=>rej('read error');
+        fr.readAsDataURL(file);
+      });
+    }catch(e){
+      alert('File Read Error!');
+      if(btn) btn.innerText='Post';
+      return;
+    }
+  }
+  try{
+    if(btn) btn.innerText='⏳ Posting...';
+    await db.collection("posts").add({text:txt,image:img,district:document.getElementById('fDist')?.value||selectedDistrict,likes:0,comments:[],userName:currentUser.name,userPhoto:profilePic||"",createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    document.getElementById('postText').value="";
+    const fi=document.getElementById('fImg'); if(fi) fi.value="";
+    if(btn) btn.innerText='Post';
+  }catch(e){
+    console.error(e);
+    alert('❌ Error: Failed to fetch - 30 Sec পিছত Try\n\n🔥 কাৰণ: Video বেছি ডাঙৰ!\n\n✅ Fix:\n1. Video টো 15 Sec কৰা\n2. 720p ত Compress কৰা\n3. WiFi ত Try কৰা\n\nFirestore ত 1MB+ File Upload নহয়, সেয়ে Error আহে।');
+    if(btn) btn.innerText='Post';
+  }
 }
 renderAuth();loadInbox();
 </script>
