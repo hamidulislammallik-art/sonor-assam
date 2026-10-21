@@ -30,12 +30,19 @@ body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:16
 .reel-card{background:#111;border:1px solid gold;border-radius:16px;margin:10px;overflow:hidden}
 #privateBox{position:fixed;bottom:180px;left:12px;width:92%;max-width:380px;height:460px;background:#111;border:2px solid gold;border-radius:18px;z-index:99998;display:none;flex-direction:column;overflow:hidden}
 </style></head><body>
-<div class="header"><h2 style="margin:0;color:gold">সোণৰ অসম</h2><div id="authArea"></div></div>
-<div class="districts" id="districtList"></div>
-<div id="feed"></div>
-<div id="reelsFeed" style="display:none"></div>
-<div id="profilePage">
-<div class="profileHeader">
+<div class="header">
+  <div style="display:flex;align-items:center;gap:10px">
+    <img src="logo.jpg" class="logo-box" style="width:46px;height:46px;border-radius:50%;border:2px solid gold;object-fit:cover;background:#000" onerror="this.src='https://i.ibb.co/3m0J0kL/sonar-logo.jpg';this.onerror=function(){this.style.display='none';document.getElementById('textLogo').style.display='flex'}">
+    <div id="textLogo" style="display:flex;align-items:center;gap:8px">
+      <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,gold,#ff8c00);display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:22px;border:2px solid gold">S</div>
+      <div>
+        <h2 style="margin:0;color:gold;font-size:19px;line-height:1">সোণৰ অসম</h2>
+        <p style="margin:0;color:#aaa;font-size:10px">অসমৰ নিজৰ এপ • Official</p>
+      </div>
+    </div>
+  </div>
+  <div id="authArea"></div>
+</div>
 <div style="display:flex;justify-content:space-between;margin-bottom:15px"><button onclick="closeProfile()" style="padding:7px 14px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #444">Back</button><button onclick="logout()" style="padding:7px 14px;border-radius:20px;background:#ff2222;color:#fff;border:0">Logout</button></div>
 <div id="bigPicArea"></div>
 <h2 id="profName" style="color:gold"></h2>
