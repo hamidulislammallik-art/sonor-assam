@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="as"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>সোণৰ অসম - 220 Final</title>
+<title>সোণৰ অসম - FINAL FIX</title>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <style>
@@ -13,8 +13,8 @@ body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:16
 #profilePage{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:2000;display:none;overflow-y:auto}
 .profileHeader{padding:20px;background:linear-gradient(180deg,#1a1a1a,#000);border-bottom:2px solid gold;text-align:center}
 .bigPic{width:110px;height:110px;border-radius:50%;border:4px solid gold;object-fit:cover;margin:auto;background:#222;display:block}
-.statBox{display:flex;justify-content:center;gap:12px;margin-top:15px}
-.statBox div{background:#111;border:1px solid #222;border-radius:12px;padding:10px 16px;text-align:center;min-width:68px}
+.statBox{display:flex;justify-content:center;gap:8px;margin-top:15px;padding:0 10px}
+.statBox div{background:#111;border:1px solid #222;border-radius:12px;padding:10px 8px;text-align:center;min-width:60px;flex:1}
 .statBox b{color:gold;font-size:18px;display:block}
 .districts{display:flex;gap:8px;overflow-x:auto;padding:10px;background:#080808;border-bottom:1px solid #111}
 .districts button{white-space:nowrap;padding:7px 14px;border-radius:20px;border:1px solid #2a2a2a;background:#151515;color:#aaa;font-size:12.5px}
@@ -32,16 +32,17 @@ body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:16
 #privateBox{position:fixed;bottom:80px;left:12px;width:92%;max-width:380px;height:460px;background:#111;border:2px solid gold;border-radius:18px;z-index:99998;display:none;flex-direction:column;overflow:hidden}
 .membership-real{position:relative;width:100%;max-width:520px;margin:0 auto;border-radius:12px;overflow:hidden;box-shadow:0 0 25px rgba(212,175,55,0.5);border:2px solid #d4af37;aspect-ratio:16/10;background:#000}
 </style></head><body>
-<div class="header" onclick="goHome()"><div style="display:flex;align-items:center;gap:10px"><img src="logo.jpg" class="logo-box" onerror="this.style.display='none'"><div><h2 style="margin:0;color:gold;font-size:18px">সোণৰ অসম</h2><p style="margin:0;color:#aaa;font-size:10px">220 Songs Final</p></div></div><div id="authArea"></div></div>
+<div class="header" onclick="goHome()"><div style="display:flex;align-items:center;gap:10px"><img src="logo.jpg" class="logo-box" onerror="this.style.display='none'"><div><h2 style="margin:0;color:gold;font-size:18px">সোণৰ অসম</h2><p style="margin:0;color:#aaa;font-size:10px">118 Songs Final</p></div></div><div id="authArea"></div></div>
 <div class="districts" id="districtList"></div><div id="feed"></div><div id="reelsFeed" style="display:none"></div>
 <div id="profilePage"><div class="profileHeader">
 <div style="display:flex;justify-content:space-between;margin-bottom:15px"><button onclick="closeProfile()" style="padding:7px 14px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #444">Back</button><button onclick="logout()" style="padding:7px 14px;border-radius:20px;background:#ff2222;color:#fff;border:0">Logout</button></div>
 <div id="bigPicArea"></div><h2 id="profName" style="color:gold;margin:10px 0"></h2>
 <button onclick="uploadProfile()" style="margin-top:6px;padding:8px 16px;border-radius:20px;background:gold;color:#000;font-weight:800;border:0">📷 Profile Photo</button>
-<div style="padding:10px"><div class="membership-real" id="membershipCard"><img src="card-bg.jpg" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.src='card-bg.png'"><div style="position:absolute;top:0;left:0;width:100%;height:100%;"><div style="position:absolute;top:54%;left:50%;transform:translate(-50%,-50%);width:16.5%;aspect-ratio:1/1;border-radius:50%;border:2.5px solid #d4af37;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px gold"><img id="cardProfileImg" src="" style="width:100%;height:100%;object-fit:cover;display:none"><span id="cardProfileLetter" style="font-size:20px;font-weight:900;color:gold">H</span></div><div id="cardName" style="position:absolute;top:73%;left:50%;transform:translateX(-50%);color:#fff;font-size:11px;font-weight:800;text-align:center;text-shadow:0 1px 3px #000,0 0 6px gold;white-space:nowrap;background:rgba(0,0,0,0.72);padding:3px 14px;border-radius:10px;border:1px solid rgba(212,175,55,0.6)">Hamidul Islam</div></div></div><div style="text-align:center;margin-top:12px"><button onclick="downloadCard()" style="padding:11px 24px;border-radius:25px;background:linear-gradient(135deg,gold,#ff8c00);color:#000;font-weight:900;border:0">⬇️ Download HD Card</button><p style="color:#666;font-size:10px;margin-top:8px">ID: <span id="cardIdShow">SA-0000</span> • <span id="cardDistrictShow">All Assam</span></p></div></div><div class="statBox"><div><b id="myPostCount">0</b><span style="font-size:11px;color:#888">Posts</span></div><div><b id="myFollowerCount">0</b><span style="font-size:11px;color:#888">Followers</span></div><div><b id="myFollowingCount">0</b><span style="font-size:11px;color:#888">Following</span></div></div>
-<div style="padding:10px;display:flex;gap:10px;flex-wrap:wrap">
-<div style="flex:1;min-width:140px;background:#111;border:1px solid gold;border-radius:12px;padding:10px"><h4 style="color:gold;margin:0 0 8px 0;font-size:13px">👥 Followers</h4><div id="followersListDiv">Loading...</div></div>
-<div style="flex:1;min-width:140px;background:#111;border:1px solid gold;border-radius:12px;padding:10px"><h4 style="color:gold;margin:0 0 8px 0;font-size:13px">➡️ Following</h4><div id="followingListDiv">Loading...</div></div>
+<div style="padding:10px"><div class="membership-real" id="membershipCard"><img src="card-bg.jpg" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.src='card-bg.png'"><div style="position:absolute;top:0;left:0;width:100%;height:100%;"><div style="position:absolute;top:54%;left:50%;transform:translate(-50%,-50%);width:16.5%;aspect-ratio:1/1;border-radius:50%;border:2.5px solid #d4af37;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px gold"><img id="cardProfileImg" src="" style="width:100%;height:100%;object-fit:cover;display:none"><span id="cardProfileLetter" style="font-size:20px;font-weight:900;color:gold">H</span></div><div id="cardName" style="position:absolute;top:73%;left:50%;transform:translateX(-50%);color:#fff;font-size:11px;font-weight:800;text-align:center;text-shadow:0 1px 3px #000,0 0 6px gold;white-space:nowrap;background:rgba(0,0,0,0.72);padding:3px 14px;border-radius:10px;border:1px solid rgba(212,175,55,0.6)">Hamidul Islam</div></div></div><div style="text-align:center;margin-top:12px"><button onclick="downloadCard()" style="padding:11px 24px;border-radius:25px;background:linear-gradient(135deg,gold,#ff8c00);color:#000;font-weight:900;border:0">⬇️ Download HD Card</button><p style="color:#666;font-size:10px;margin-top:8px">ID: <span id="cardIdShow">SA-0000</span> • <span id="cardDistrictShow">All Assam</span></p></div></div>
+<div class="statBox">
+<div><b id="myPostCount">0</b><span style="font-size:11px;color:#888">Posts</span></div>
+<div id="statFollowersBox" style="cursor:pointer;border:1px solid gold"><b id="myFollowerCount">0</b><span style="font-size:11px;color:#888">Followers ▼</span><div id="followersListDiv" style="display:none;margin-top:8px;max-height:220px;overflow-y:auto;text-align:left"></div></div>
+<div id="statFollowingBox" style="cursor:pointer;border:1px solid gold"><b id="myFollowingCount">0</b><span style="font-size:11px;color:#888">Following ▼</span><div id="followingListDiv" style="display:none;margin-top:8px;max-height:220px;overflow-y:auto;text-align:left"></div></div>
 </div>
 </div><div style="padding:10px"><h3 style="color:gold;padding:0 10px">মোৰ Posts + Reels</h3><div id="myPosts"></div></div></div>
 <div class="bottom-nav"><button class="active" onclick="switchTab('home',this)"><span class="icon">🏠</span>Home</button><button onclick="switchTab('reels',this)"><span class="icon">🎵</span>Reels</button><div class="upload-center" onclick="openReelsUpload()">+</div><button onclick="toggleInbox()"><span class="icon">💬</span>Inbox</button><button onclick="openProfilePage()"><span class="icon">👤</span>Profile</button></div>
@@ -186,21 +187,25 @@ function openProfilePage(){
   document.getElementById('profName').innerText=currentUser.name;
   let myPosts=allPosts.filter(p=>p.userName===currentUser.name); let myReels=allReels.filter(p=>p.userName===currentUser.name);
   document.getElementById('myPostCount').innerText=myPosts.length + myReels.length;
-  document.getElementById('myFollowingCount').innerText=followingSet.size;
   db.collection("follows").where("followingLower","==",currentUser.name.toLowerCase()).get().then(snap=>{
     document.getElementById('myFollowerCount').innerText=snap.size;
     let html = '';
     if(snap.empty){ html='<p style="color:#666;font-size:11px;text-align:center">এতিয়াও Followers নাই</p>'; }
-    else { snap.forEach(doc=>{ let d=doc.data(); html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:#111;border:1px solid #222;border-radius:10px;margin:4px 0"><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:50%;background:gold;color:#000;display:flex;align-items:center;justify-content:center;font-weight:900">${d.follower[0]}</div><b>${d.follower}</b></div><button onclick="followUser('${d.follower}')" style="padding:4px 10px;border-radius:20px;background:gold;color:#000;font-weight:800;border:0;font-size:11px">Follow Back</button></div>`; }); }
+    else { snap.forEach(doc=>{ let d=doc.data(); html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:#000;border:1px solid #333;border-radius:10px;margin:4px 0"><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:50%;background:gold;color:#000;display:flex;align-items:center;justify-content:center;font-weight:900">${d.follower[0]}</div><b style="font-size:12px">${d.follower}</b></div><button onclick="followUser('${d.follower}')" style="padding:4px 10px;border-radius:20px;background:gold;color:#000;font-weight:800;border:0;font-size:11px">Follow Back</button></div>`; }); }
     document.getElementById('followersListDiv').innerHTML=html;
   });
   db.collection("follows").where("followerLower","==",currentUser.name.toLowerCase()).get().then(snap=>{
     document.getElementById('myFollowingCount').innerText=snap.size;
     let html='';
     if(snap.empty){ html='<p style="color:#666;font-size:11px;text-align:center">এতিয়াও কাকো Follow কৰা নাই</p>'; }
-    else { snap.forEach(doc=>{ let d=doc.data(); html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:#111;border:1px solid #222;border-radius:10px;margin:4px 0"><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:50%;background:#222;color:gold;display:flex;align-items:center;justify-content:center;font-weight:900;border:1px solid gold">${d.following[0]}</div><b>${d.following}</b></div><button onclick="followUser('${d.following}')" style="padding:4px 10px;border-radius:20px;background:#222;color:gold;border:1px solid gold;font-size:11px">Unfollow</button></div>`; }); }
+    else { snap.forEach(doc=>{ let d=doc.data(); html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:#000;border:1px solid #333;border-radius:10px;margin:4px 0"><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:50%;background:#222;color:gold;display:flex;align-items:center;justify-content:center;font-weight:900;border:1px solid gold">${d.following[0]}</div><b style="font-size:12px">${d.following}</b></div><button onclick="followUser('${d.following}')" style="padding:4px 10px;border-radius:20px;background:#ff2222;color:#fff;font-weight:800;border:0;font-size:11px">Unfollow</button></div>`; }); }
     document.getElementById('followingListDiv').innerHTML=html;
   });
+  setTimeout(()=>{
+    let fBox=document.getElementById('statFollowersBox'); let gBox=document.getElementById('statFollowingBox');
+    if(fBox && !fBox._bound){ fBox._bound=true; fBox.addEventListener('click', (e)=>{ if(e.target.tagName==='BUTTON') return; let div=document.getElementById('followersListDiv'); div.style.display=div.style.display==='none'?'block':'none'; }); }
+    if(gBox && !gBox._bound){ gBox._bound=true; gBox.addEventListener('click', (e)=>{ if(e.target.tagName==='BUTTON') return; let div=document.getElementById('followingListDiv'); div.style.display=div.style.display==='none'?'block':'none'; }); }
+  },300);
   let combined=[...myReels.map(r=>({...r, isReel:true})), ...myPosts.map(p=>({...p, isReel:false}))];
   document.getElementById('myPosts').innerHTML=combined.length?combined.map(d=>{
     let media=''; if(d.isReel){media=`<video src="${d.url}" controls playsinline style="width:100%;border-radius:12px;max-height:500px;background:#000"></video><p style="color:gold;font-size:12px">🎵 ${d.title}</p>`;}
@@ -270,10 +275,32 @@ function loadFollows(){
   });
 }
 async function followUser(targetName){
-  if(!currentUser){openAuth();return;} if(targetName===currentUser.name)return;
-  let followId = currentUser.name.toLowerCase() + "__" + targetName.toLowerCase();
-  let docRef = db.collection("follows").doc(followId); let doc = await docRef.get();
-  if(doc.exists){await docRef.delete();} else {await docRef.set({follower:currentUser.name,following:targetName,followerLower:currentUser.name.toLowerCase(),followingLower:targetName.toLowerCase(),createdAt:firebase.firestore.FieldValue.serverTimestamp()});}
+  if(!currentUser){openAuth();return;} 
+  if(targetName===currentUser.name){alert("নিজকে Follow নোৱাৰি!");return;}
+  targetName = targetName.trim();
+  let rawId = currentUser.name.toLowerCase().trim() + "__" + targetName.toLowerCase().trim();
+  let followId = rawId.replace(/[^a-z0-9_]/g,'_');
+  let docRef = db.collection("follows").doc(followId);
+  try{
+    let doc = await docRef.get();
+    if(doc.exists){
+      await docRef.delete();
+      followingSet.delete(targetName.toLowerCase());
+    } else {
+      await docRef.set({
+        follower:currentUser.name,
+        following:targetName,
+        followerLower:currentUser.name.toLowerCase(),
+        followingLower:targetName.toLowerCase(),
+        createdAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      followingSet.add(targetName.toLowerCase());
+    }
+    loadFollows();
+    setTimeout(()=>{ if(document.getElementById('profilePage').style.display==='block') openProfilePage(); renderFeed(); renderReels(); },600);
+  }catch(e){
+    alert("Follow Error: "+e.message);
+  }
 }
 loadFollows();
 function renderFeed(){
@@ -287,12 +314,11 @@ function renderFeed(){
   <button onclick="createPostReal()" style="padding:9px 16px;border-radius:20px;background:gold;color:#000;font-weight:900;border:0">Post</button>
   </div>
   <div style="background:#0a0a0a;border:1px solid #333;border-radius:12px;padding:8px;margin-top:8px">
-    <p style="margin:0 0 6px 0;color:gold;font-size:11px;font-weight:800">🎵 220 Songs - Zubeen + Bangla!</p>
+    <p style="margin:0 0 6px 0;color:gold;font-size:11px;font-weight:800">🎵 118 Songs - Click Followers/Following Box!</p>
     <div style="display:flex;gap:5px;overflow-x:auto;padding-bottom:4px">
       <button onclick="filterSingers('All',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:gold;color:#000;font-weight:800;border:0;font-size:10px">All (55)</button>
       <button onclick="filterSingers('Zubeen Garg',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:#ff0066;color:#fff;border:0;font-size:10px">Zubeen</button>
       <button onclick="filterSingers('Assamese Mix',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:#00ff88;color:#000;border:0;font-size:10px">Assamese</button>
-      <button onclick="filterSingers('Arijit',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #333;font-size:10px">Arijit</button>
       <button onclick="filterSingers('Bangla',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:#ff69b4;color:#fff;border:0;font-size:10px">Bangla</button>
       <button onclick="filterSingers('Bollywood',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #333;font-size:10px">Bollywood</button>
     </div>
