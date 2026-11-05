@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="as"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>সোণৰ অসম - FINAL FIX</title>
+<title>সোণৰ অসম - 108 Songs FINAL</title>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <style>
@@ -14,7 +14,7 @@ body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:16
 .profileHeader{padding:20px;background:linear-gradient(180deg,#1a1a1a,#000);border-bottom:2px solid gold;text-align:center}
 .bigPic{width:110px;height:110px;border-radius:50%;border:4px solid gold;object-fit:cover;margin:auto;background:#222;display:block}
 .statBox{display:flex;justify-content:center;gap:8px;margin-top:15px;padding:0 10px}
-.statBox div{background:#111;border:1px solid #222;border-radius:12px;padding:10px 8px;text-align:center;min-width:60px;flex:1}
+.statBox div{background:#111;border-radius:12px;padding:10px 8px;text-align:center;min-width:60px;flex:1}
 .statBox b{color:gold;font-size:18px;display:block}
 .districts{display:flex;gap:8px;overflow-x:auto;padding:10px;background:#080808;border-bottom:1px solid #111}
 .districts button{white-space:nowrap;padding:7px 14px;border-radius:20px;border:1px solid #2a2a2a;background:#151515;color:#aaa;font-size:12.5px}
@@ -32,7 +32,7 @@ body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:16
 #privateBox{position:fixed;bottom:80px;left:12px;width:92%;max-width:380px;height:460px;background:#111;border:2px solid gold;border-radius:18px;z-index:99998;display:none;flex-direction:column;overflow:hidden}
 .membership-real{position:relative;width:100%;max-width:520px;margin:0 auto;border-radius:12px;overflow:hidden;box-shadow:0 0 25px rgba(212,175,55,0.5);border:2px solid #d4af37;aspect-ratio:16/10;background:#000}
 </style></head><body>
-<div class="header" onclick="goHome()"><div style="display:flex;align-items:center;gap:10px"><img src="logo.jpg" class="logo-box" onerror="this.style.display='none'"><div><h2 style="margin:0;color:gold;font-size:18px">সোণৰ অসম</h2><p style="margin:0;color:#aaa;font-size:10px">118 Songs Final</p></div></div><div id="authArea"></div></div>
+<div class="header" onclick="goHome()"><div style="display:flex;align-items:center;gap:10px"><img src="logo.jpg" class="logo-box" onerror="this.style.display='none'"><div><h2 style="margin:0;color:gold;font-size:18px">সোণৰ অসম</h2><p style="margin:0;color:#aaa;font-size:10px">108 Songs FINAL</p></div></div><div id="authArea"></div></div>
 <div class="districts" id="districtList"></div><div id="feed"></div><div id="reelsFeed" style="display:none"></div>
 <div id="profilePage"><div class="profileHeader">
 <div style="display:flex;justify-content:space-between;margin-bottom:15px"><button onclick="closeProfile()" style="padding:7px 14px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #444">Back</button><button onclick="logout()" style="padding:7px 14px;border-radius:20px;background:#ff2222;color:#fff;border:0">Logout</button></div>
@@ -41,8 +41,8 @@ body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:16
 <div style="padding:10px"><div class="membership-real" id="membershipCard"><img src="card-bg.jpg" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.src='card-bg.png'"><div style="position:absolute;top:0;left:0;width:100%;height:100%;"><div style="position:absolute;top:54%;left:50%;transform:translate(-50%,-50%);width:16.5%;aspect-ratio:1/1;border-radius:50%;border:2.5px solid #d4af37;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px gold"><img id="cardProfileImg" src="" style="width:100%;height:100%;object-fit:cover;display:none"><span id="cardProfileLetter" style="font-size:20px;font-weight:900;color:gold">H</span></div><div id="cardName" style="position:absolute;top:73%;left:50%;transform:translateX(-50%);color:#fff;font-size:11px;font-weight:800;text-align:center;text-shadow:0 1px 3px #000,0 0 6px gold;white-space:nowrap;background:rgba(0,0,0,0.72);padding:3px 14px;border-radius:10px;border:1px solid rgba(212,175,55,0.6)">Hamidul Islam</div></div></div><div style="text-align:center;margin-top:12px"><button onclick="downloadCard()" style="padding:11px 24px;border-radius:25px;background:linear-gradient(135deg,gold,#ff8c00);color:#000;font-weight:900;border:0">⬇️ Download HD Card</button><p style="color:#666;font-size:10px;margin-top:8px">ID: <span id="cardIdShow">SA-0000</span> • <span id="cardDistrictShow">All Assam</span></p></div></div>
 <div class="statBox">
 <div><b id="myPostCount">0</b><span style="font-size:11px;color:#888">Posts</span></div>
-<div id="statFollowersBox" style="cursor:pointer;border:1px solid gold"><b id="myFollowerCount">0</b><span style="font-size:11px;color:#888">Followers ▼</span><div id="followersListDiv" style="display:none;margin-top:8px;max-height:220px;overflow-y:auto;text-align:left"></div></div>
-<div id="statFollowingBox" style="cursor:pointer;border:1px solid gold"><b id="myFollowingCount">0</b><span style="font-size:11px;color:#888">Following ▼</span><div id="followingListDiv" style="display:none;margin-top:8px;max-height:220px;overflow-y:auto;text-align:left"></div></div>
+<div id="statFollowersBox" style="cursor:pointer;border:2px solid gold;background:#1a1a1a"><b id="myFollowerCount">0</b><span style="font-size:11px;color:gold">Followers ▼</span><div id="followersListDiv" style="display:none;margin-top:8px;max-height:250px;overflow-y:auto;text-align:left;background:#000;border-radius:10px;padding:4px"></div></div>
+<div id="statFollowingBox" style="cursor:pointer;border:2px solid gold;background:#1a1a1a"><b id="myFollowingCount">0</b><span style="font-size:11px;color:gold">Following ▼</span><div id="followingListDiv" style="display:none;margin-top:8px;max-height:250px;overflow-y:auto;text-align:left;background:#000;border-radius:10px;padding:4px"></div></div>
 </div>
 </div><div style="padding:10px"><h3 style="color:gold;padding:0 10px">মোৰ Posts + Reels</h3><div id="myPosts"></div></div></div>
 <div class="bottom-nav"><button class="active" onclick="switchTab('home',this)"><span class="icon">🏠</span>Home</button><button onclick="switchTab('reels',this)"><span class="icon">🎵</span>Reels</button><div class="upload-center" onclick="openReelsUpload()">+</div><button onclick="toggleInbox()"><span class="icon">💬</span>Inbox</button><button onclick="openProfilePage()"><span class="icon">👤</span>Profile</button></div>
@@ -62,45 +62,45 @@ document.getElementById('districtList').innerHTML='<button class="active" onclic
 document.getElementById('reelDist').innerHTML='<option value="">জিলা</option>'+allDistricts.map(d=>`<option>${d}</option>`).join('');
 let selectedDistrict="All";
 const assameseSongsLibrary = [
-  {singer:'Zubeen Garg', cat:'Assamese Mix', title:'HOTHATEI HERAL - Golden Collection', url:'https://files.catbox.moe/c30t8z.mp3'},
-  {singer:'Zubeen Garg', cat:'Assamese Mix', title:'Jodi Jibonor Rong Bure', url:'https://files.catbox.moe/d16jpu.mp3'},
-  {singer:'Zubeen Garg', cat:'Assamese Mix', title:'Monor Nijanot', url:'https://files.catbox.moe/4xmbp0.mp3'},
-  {singer:'Zubeen Garg', cat:'Assamese Mix', title:'Bojhena Shey Bojhena - Prem Amar', url:'https://files.catbox.moe/4paqy9.m4a'},
-  {singer:'Zubeen Garg', cat:'Assamese Mix', title:'Ek Chora Ek Chori', url:'https://files.catbox.moe/5a6rl4.m4a'},
-  {singer:'Zubeen Garg', cat:'Bollywood', title:'Dil Hua Hai Tukde Tukde', url:'https://files.catbox.moe/cqffid.m4a'},
-  {singer:'Zubeen Garg', cat:'Assamese Mix', title:'Ki Hobo Ei Jibon', url:'https://files.catbox.moe/lequai.m4a'},
-  {singer:'Zubeen Garg', cat:'Assamese Mix', title:'Mon Mane Na Title', url:'https://files.catbox.moe/p3cj98.m4a'},
-  {singer:'Zubeen Garg', cat:'Assamese Mix', title:'O Bondhu Re - Tor Naam', url:'https://files.catbox.moe/dn3j8o.mp3'},
-  {singer:'Zubeen Garg', cat:'Assamese Mix', title:'Moina Kun Bidhatai', url:'https://files.catbox.moe/r82h2u.mp3'},
-  {singer:'Neel Akash', cat:'Assamese Mix', title:'Mon Hira Doi - Bihuwan 2024', url:'https://files.catbox.moe/8we1he.mp3'},
-  {singer:'Rupali Kashyap', cat:'Assamese Mix', title:'Nagin - Rupali Kashyap', url:'https://files.catbox.moe/gtu9di.m4a'},
-  {singer:'Nikita', cat:'Assamese Mix', title:'Tik Tik Koi - Nikita', url:'https://files.catbox.moe/t8wz75.m4a'},
-  {singer:'Assamese', cat:'Assamese Mix', title:'Assamese New Hit Top 11', url:'https://files.catbox.moe/igeffw.m4a'},
-  {singer:'Assamese', cat:'Assamese Mix', title:'Aiso Mor Kalachand - Viral', url:'https://files.catbox.moe/7ah1k4.m4a'},
-  {singer:'Assamese Sad', cat:'Assamese Mix', title:'Mur Mrityu Dina Tumi Ahiba', url:'https://files.catbox.moe/3evgx2.mp3'},
-  {singer:'Sona Pakhi', cat:'Bangla', title:'Age Barir Malik Hou - Sona Pakhi', url:'https://files.catbox.moe/fnse0a.m4a'},
-  {singer:'Atif Ahmed Niloy', cat:'Bangla', title:'Atif Best 10 Top Sad 2023', url:'https://files.catbox.moe/ld3xlw.m4a'},
-  {singer:'Saiful Resma', cat:'Bangla', title:'Amay Eto Dukkho Dili Bondhu', url:'https://files.catbox.moe/iofx6b.mp3'},
-  {singer:'Bangla Sad', cat:'Bangla', title:'Amar Dukkho Bujhar Kew Nai', url:'https://files.catbox.moe/ir1cau.m4a'},
+  {singer:'Zubeen Garg', cat:'Assamese', title:'HOTHATEI HERAL - Golden', url:'https://files.catbox.moe/c30t8z.mp3'},
+  {singer:'Zubeen Garg', cat:'Assamese', title:'Jodi Jibonor Rong Bure', url:'https://files.catbox.moe/d16jpu.mp3'},
+  {singer:'Zubeen Garg', cat:'Assamese', title:'Monor Nijanot', url:'https://files.catbox.moe/4xmbp0.mp3'},
+  {singer:'Zubeen Garg', cat:'Assamese', title:'Bojhena Shey Bojhena', url:'https://files.catbox.moe/4paqy9.m4a'},
+  {singer:'Zubeen Garg', cat:'Assamese', title:'Ek Chora Ek Chori', url:'https://files.catbox.moe/5a6rl4.m4a'},
+  {singer:'Zubeen Garg', cat:'Bollywood', title:'Dil Hua Hai Tukde', url:'https://files.catbox.moe/cqffid.m4a'},
+  {singer:'Zubeen Garg', cat:'Assamese', title:'Ki Hobo Ei Jibon', url:'https://files.catbox.moe/lequai.m4a'},
+  {singer:'Zubeen Garg', cat:'Assamese', title:'Mon Mane Na Title', url:'https://files.catbox.moe/p3cj98.m4a'},
+  {singer:'Zubeen Garg', cat:'Assamese', title:'O Bondhu Re - Tor Naam', url:'https://files.catbox.moe/dn3j8o.mp3'},
+  {singer:'Zubeen Garg', cat:'Assamese', title:'Moina Kun Bidhatai', url:'https://files.catbox.moe/r82h2u.mp3'},
+  {singer:'Neel Akash', cat:'Assamese', title:'Mon Hira Doi - Bihuwan 2024', url:'https://files.catbox.moe/8we1he.mp3'},
+  {singer:'Rupali Kashyap', cat:'Assamese', title:'Nagin', url:'https://files.catbox.moe/gtu9di.m4a'},
+  {singer:'Nikita', cat:'Assamese', title:'Tik Tik Koi', url:'https://files.catbox.moe/t8wz75.m4a'},
+  {singer:'Assamese', cat:'Assamese', title:'Assamese New Hit Top 11', url:'https://files.catbox.moe/igeffw.m4a'},
+  {singer:'Assamese', cat:'Assamese', title:'Aiso Mor Kalachand', url:'https://files.catbox.moe/7ah1k4.m4a'},
+  {singer:'Assamese Sad', cat:'Assamese', title:'Mur Mrityu Dina', url:'https://files.catbox.moe/3evgx2.mp3'},
+  {singer:'Sona Pakhi', cat:'Bangla', title:'Age Barir Malik Hou', url:'https://files.catbox.moe/fnse0a.m4a'},
+  {singer:'Atif Ahmed Niloy', cat:'Bangla', title:'Atif Best 10 Top Sad', url:'https://files.catbox.moe/ld3xlw.m4a'},
+  {singer:'Saiful Resma', cat:'Bangla', title:'Amay Eto Dukkho Dili', url:'https://files.catbox.moe/iofx6b.mp3'},
+  {singer:'Bangla Sad', cat:'Bangla', title:'Amar Dukkho Bujhar', url:'https://files.catbox.moe/ir1cau.m4a'},
   {singer:'Saiful Tajlima', cat:'Bangla', title:'Ami Konba Deshe Jai', url:'https://files.catbox.moe/p4hzdh.mp3'},
-  {singer:'NRz Eshita', cat:'Bangla', title:'Ami Moira Jamu Tomar Ovabe', url:'https://files.catbox.moe/ldrfnc.mp3'},
+  {singer:'NRz Eshita', cat:'Bangla', title:'Ami Moira Jamu', url:'https://files.catbox.moe/ldrfnc.mp3'},
   {singer:'Robiul', cat:'Bangla', title:'Ami Hoilam Doshire', url:'https://files.catbox.moe/qakzzl.mp3'},
   {singer:'Miraj Khan', cat:'Bangla', title:'Ar Kotokal Shoibo Jala', url:'https://files.catbox.moe/290iiy.mp3'},
   {singer:'Bangla Sad', cat:'Bangla', title:'Eto Dukkho Dili Bondhure', url:'https://files.catbox.moe/y0za4b.mp3'},
   {singer:'O Sokina', cat:'Bangla', title:'O Sokina - Bangla Rap', url:'https://files.catbox.moe/4qohh7.m4a'},
   {singer:'Jhuma Haldar', cat:'Bangla', title:'O Sathi Ekbar Ese Dekhe Jao', url:'https://files.catbox.moe/x1hoje.m4a'},
-  {singer:'DJ Emran', cat:'Bangla', title:'Kante Kante Gumai Jokhon - DJ Remix', url:'https://files.catbox.moe/e2yan4.mp3'},
+  {singer:'DJ Emran', cat:'Bangla', title:'Kante Kante Gumai', url:'https://files.catbox.moe/e2yan4.mp3'},
   {singer:'Atif Niloy', cat:'Bangla', title:'Kar Ba Choya', url:'https://files.catbox.moe/ch82uw.mp3'},
-  {singer:'F A Sumon', cat:'Bangla', title:'Jibon Dila Kancha Basher Khacha', url:'https://files.catbox.moe/in8l3i.m4a'},
+  {singer:'F A Sumon', cat:'Bangla', title:'Jibon Dila Kancha Basher', url:'https://files.catbox.moe/in8l3i.m4a'},
   {singer:'Tasrif Khan', cat:'Bangla', title:'Taito Ailam Sagore', url:'https://files.catbox.moe/012etn.m4a'},
   {singer:'Shamim', cat:'Bangla', title:'Tumi Kar Lagiya Gathre', url:'https://files.catbox.moe/ksoaxm.mp3'},
   {singer:'Rk Roman', cat:'Bangla', title:'Toyar Lai - Viral Dance', url:'https://files.catbox.moe/qt8ot6.m4a'},
-  {singer:'Roja', cat:'Bangla', title:'Dekho Dekho Bissobasi - Rojar Gaan', url:'https://files.catbox.moe/jd9p8a.m4a'},
+  {singer:'Roja', cat:'Bangla', title:'Dekho Dekho Bissobasi', url:'https://files.catbox.moe/jd9p8a.m4a'},
   {singer:'Bangla Sad', cat:'Bangla', title:'Nijei Valo Hoite Parlam Na', url:'https://files.catbox.moe/obkfng.mp3'},
   {singer:'Basudev', cat:'Bangla', title:'Pal Tule De - Folk', url:'https://files.catbox.moe/uczgj5.m4a'},
   {singer:'Bangla', cat:'Bangla', title:'Pasher Barir Changra Pola', url:'https://files.catbox.moe/dth06y.m4a'},
   {singer:'Bangla', cat:'Bangla', title:'Prothom Dekhar Kale Bondhu', url:'https://files.catbox.moe/1kd7sk.mp3'},
-  {singer:'Bangla', cat:'Bangla', title:'Fule Fule Sajiye Rekheche Hridoy', url:'https://files.catbox.moe/cs7mvy.m4a'},
+  {singer:'Bangla', cat:'Bangla', title:'Fule Fule Sajiye Rekheche', url:'https://files.catbox.moe/cs7mvy.m4a'},
   {singer:'Sharif Uddin', cat:'Bangla', title:'Boro Loker Meye', url:'https://files.catbox.moe/ba522j.mp3'},
   {singer:'Bangla', cat:'Bangla', title:'Bondu Amar Asmaner Pori', url:'https://files.catbox.moe/4v1hoj.mp3'},
   {singer:'Bangla', cat:'Bangla', title:'Buker Majhe Rekhe Tore', url:'https://files.catbox.moe/ti2apa.m4a'},
@@ -109,19 +109,75 @@ const assameseSongsLibrary = [
   {singer:'Arijit', cat:'Bollywood', title:'Agar Tum Saath Ho', url:'https://files.catbox.moe/ppema9.m4a'},
   {singer:'Arijit', cat:'Bollywood', title:'Kesariya - Brahmastra', url:'https://files.catbox.moe/vy8b92.m4a'},
   {singer:'Arijit', cat:'Bollywood', title:'Jhoome Jo Pathaan', url:'https://files.catbox.moe/j9o72t.mp3'},
-  {singer:'Arijit', cat:'Bangla', title:'Mon Bojhe Naa - Chirodini Tumi Je Amar 2', url:'https://files.catbox.moe/qtlhxq.mp3'},
+  {singer:'Arijit', cat:'Bangla', title:'Mon Bojhe Naa', url:'https://files.catbox.moe/qtlhxq.mp3'},
   {singer:'Gogon Sakib', cat:'Bangla', title:'Onek Kedechi', url:'https://files.catbox.moe/4gkdu9.m4a'},
   {singer:'Bangla Folk', cat:'Bangla', title:'Ami Bhalo Naire Bondhu', url:'https://files.catbox.moe/n3xzdb.m4a'},
   {singer:'Bangla Sad', cat:'Bangla', title:'Amare Nosto Banaili Re Pagli', url:'https://files.catbox.moe/whmkf4.mp3'},
   {singer:'Bangla', cat:'Bangla', title:'Poran - Lofi Slowed', url:'https://files.catbox.moe/3hnne4.m4a'},
   {singer:'Bollywood', cat:'Bollywood', title:'Aashiqui 2 All Best Nonstop', url:'https://files.catbox.moe/8twehu.m4a'},
   {singer:'Bollywood', cat:'Bollywood', title:'Afghan Jalebi - Phantom', url:'https://files.catbox.moe/8o05js.mp3'},
+  {singer:'O Priya', cat:'Bangla', title:'O Priya Re Priya - Arijit Singh', url:'https://files.catbox.moe/g5ur6z.mp3'},
+  {singer:'O Sahiba', cat:'Bollywood', title:'O Sahiba - Dil Hai Tumhaara', url:'https://files.catbox.moe/0kf1dc.mp3'},
+  {singer:'DJ Remix', cat:'Bollywood', title:'Odhani Odh Ke Nachu DJ Remix', url:'https://files.catbox.moe/s50t57.mp3'},
+  {singer:'Jasoda Sarkar', cat:'Bangla', title:'Ogo Priyo Ki Dosh Chilo', url:'https://files.catbox.moe/pbtzb9.mp3'},
+  {singer:'Ogulcan Gok', cat:'Club', title:'Lucky Club Mix 2023', url:'https://files.catbox.moe/v34z2o.mp3'},
+  {singer:'iPhone', cat:'Ringtone', title:'iPhone Message Ringtone', url:'https://files.catbox.moe/rzuvwl.mp3'},
+  {singer:'Bangla Sad', cat:'Bangla', title:'Kemon Koira Hoiba Porer', url:'https://files.catbox.moe/0ntxy4.m4a'},
+  {singer:'Bangla', cat:'Bangla', title:'Buk Fata Koster Gaan', url:'https://files.catbox.moe/nt5z5m.m4a'},
+  {singer:'Bangla Sad', cat:'Bangla', title:'Bulite Parina Bondhu', url:'https://files.catbox.moe/fmcon6.m4a'},
+  {singer:'Atif Niloy', cat:'Bangla', title:'Beche Asi Morar Moto', url:'https://files.catbox.moe/zi7c5x.m4a'},
+  {singer:'Bengali Lofi', cat:'Bangla', title:'Tor Moner Vitor Lofi', url:'https://files.catbox.moe/i0y7q0.m4a'},
+  {singer:'Bridal', cat:'Bollywood', title:'Sajan Teri Dulhan Status', url:'https://files.catbox.moe/0noaj3.m4a'},
+  {singer:'M M Kreem', cat:'Bollywood', title:'Mujh Mein Tu - Special 26', url:'https://files.catbox.moe/g8qrr1.m4a'},
+  {singer:'BTS', cat:'K-Pop', title:'Butter Special Performance', url:'https://files.catbox.moe/omtdyt.m4a'},
+  {singer:'Arijit Singh', cat:'Bollywood', title:'Sawan Aaya Hai', url:'https://files.catbox.moe/4qoux3.m4a'},
+  {singer:'DJ Remix', cat:'Bollywood', title:'Humne Tumko Dil Ye Diya DJ', url:'https://files.catbox.moe/pssbvu.m4a'},
+  {singer:'Old Is Gold', cat:'Bollywood', title:'Mohammad Aziz Hits Nonstop', url:'https://files.catbox.moe/f3ry5i.m4a'},
+  {singer:'Slowed Reverb', cat:'Bollywood', title:'Bedardeya x Kahani Suno Slowed', url:'https://files.catbox.moe/5w8ozj.m4a'},
+  {singer:'Azaan Sami', cat:'Bollywood', title:'Aaram Aata Hai Ik Lamha', url:'https://files.catbox.moe/a8bsrs.mp3'},
+  {singer:'Sad', cat:'Bollywood', title:'Aawaz Do Humko Sad', url:'https://files.catbox.moe/0oveiw.mp3'},
+  {singer:'Funny', cat:'Ringtone', title:'Abe Yaar Funny Ringtone', url:'https://files.catbox.moe/5g1cl6.m4a'},
+  {singer:'Adnan Sami', cat:'Bollywood', title:'O Meri Jaan Teri Kasam', url:'https://files.catbox.moe/m3dokc.mp3'},
+  {singer:'Arabic', cat:'Arabic', title:'Afra-e-Frig Arabian Sad', url:'https://files.catbox.moe/3v7m1w.mp3'},
+  {singer:'Aplus', cat:'Pakistani', title:'Duhaiyan Mere Bewafa OST', url:'https://files.catbox.moe/mxy2hd.m4a'},
+  {singer:'Refugee', cat:'Bollywood', title:'Aisa Lagta Hai Refugee', url:'https://files.catbox.moe/zhz1wr.mp3'},
+  {singer:'B Praak', cat:'Bollywood', title:'Aisi Khuda Dua Dede', url:'https://files.catbox.moe/e6tw36.m4a'},
+  {singer:'Aj Jonmodin', cat:'Bangla', title:'Aj Jonmodin Tomar', url:'https://files.catbox.moe/w4oohz.mp3'},
+  {singer:'Ishan Creation', cat:'Bangla', title:'Aka Mone Prosno Sudhu Tor Naam', url:'https://files.catbox.moe/nivxkc.m4a'},
+  {singer:'Akeli', cat:'Bollywood', title:'Akeli Na Bazar Jaya Karo', url:'https://files.catbox.moe/qjbyba.mp3'},
+  {singer:'Bangla', cat:'Bangla', title:'Allah Aamy Kala Banaise', url:'https://files.catbox.moe/l3x5e5.m4a'},
+  {singer:'Lofi Mashup', cat:'Lofi', title:'Alone Night Sad Broken Mashup', url:'https://files.catbox.moe/zz9fvo.m4a'},
+  {singer:'Afran Nisho', cat:'Bangla', title:'Amar Aguner Chai Jome Jome', url:'https://files.catbox.moe/3wijs5.m4a'},
+  {singer:'Bangla Sad', cat:'Bangla', title:'Amar Dukkhe', url:'https://files.catbox.moe/3gkuy2.mp3'},
+  {singer:'Bangla Folk', cat:'Bangla', title:'Amar Jonom Gelo Bhule Bhule', url:'https://files.catbox.moe/294bo6.mp3'},
+  {singer:'Akash Mahmud', cat:'Bangla', title:'Amar Koste Gora Premer Bagan', url:'https://files.catbox.moe/ri8qew.m4a'},
+  {singer:'Bangla', cat:'Bangla', title:'Amar Ontoray Amar Kolizay', url:'https://files.catbox.moe/p7twt2.mp3'},
+  {singer:'Amaro Porano', cat:'Bangla', title:'Amaro Porano Jaha Chay', url:'https://files.catbox.moe/gb4j30.mp3'},
+  {singer:'Bangla Sad', cat:'Bangla', title:'Ami Ato Nosto Chilam Nare', url:'https://files.catbox.moe/jgevtu.mp3'},
+  {singer:'Bangla Sad', cat:'Bangla', title:'Ami Hoilam Doshi', url:'https://files.catbox.moe/f3c4ld.mp3'},
+  {singer:'Emon Khan', cat:'Bangla', title:'Ami Morle Shanti Te Gumaio', url:'https://files.catbox.moe/7p8k4a.mp3'},
+  {singer:'AP Dhillon', cat:'Mashup', title:'Saada Pyaar x Saajna Mashup Lofi', url:'https://files.catbox.moe/r99j08.mp3'},
+  {singer:'Bangla Folk', cat:'Bangla', title:'Apon Manush Chena Boro Daay', url:'https://files.catbox.moe/gpkkpl.mp3'},
+  {singer:'Ankit Tiwari', cat:'Bollywood', title:'Ishq Mubarak Lyrics', url:'https://files.catbox.moe/h3np5u.mp3'},
+  {singer:'Arijit Singh', cat:'Bollywood', title:'Khairiyat Puchho Chhichhore', url:'https://files.catbox.moe/t4owrq.mp3'},
+  {singer:'Baul Sukumar', cat:'Bangla', title:'Ashar Prodip Jele Ajo Bose Achi', url:'https://files.catbox.moe/lqzowg.mp3'},
+  {singer:'Ashraf Vandari', cat:'Bangla', title:'Ei Duniyata Putul Khela', url:'https://files.catbox.moe/6hsx2e.mp3'},
+  {singer:'Bangla Folk', cat:'Bangla', title:'Asmane Tor Bari Bondhu', url:'https://files.catbox.moe/r2zzif.m4a'},
+  {singer:'Atif Ahmed Niloy', cat:'Bangla', title:'Dak Diyache Morone', url:'https://files.catbox.moe/czjrog.m4a'},
+  {singer:'Ranbir Katrina', cat:'Bollywood', title:'Galti Se Mistake Jagga Jasoos', url:'https://files.catbox.moe/kvykhm.mp3'},
+  {singer:'Bangla Lofi', cat:'Bangla', title:'Jani Na Tor Preme Ki Jadu', url:'https://files.catbox.moe/2cxto4.m4a'},
+  {singer:'Jass Manak', cat:'Lofi', title:'30 Min Lofi Mashup Slowed Reverb', url:'https://files.catbox.moe/i2vgdv.m4a'},
+  {singer:'Bangla', cat:'Bangla', title:'Je Preme Te Swapno Dekhe Mon', url:'https://files.catbox.moe/sngpbs.m4a'},
+  {singer:'Atif Aslam', cat:'Bollywood', title:'Jeene Laga Hoon Ramaiya', url:'https://files.catbox.moe/1wmann.mp3'},
+  {singer:'Gamcha Palash', cat:'Bangla', title:'Jibon Manei To Jontrona', url:'https://files.catbox.moe/b0u76n.m4a'},
+  {singer:'Lofi', cat:'Bangla', title:'Jibone Prothom Tumi Sesh Bhalobasa Lofi', url:'https://files.catbox.moe/lck36a.m4a'},
+  {singer:'Parmanu', cat:'Bollywood', title:'Jitni Dafa Female Cover', url:'https://files.catbox.moe/2ny25o.mp3'},
 ];
 function renderSongsList(filter){
   filter = filter || 'All';
   const sel = document.getElementById('allSongsSelect');
   if(!sel) return;
-  let filtered = filter==='All' ? assameseSongsLibrary : assameseSongsLibrary.filter(s=>s.singer===filter || s.cat===filter);
+  let filtered = filter==='All' ? assameseSongsLibrary : assameseSongsLibrary.filter(s=>s.singer===filter || s.cat===filter || s.singer.includes(filter));
   let html = '<option value="">🎵 '+filter+' - '+filtered.length+' গীত</option>';
   filtered.forEach(s=>{html+=`<option value="${s.url}||${s.title}">${s.singer} - ${s.title}</option>`;});
   sel.innerHTML=html;
@@ -203,8 +259,9 @@ function openProfilePage(){
   });
   setTimeout(()=>{
     let fBox=document.getElementById('statFollowersBox'); let gBox=document.getElementById('statFollowingBox');
-    if(fBox && !fBox._bound){ fBox._bound=true; fBox.addEventListener('click', (e)=>{ if(e.target.tagName==='BUTTON') return; let div=document.getElementById('followersListDiv'); div.style.display=div.style.display==='none'?'block':'none'; }); }
-    if(gBox && !gBox._bound){ gBox._bound=true; gBox.addEventListener('click', (e)=>{ if(e.target.tagName==='BUTTON') return; let div=document.getElementById('followingListDiv'); div.style.display=div.style.display==='none'?'block':'none'; }); }
+    let fDiv=document.getElementById('followersListDiv'); let gDiv=document.getElementById('followingListDiv');
+    if(fBox && !fBox._bound){ fBox._bound=true; fBox.addEventListener('click', (e)=>{ if(e.target.tagName==='BUTTON') return; let isHidden=fDiv.style.display==='none'||fDiv.style.display===''; gDiv.style.display='none'; fDiv.style.display=isHidden?'block':'none'; }); }
+    if(gBox && !gBox._bound){ gBox._bound=true; gBox.addEventListener('click', (e)=>{ if(e.target.tagName==='BUTTON') return; let isHidden=gDiv.style.display==='none'||gDiv.style.display===''; fDiv.style.display='none'; gDiv.style.display=isHidden?'block':'none'; }); }
   },300);
   let combined=[...myReels.map(r=>({...r, isReel:true})), ...myPosts.map(p=>({...p, isReel:false}))];
   document.getElementById('myPosts').innerHTML=combined.length?combined.map(d=>{
@@ -276,31 +333,17 @@ function loadFollows(){
 }
 async function followUser(targetName){
   if(!currentUser){openAuth();return;} 
-  if(targetName===currentUser.name){alert("নিজকে Follow নোৱাৰি!");return;}
+  if(targetName.trim()===currentUser.name.trim()){alert("নিজকে Follow নোৱাৰি!");return;}
   targetName = targetName.trim();
-  let rawId = currentUser.name.toLowerCase().trim() + "__" + targetName.toLowerCase().trim();
-  let followId = rawId.replace(/[^a-z0-9_]/g,'_');
+  let raw = (currentUser.name + "__" + targetName).toLowerCase();
+  let followId = ""; for(let i=0;i<raw.length;i++){ let c=raw[i]; if((c>='a'&&c<='z')||(c>='0'&&c<='9')||c=='_') followId+=c; else followId+='_'; }
   let docRef = db.collection("follows").doc(followId);
   try{
     let doc = await docRef.get();
-    if(doc.exists){
-      await docRef.delete();
-      followingSet.delete(targetName.toLowerCase());
-    } else {
-      await docRef.set({
-        follower:currentUser.name,
-        following:targetName,
-        followerLower:currentUser.name.toLowerCase(),
-        followingLower:targetName.toLowerCase(),
-        createdAt:firebase.firestore.FieldValue.serverTimestamp()
-      });
-      followingSet.add(targetName.toLowerCase());
-    }
-    loadFollows();
-    setTimeout(()=>{ if(document.getElementById('profilePage').style.display==='block') openProfilePage(); renderFeed(); renderReels(); },600);
-  }catch(e){
-    alert("Follow Error: "+e.message);
-  }
+    if(doc.exists){ await docRef.delete(); followingSet.delete(targetName.toLowerCase()); alert("✓ Unfollowed: "+targetName); }
+    else { await docRef.set({follower:currentUser.name,following:targetName,followerLower:currentUser.name.toLowerCase(),followingLower:targetName.toLowerCase(),createdAt:firebase.firestore.FieldValue.serverTimestamp()}); followingSet.add(targetName.toLowerCase()); alert("✓ Followed: "+targetName); }
+    setTimeout(()=>{ loadFollows(); if(document.getElementById('profilePage').style.display==='block') openProfilePage(); renderFeed(); },800);
+  }catch(e){ alert("Error: "+e.message+"\nRules Publish কৰা!"); }
 }
 loadFollows();
 function renderFeed(){
@@ -314,11 +357,11 @@ function renderFeed(){
   <button onclick="createPostReal()" style="padding:9px 16px;border-radius:20px;background:gold;color:#000;font-weight:900;border:0">Post</button>
   </div>
   <div style="background:#0a0a0a;border:1px solid #333;border-radius:12px;padding:8px;margin-top:8px">
-    <p style="margin:0 0 6px 0;color:gold;font-size:11px;font-weight:800">🎵 118 Songs - Click Followers/Following Box!</p>
+    <p style="margin:0 0 6px 0;color:gold;font-size:11px;font-weight:800">🎵 108 Songs - Zubeen + New Bangla!</p>
     <div style="display:flex;gap:5px;overflow-x:auto;padding-bottom:4px">
-      <button onclick="filterSingers('All',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:gold;color:#000;font-weight:800;border:0;font-size:10px">All (55)</button>
+      <button onclick="filterSingers('All',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:gold;color:#000;font-weight:800;border:0;font-size:10px">All (108)</button>
       <button onclick="filterSingers('Zubeen Garg',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:#ff0066;color:#fff;border:0;font-size:10px">Zubeen</button>
-      <button onclick="filterSingers('Assamese Mix',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:#00ff88;color:#000;border:0;font-size:10px">Assamese</button>
+      <button onclick="filterSingers('Assamese',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:#00ff88;color:#000;border:0;font-size:10px">Assamese</button>
       <button onclick="filterSingers('Bangla',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:#ff69b4;color:#fff;border:0;font-size:10px">Bangla</button>
       <button onclick="filterSingers('Bollywood',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #333;font-size:10px">Bollywood</button>
     </div>
