@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="as"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>সোণৰ অসম -অসমৰ নিজৰ এপ</title>
+<title>সোণৰ অসম - 24 Real Songs</title>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <style>
@@ -32,7 +32,7 @@ body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:16
 #privateBox{position:fixed;bottom:80px;left:12px;width:92%;max-width:380px;height:460px;background:#111;border:2px solid gold;border-radius:18px;z-index:99998;display:none;flex-direction:column;overflow:hidden}
 .membership-real{position:relative;width:100%;max-width:520px;margin:0 auto;border-radius:12px;overflow:hidden;box-shadow:0 0 25px rgba(212,175,55,0.5);border:2px solid #d4af37;aspect-ratio:16/10;background:#000}
 </style></head><body>
-<div class="header"><div style="display:flex;align-items:center;gap:10px"><img src="logo.jpg" class="logo-box" onerror="this.style.display='none'"><div><h2 style="margin:0;color:gold;font-size:18px">সোণৰ অসম</h2><p style="margin:0;color:#aaa;font-size:10px">Fixed Music Library</p></div></div><div id="authArea"></div></div>
+<div class="header"><div style="display:flex;align-items:center;gap:10px"><img src="logo.jpg" class="logo-box" onerror="this.style.display='none'"><div><h2 style="margin:0;color:gold;font-size:18px">সোণৰ অসম</h2><p style="margin:0;color:#aaa;font-size:10px">24 Real Songs Added</p></div></div><div id="authArea"></div></div>
 <div class="districts" id="districtList"></div><div id="feed"></div><div id="reelsFeed" style="display:none"></div>
 <div id="profilePage"><div class="profileHeader">
 <div style="display:flex;justify-content:space-between;margin-bottom:15px"><button onclick="closeProfile()" style="padding:7px 14px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #444">Back</button><button onclick="logout()" style="padding:7px 14px;border-radius:20px;background:#ff2222;color:#fff;border:0">Logout</button></div>
@@ -64,7 +64,7 @@ body{margin:0;background:#000;color:#fff;font-family:system-ui;padding-bottom:16
 <button onclick="openProfilePage()"><span class="icon">👤</span>Profile</button>
 </div>
 <div id="reelsModal"><div class="reelsBox">
-<h3 style="color:gold;text-align:center;margin:0 0 12px 0">HD Reels Upload (FREE)</h3>
+<h3 style="color:gold;text-align:center;margin:0 0 12px 0">HD Reels Upload</h3>
 <input type="file" id="reelFile" accept="video/*" style="width:100%;padding:10px;border-radius:10px;background:#1a1a1a;color:#fff;border:1px solid #333;margin-bottom:10px">
 <input type="text" id="reelTitle" placeholder="গানৰ নাম লিখা..." style="width:100%;padding:10px;border-radius:10px;background:#1a1a1a;color:#fff;border:1px solid #333;margin-bottom:10px">
 <select id="reelDist" style="width:100%;padding:10px;border-radius:10px;background:#1a1a1a;color:#fff;border:1px solid #333;margin-bottom:10px"></select>
@@ -85,33 +85,39 @@ const allDistricts=["Bajali","Baksa","Barpeta","Biswanath","Bongaigaon","Cachar"
 document.getElementById('districtList').innerHTML='<button class="active" onclick="filterByDistrict(\'All\',this)">All Assam</button>'+allDistricts.map(d=>`<button onclick="filterByDistrict('${d}',this)">${d}</button>`).join('');
 document.getElementById('reelDist').innerHTML='<option value="">জিলা</option>'+allDistricts.map(d=>`<option>${d}</option>`).join('');
 let selectedDistrict="All";
-
-// === FIXED LIBRARY - WORKING LINKS ===
 const assameseSongsLibrary = [
-  {singer:'Zubeen', cat:'Assamese', title:'Mayabini - মায়াবিনী', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'},
-  {singer:'Zubeen', cat:'Assamese', title:'Pakhi - পখী', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3'},
-  {singer:'Zubeen', cat:'Assamese', title:'Ya Ali', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'},
-  {singer:'Zubeen', cat:'Assamese', title:'Anuradha', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3'},
-  {singer:'Papon', cat:'Assamese', title:'Sinaaki', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3'},
-  {singer:'Neel', cat:'Assamese', title:'Laisa', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3'},
-  {singer:'Achurjya', cat:'Assamese', title:'Dure Dure', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3'},
-  {singer:'Arijit', cat:'Bollywood', title:'Tum Hi Ho', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3'},
-  {singer:'Arijit', cat:'Bollywood', title:'Kesariya', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3'},
-  {singer:'Arijit', cat:'Bollywood', title:'Channa Mereya', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3'},
-  {singer:'Shreya', cat:'Bollywood', title:'Manwa Laage', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3'},
-  {singer:'Atif', cat:'Bollywood', title:'Dil Diyan Gallan', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3'},
-  {singer:'Kishore', cat:'Bollywood', title:'Ek Pyar Ka Nagma', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3'},
-  {singer:'Sonu', cat:'Bollywood', title:'Kal Ho Naa Ho', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3'},
+  {singer:'Arijit', cat:'Bollywood', title:'O Priya Re Priya - ও প্রিয়া ৰে প্রিয়া', url:'https://files.catbox.moe/g5ur6z.mp3'},
+  {singer:'Sonu', cat:'Bollywood', title:'O Sahiba O Sahiba - Dil Hai Tumhara', url:'https://files.catbox.moe/0kf1dc.mp3'},
+  {singer:'Arijit', cat:'Assamese Mix', title:'O No Cute Voice - Ringtone', url:'https://files.catbox.moe/dn3j8o.mp3'},
+  {singer:'DJ', cat:'Bollywood', title:'Odhani Odh Ke Nachu - DJ Remix', url:'https://files.catbox.moe/s50t57.mp3'},
+  {singer:'Bangla', cat:'Bangla', title:'Ogo Priyo - কি দোষ ছিল আমার', url:'https://files.catbox.moe/pbtzb9.mp3'},
+  {singer:'DJ', cat:'Party', title:'Lucky Club Mix 2023', url:'https://files.catbox.moe/v34z2o.mp3'},
+  {singer:'Ringtone', cat:'Ringtone', title:'Cute Girl Voice Ringtone', url:'https://files.catbox.moe/nopawa.m4a'},
+  {singer:'Ringtone', cat:'Ringtone', title:'iPhone Message Ringtone', url:'https://files.catbox.moe/rzuvwl.mp3'},
+  {singer:'Gogon Sakib', cat:'Bangla', title:'Onek Kedechi - অনেক কেঁদেছি', url:'https://files.catbox.moe/4gkdu9.m4a'},
+  {singer:'Bangla Folk', cat:'Bangla', title:'Ami Bhalo Naire Bondhu', url:'https://files.catbox.moe/n3xzdb.m4a'},
+  {singer:'Bangla Folk', cat:'Bangla', title:'Kemon Koira Hoiba Porer', url:'https://files.catbox.moe/0ntxy4.m4a'},
+  {singer:'Poran', cat:'Bangla', title:'Poran - Lo-fi Slowed Reverb', url:'https://files.catbox.moe/3hnne4.m4a'},
+  {singer:'Folk Sad', cat:'Bangla', title:'Buk Fata Koster Gaan - বুকফাটা', url:'https://files.catbox.moe/nt5z5m.m4a'},
+  {singer:'Bangla Sad', cat:'Bangla', title:'Bulite Parina Bondhu', url:'https://files.catbox.moe/fmcon6.m4a'},
+  {singer:'Atif Ahmed', cat:'Bangla', title:'Beche Achi Morar Moto', url:'https://files.catbox.moe/zi7c5x.m4a'},
+  {singer:'Lofi', cat:'Bangla', title:'Tor Moner Vitor - Lofi Sad', url:'https://files.catbox.moe/i0y7q0.m4a'},
+  {singer:'Bollywood', cat:'Bollywood', title:'Sajan Sajan Teri Dulhan - Bridal', url:'https://files.catbox.moe/0noaj3.m4a'},
+  {singer:'Mujh Mein Tu', cat:'Bollywood', title:'Mujh Mein Tu - Special 26', url:'https://files.catbox.moe/g8qrr1.m4a'},
+  {singer:'BTS', cat:'K-Pop', title:'BTS Butter - Choreography', url:'https://files.catbox.moe/omtdyt.m4a'},
+  {singer:'Arijit', cat:'Bollywood', title:'Sawan Aaya Hai - Arijit Singh', url:'https://files.catbox.moe/4qoux3.m4a'},
+  {singer:'DJ Remix', cat:'Bollywood', title:'Humne Tumko Dil Ye Dediya - DJ Remix', url:'https://files.catbox.moe/pssbvu.m4a'},
+  {singer:'Old Is Gold', cat:'Bollywood', title:'Mohammad Aziz Hits - Old Is Gold', url:'https://files.catbox.moe/f3ry5i.m4a'},
+  {singer:'Sad Lofi', cat:'Bollywood', title:'Bedardeya x Kahani Suno - Slowed', url:'https://files.catbox.moe/5w8ozj.m4a'},
+  {singer:'Arijit', cat:'Bollywood', title:'Tum Hi Ho - Aashiqui 2 (Original)', url:'https://files.catbox.moe/e0mbes.mp3'},
 ];
-
 function renderSongsList(filter){
   filter = filter || 'All';
   const sel = document.getElementById('allSongsSelect');
   if(!sel) return;
   let filtered;
   if(filter==='All') filtered = assameseSongsLibrary;
-  else if(filter==='Assamese' || filter==='Bollywood') filtered = assameseSongsLibrary.filter(s=>s.cat===filter);
-  else filtered = assameseSongsLibrary.filter(s=>s.singer===filter);
+  else filtered = assameseSongsLibrary.filter(s=>s.singer===filter || s.cat===filter);
   let html = '<option value="">🎵 '+filter+' - Select ('+filtered.length+' গীত)...</option>';
   filtered.forEach(s=>{
     html += `<option value="${s.url}||${s.title}">${s.singer} - ${s.title}</option>`;
@@ -129,13 +135,12 @@ function selectAnySong(val){
   if(parts.length < 2) return;
   let url = parts[0];
   let title = parts[1];
-  if(!url){ alert('Link নাই!'); return; }
+  if(!url) return;
   selectedPostAudioUrl = url;
   selectedPostAudio = null;
   let pv = document.getElementById('postAudioPreview');
   if(pv) pv.innerHTML = `<div style="background:#1a1a1a;padding:8px 12px;border-radius:12px;border:1px solid #ff69b4;"><div style="color:#ff69b4;font-size:12px">🎵 ${title} - Selected!</div><audio controls autoplay style="width:100%;margin-top:6px"><source src="${url}"></audio><button onclick="clearPostAudio()" style="margin-top:6px;background:#ff2222;color:#fff;border:0;border-radius:8px;padding:4px 10px;font-size:11px">Remove</button></div>`;
 }
-
 function filterByDistrict(n,b){selectedDistrict=n;document.querySelectorAll('.districts button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderFeed();renderReels();}
 function switchTab(t,e){currentTab=t;document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));if(e) e.classList.add('active');if(t==='home'){document.getElementById('feed').style.display='block';document.getElementById('reelsFeed').style.display='none';renderFeed();}else{document.getElementById('feed').style.display='none';document.getElementById('reelsFeed').style.display='block';renderReels();}}
 function openReelsUpload(){if(!currentUser){openAuth();return;}document.getElementById('reelsModal').style.display='flex';}
@@ -151,7 +156,7 @@ async function uploadReelNow(){
   if(!file){alert('Video Select কৰা!');return;}
   if(!title){alert('গানৰ নাম লিখা!');return;}
   if(file.size>150000000){alert('150MB তকৈ ডাঙৰ!');return;}
-  bar.style.display='block';fill.style.width='20%';status.innerText='Uploading (FREE)...';
+  bar.style.display='block';fill.style.width='20%';status.innerText='Uploading...';
   try{
     let fd=new FormData();fd.append('reqtype','fileupload');fd.append('fileToUpload',file);
     fill.style.width='50%';
@@ -168,7 +173,7 @@ db.collection("reels").orderBy("createdAt","desc").limit(100).onSnapshot(s=>{all
 function renderReels(){
   const feed=document.getElementById('reelsFeed');
   let filtered=selectedDistrict==="All"?allReels:allReels.filter(p=>p.district===selectedDistrict);
-  if(!filtered.length){feed.innerHTML='<div class="card" style="text-align:center;color:#888;padding:30px">Reels নাই - + ত ক্লিক কৰি Video দিয়া</div>';return;}
+  if(!filtered.length){feed.innerHTML='<div class="card" style="text-align:center;color:#888;padding:30px">Reels নাই</div>';return;}
   feed.innerHTML=filtered.map(d=>`<div class="reel-card"><video src="${d.url}" controls playsinline preload="metadata" style="width:100%;max-height:600px;background:#000"></video><div style="padding:10px;display:flex;justify-content:space-between"><div><b style="color:gold">${d.title}</b><br><span style="font-size:11px;color:#888">${d.userName} • ${d.district||''}</span></div><button onclick="likeReel('${d.id}',${d.likes||0})" style="background:#1a1a1a;border:1px solid gold;border-radius:20px;padding:6px 12px;color:gold">❤️ ${d.likes||0}</button></div></div>`).join('');
 }
 function likeReel(id,l){if(!currentUser){openAuth();return;}if(localStorage.getItem('liked_reel_'+id))return;db.collection("reels").doc(id).update({likes:(l||0)+1});localStorage.setItem('liked_reel_'+id,'1');}
@@ -199,7 +204,7 @@ function openProfilePage(){
         if(isVideoUrl(d.image)) media+=`<video src="${d.image}" controls playsinline style="width:100%;border-radius:12px;max-height:500px;background:#000"></video>`;
         else media+=`<img src="${d.image}" style="width:100%;border-radius:12px">`;
       }
-      if(d.audio) media+=`<div style="margin-top:8px;background:#1a1a1a;border:1px solid #ff69b4;border-radius:12px;padding:8px"><p style="margin:0 0 6px 0;color:#ff69b4;font-size:11px">🎵 Attached Song</p><audio controls style="width:100%"><source src="${d.audio}"></audio></div>`;
+      if(d.audio) media+=`<div style="margin-top:8px;background:#1a1a1a;border:1px solid #ff69b4;border-radius:12px;padding:8px"><p style="margin:0 0 6px 0;color:#ff69b4;font-size:11px">🎵 Real Song</p><audio controls style="width:100%"><source src="${d.audio}"></audio></div>`;
     }
     return `<div class="card"><p>${d.text||d.title||''}</p>${media}<br><button onclick="${d.isReel?`deleteReel('${d.id}','${d.userName}')`:`deletePost('${d.id}','${d.userName}')`}" style="background:#ff2222;color:#fff;border:0;border-radius:20px;padding:6px 12px">Delete</button></div>`;
   }).join(''):'<div class="card" style="text-align:center">Post নাই</div>';
@@ -289,7 +294,7 @@ function sendPrivate(){if(!currentUser){openAuth();return;}if(!privateTarget)ret
 db.collection("posts").orderBy("createdAt","desc").limit(100).onSnapshot(s=>{allPosts=[];s.forEach(d=>allPosts.push({id:d.id,...d.data()}));renderFeed();if(document.getElementById('profilePage').style.display==='block')openProfilePage();});
 function renderFeed(){
   const feed=document.getElementById('feed');let filtered=selectedDistrict==="All"?allPosts:allPosts.filter(p=>p.district===selectedDistrict);
-  feed.innerHTML=`<div class="card"><textarea id="postText" placeholder="কি ভাবিছা? Photo + গীত Add কৰা!" style="width:100%;min-height:60px;border-radius:12px;padding:10px;background:#1a1a1a;color:#fff;border:1px solid #333;box-sizing:border-box"></textarea>
+  feed.innerHTML=`<div class="card"><textarea id="postText" placeholder="কি ভাবিছা? Photo + Real গীত Add কৰা!" style="width:100%;min-height:60px;border-radius:12px;padding:10px;background:#1a1a1a;color:#fff;border:1px solid #333;box-sizing:border-box"></textarea>
   <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
   <select id="fDist" style="flex:1;min-width:70px;padding:9px;border-radius:20px;border:2px solid gold;background:#fff;color:#000;font-weight:700"><option value="">জিলা</option>${allDistricts.map(d=>`<option ${d===selectedDistrict?'selected':''}>${d}</option>`).join('')}</select>
   <button onclick="document.getElementById('postImageFile').click()" style="padding:9px 12px;border-radius:20px;background:#222;color:gold;border:1px solid gold">📷 Photo</button>
@@ -297,14 +302,13 @@ function renderFeed(){
   <button onclick="createPostReal()" style="padding:9px 16px;border-radius:20px;background:gold;color:#000;font-weight:900;border:0">Post</button>
   </div>
   <div style="background:#0a0a0a;border:1px solid #333;border-radius:12px;padding:8px;margin-top:8px">
-    <p style="margin:0 0 6px 0;color:gold;font-size:11px;font-weight:800">🎵 গীত Library - Assamese + Bollywood</p>
+    <p style="margin:0 0 6px 0;color:gold;font-size:11px;font-weight:800">🎵 তোমাৰ Real গীত Library - 24 টা গীত Ready!</p>
     <div style="display:flex;gap:5px;overflow-x:auto;padding-bottom:4px">
-      <button onclick="filterSingers('All',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:gold;color:#000;font-weight:800;border:0;font-size:10px">All</button>
-      <button onclick="filterSingers('Assamese',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #333;font-size:10px">অসমীয়া</button>
-      <button onclick="filterSingers('Bollywood',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:#ff69b4;color:#fff;border:0;font-size:10px">Bollywood</button>
-      <button onclick="filterSingers('Zubeen',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #333;font-size:10px">Zubeen</button>
+      <button onclick="filterSingers('All',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:gold;color:#000;font-weight:800;border:0;font-size:10px">All (24)</button>
       <button onclick="filterSingers('Arijit',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #333;font-size:10px">Arijit</button>
-      <button onclick="filterSingers('Shreya',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #333;font-size:10px">Shreya</button>
+      <button onclick="filterSingers('Bangla',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:#ff69b4;color:#fff;border:0;font-size:10px">Bangla</button>
+      <button onclick="filterSingers('Bollywood',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #333;font-size:10px">Bollywood</button>
+      <button onclick="filterSingers('Ringtone',this)" class="singerFilterBtn" style="padding:6px 10px;border-radius:20px;background:#1a1a1a;color:#fff;border:1px solid #333;font-size:10px">Ringtone</button>
     </div>
     <select id="allSongsSelect" onchange="selectAnySong(this.value)" style="width:100%;margin-top:8px;padding:10px;border-radius:20px;background:#111;color:#fff;border:1px solid #ff69b4">
       <option>Loading...</option>
@@ -322,7 +326,7 @@ function renderFeed(){
       else mediaHtml+=`<img src="${d.image}" style="width:100%;border-radius:12px;max-height:600px;object-fit:contain;background:#000;margin-top:8px">`;
     }
     if(d.audio){
-      mediaHtml+=`<div style="margin-top:8px;background:#1a1a1a;border:1px solid #ff69b4;border-radius:12px;padding:8px"><p style="margin:0 0 6px 0;color:#ff69b4;font-size:11px">🎵 Attached Song</p><audio controls style="width:100%"><source src="${d.audio}"></audio></div>`;
+      mediaHtml+=`<div style="margin-top:8px;background:#1a1a1a;border:1px solid #ff69b4;border-radius:12px;padding:8px"><p style="margin:0 0 6px 0;color:#ff69b4;font-size:11px">🎵 Real Song</p><audio controls style="width:100%"><source src="${d.audio}"></audio></div>`;
     }
     return `<div class="card"><div style="display:flex;align-items:center;gap:8px">${avatar}<b>${d.userName}</b><span style="color:#888;font-size:11px">• ${d.district||''}</span></div><p style="margin:10px 0">${d.text||''}</p>${mediaHtml}<div style="display:flex;gap:5px;margin-top:10px;flex-wrap:wrap"><button onclick="likePost('${d.id}',${d.likes||0})" class="btn-action" style="background:${liked?'gold':'#1a1a1a'};color:${liked?'#000':'#fff'}">❤️ ${d.likes||0}</button><button onclick="commentPost('${d.id}')" class="btn-action">💬 ${(d.comments||[]).length}</button><button onclick="openPrivateChat('${d.userName}')" class="btn-action" style="border-color:gold;color:gold">💬 Inbox</button>${delBtn}</div>${commentsHtml}</div>`;
   }).join('');
@@ -330,7 +334,7 @@ function renderFeed(){
   if(imgInp && !imgInp._bound){imgInp._bound=true;imgInp.addEventListener('change',async e=>{let file=e.target.files[0];if(!file)return;let compressed=await compressImage(file,1920,0.85);selectedPostImage=compressed;let pv=document.getElementById('postImgPreview');if(pv) pv.innerHTML=`<div style="position:relative"><img src="${compressed}" style="width:100%;max-height:400px;border-radius:12px"><button onclick="clearPostImage()" style="position:absolute;top:8px;right:8px;padding:6px 12px;border-radius:20px;background:#ff2222;color:#fff;border:0">X</button></div>`;});}
   let audInp=document.getElementById('postAudioFile');
   if(audInp && !audInp._bound2){audInp._bound2=true;audInp.addEventListener('change',async e=>{let file=e.target.files[0];if(!file)return;if(file.size>25*1024*1024){alert('গীত 25MB তকৈ সৰু!');return;}selectedPostAudio=file;selectedPostAudioUrl="";let pv=document.getElementById('postAudioPreview');if(pv) pv.innerHTML=`<div style="background:#1a1a1a;padding:8px 12px;border-radius:12px;border:1px solid #ff69b4;display:flex;justify-content:space-between;align-items:center"><span style="color:#ff69b4;font-size:12px">🎵 ${file.name} (${(file.size/1024/1024).toFixed(1)}MB)</span><button onclick="clearPostAudio()" style="background:#ff2222;color:#fff;border:0;border-radius:10px;padding:4px 8px">X</button></div>`;});}
-  setTimeout(()=>renderSongsList('All'), 50);
+  setTimeout(()=>renderSongsList('All'), 80);
 }
 function clearPostImage(){selectedPostImage="";let p=document.getElementById('postImgPreview');if(p) p.innerHTML="";let i=document.getElementById('postImageFile');if(i) i.value="";}
 function clearPostAudio(){selectedPostAudio=null;selectedPostAudioUrl="";let p=document.getElementById('postAudioPreview');if(p) p.innerHTML="";let i=document.getElementById('postAudioFile');if(i) i.value="";let s=document.getElementById('allSongsSelect');if(s) s.selectedIndex=0;}
@@ -349,7 +353,7 @@ async function createPostReal(){
       if(!audioUrl.startsWith('http')) throw new Error('Audio upload fail');
     }
     await db.collection("posts").add({text:txt,image:selectedPostImage||"",audio:audioUrl||"",district:dist,likes:0,comments:[],userName:currentUser.name,userPhoto:profilePic||"",createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-    if(txtEl){txtEl.value="";txtEl.placeholder="কি ভাবিছা? Photo + গীত Add কৰা!";}
+    if(txtEl){txtEl.value="";txtEl.placeholder="কি ভাবিছা? Photo + Real গীত Add কৰা!";}
     clearPostImage();clearPostAudio();
   }catch(err){alert('Error: '+err.message); if(txtEl) txtEl.placeholder="কি ভাবিছা?";}
 }
